@@ -1,8 +1,8 @@
 ## Dockerfile-prod
 ##########
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk
 EXPOSE 8080
-ARG JAR_FILE=/build/libs/Web-Team-2-Backend-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=/build/libs/*.jar
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app.jar"]
