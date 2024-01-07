@@ -1,6 +1,8 @@
 ## Dockerfile-prod
+##########
+
 FROM openjdk:17-jdk
-## EXPOSE 8080
-ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=docker","/app.jar"]
+#EXPOSE 8080
+ARG JAR_FILE=build/libs/*-0.0.1-SNAPSHOT.jar
+COPY ./*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
