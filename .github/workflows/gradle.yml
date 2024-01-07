@@ -41,14 +41,25 @@ jobs:
     - name: make application-prod.properties
       if: contains(github.ref, 'main')
       run: |
-          cd ./src/main/resources
+          cd ./src/main
+          mkdir resources
+          cd ./resources
+          
           touch ./application.properties
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.properties
+          echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
 
     ## gradle build
     - name: Build with Gradle
-      run: ./gradlew build -x test
+      run: |
+        ./gradlew build -x test
+        ls -l build/libs
+    ## copy jar file
+    - name: Copy jar file
+      run: cp build/libs/*-0.0.1-SNAPSHOT.jar .
+      
+    - name: List directory
+      run: ls -R
       
     ## docker build & push to production
     - name: Checkout code
