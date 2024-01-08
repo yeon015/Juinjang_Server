@@ -53,7 +53,7 @@ jobs:
     ## gradle build
     - name: Build with Gradle
       run: |
-       chmod +x ./gradlew
+       chmod +x gradlew
        ./gradlew clean build -x test
        ls -l build/libs
     ## copy jar file
