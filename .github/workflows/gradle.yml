@@ -49,11 +49,13 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
 
+
     ## gradle build
     - name: Build with Gradle
       run: |
-        ./gradlew build -x test
-        ls -l build/libs
+       chmod +x ./gradlew
+       ./gradlew clean build -x test
+       ls -l build/libs
     ## copy jar file
     - name: Copy jar file
       run: cp build/libs/*-0.0.1-SNAPSHOT.jar .
