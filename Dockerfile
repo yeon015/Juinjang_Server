@@ -1,4 +1,7 @@
+## Dockerfile-prod
+##########
 FROM openjdk:17-jdk
 #EXPOSE 8080
-COPY build/libs/*.jar app.jar
+ARG JAR_FILE=build/libs/juinjang.jar
+COPY ./*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
