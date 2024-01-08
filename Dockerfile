@@ -11,10 +11,9 @@
 
 ## Dockerfile-prod
 ##########
-FROM openjdk:17-jdk
+FROM openjdk:17
 #EXPOSE 8080
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
-RUN  ls -l build/libs
 ENTRYPOINT ["java","-jar","/app.jar"]
 
