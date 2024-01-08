@@ -1,4 +1,3 @@
- #github repository Actions 페이지에 나타낼 이름
 name: CI/CD
 
 # event trigger
@@ -36,7 +35,6 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-
     ## create application-prod.properties
     - name: make application-prod.properties
       if: contains(github.ref, 'main')
@@ -53,16 +51,15 @@ jobs:
     ## gradle build
     - name: Build with Gradle
       run: |
-       chmod +x ./gradlew
+       chmod +x gradlew
        ./gradlew clean build -x test
        ls -l build/libs
-
-        ## copy jar file
+    ## copy jar file
     - name: Copy jar file
       run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
       
     - name: List directory
-      run: ls -l build/libs
+      run: ls -R
       
     ## docker build & push to production
     - name: Checkout code
@@ -71,18 +68,15 @@ jobs:
     - name: Docker login
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
     - name: Docker build
       run: |
         docker build -t ${{ secrets.DOCKER_REPO }} .
-
     - name: Docker push
       run: |
         docker push ${{ secrets.DOCKER_REPO }}
-
     ## deploy to production
     - name: Deploy to prod
-      uses: appleboy/ssh-action@v0.1.6
+      uses: appleboy/ssh-action@master
       id: deploy-prod
       if: contains(github.ref, 'main')
       with:
@@ -96,8 +90,6 @@ jobs:
             sudo docker image rm ${{ secrets.DOCKER_REPO }}
             sudo docker pull ${{ secrets.DOCKER_REPO }}
             sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO }}
-            ls -l build/libs
-
   ## time
   current-time:
     needs: CI-CD
@@ -113,3 +105,4 @@ jobs:
       - name: Print Current Time
         run: echo "Current Time=${{steps.current-time.outputs.formattedTime}}" # current-time 에서 지정한 포맷대로 현재 시간 출력
         shell: bash
+Update gradle.yml · UMC-juinjang/Spring@8d5e899
