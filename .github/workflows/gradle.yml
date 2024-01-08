@@ -53,13 +53,10 @@ jobs:
     ## gradle build
     - name: Build with Gradle
       run: |
-       chmod +x gradlew
+       chmod +x ./gradlew
        ./gradlew clean build -x test
        ls -l build/libs
-    ## copy jar file
-    - name: Copy jar file
-      run: cp build/libs/*-0.0.1-SNAPSHOT.jar .
-      
+       
     - name: List directory
       run: ls -R
       
@@ -81,7 +78,7 @@ jobs:
 
     ## deploy to production
     - name: Deploy to prod
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.1.6
       id: deploy-prod
       if: contains(github.ref, 'main')
       with:
