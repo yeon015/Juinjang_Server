@@ -62,7 +62,7 @@ jobs:
       run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
       
     - name: List directory
-      run: ls -R
+      run: ls -l build/libs
       
     ## docker build & push to production
     - name: Checkout code
@@ -96,6 +96,7 @@ jobs:
             sudo docker image rm ${{ secrets.DOCKER_REPO }}
             sudo docker pull ${{ secrets.DOCKER_REPO }}
             sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO }}
+            ls -l build/libs
 
   ## time
   current-time:
