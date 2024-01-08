@@ -1,3 +1,4 @@
+#github repository Actions 페이지에 나타낼 이름
 name: CI/CD
 
 # event trigger
@@ -105,4 +106,3 @@ jobs:
       - name: Print Current Time
         run: echo "Current Time=${{steps.current-time.outputs.formattedTime}}" # current-time 에서 지정한 포맷대로 현재 시간 출력
         shell: bash
-Update gradle.yml · UMC-juinjang/Spring@8d5e899
