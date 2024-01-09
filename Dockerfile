@@ -11,11 +11,11 @@
 
 ## Dockerfile-prod
 ##########
-# FROM openjdk:17-jdk
-# #EXPOSE 8080
-# ARG JAR_FILE=build/libs/*.jar
-# COPY ./*.jar app.jar
-# ENTRYPOINT ["java", "-jar", "app.jar"]
+FROM openjdk:17-jdk
+#EXPOSE 8080
+ARG JAR_FILE=build/libs/*.jar
+COPY ./*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 # FROM openjdk:17-jdk
 # ARG JAR_FILE=build/libs/*.jar
@@ -23,9 +23,9 @@
 # RUN chmod +x /app.jar
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-FROM openjdk:17-jdk
-WORKDIR /app
-ARG JAR_FILE=build/libs/*.jar
-COPY ./*.jar /app/app.jar
-RUN chmod +x /app/app.jar
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# FROM openjdk:17-jdk
+# WORKDIR /app
+# ARG JAR_FILE=build/libs/*.jar
+# COPY ./*.jar /app/app.jar
+# RUN chmod +x /app/app.jar
+# ENTRYPOINT ["java", "-jar", "/app/app.jar"]
