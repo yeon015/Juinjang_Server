@@ -13,7 +13,7 @@
 ##########
 FROM openjdk:17
 #EXPOSE 8080
-ARG JAR_FILE=/build/libs/*.jar
-COPY ./*.jar ${JAR_PATH}/app.jar
+ARG JAR_FILE=./build/libs/*.jar
+COPY ${JAR_PATH}/juinjang-0.0.1-SNAPSHOT.jar ${JAR_PATH}/app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 
