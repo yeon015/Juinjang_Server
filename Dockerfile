@@ -11,8 +11,19 @@
 
 ## Dockerfile-prod
 ##########
+# FROM openjdk:17-jdk
+# #EXPOSE 8080
+# ARG JAR_FILE=build/libs/*.jar
+# COPY ./*.jar app.jar
+# CMD ["java","-jar","app.jar"]
+
 FROM openjdk:17-jdk
-#EXPOSE 8080
 ARG JAR_FILE=build/libs/*.jar
-COPY ./*.jar app.jar
+
+RUN pwd
+RUN ls -l
+RUN ls ${JAR_FILE}
+
+COPY ${JAR_FILE} app.jar
 CMD ["java","-jar","app.jar"]
+
