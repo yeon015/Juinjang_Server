@@ -17,8 +17,15 @@
 # COPY ./*.jar app.jar
 # ENTRYPOINT ["java", "-jar", "app.jar"]
 
+# FROM openjdk:17-jdk
+# ARG JAR_FILE=build/libs/*.jar
+# COPY ./*.jar /app.jar
+# RUN chmod +x /app.jar
+# ENTRYPOINT ["java", "-jar", "/app.jar"]
+
 FROM openjdk:17-jdk
+WORKDIR /app
 ARG JAR_FILE=build/libs/*.jar
-COPY ./*.jar /app.jar
-RUN chmod +x /app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+COPY ./*.jar /app/app.jar
+RUN chmod +x /app/app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
