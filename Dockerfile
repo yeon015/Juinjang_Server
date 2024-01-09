@@ -20,5 +20,5 @@
 FROM openjdk:17-jdk
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar /app.jar
-RUN chmod +r /app.jar
+RUN chmod +x /app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
