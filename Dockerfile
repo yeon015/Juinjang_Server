@@ -15,5 +15,5 @@ FROM openjdk:17
 #EXPOSE 8080
 ARG JAR_FILE=./build/libs
 COPY ${JAR_FILE}/juinjang-0.0.1-SNAPSHOT.jar ${JAR_FILE}/juinjang-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java","-jar","./build/libs/app.jar"]
+ENTRYPOINT ["java","-jar","./build/libs/juinjang-0.0.1-SNAPSHOT.jar"]
 
