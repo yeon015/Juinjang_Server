@@ -21,24 +21,15 @@
 # try~
 # Dockerfile-prod
 #########
-#FROM openjdk:17-jdk
+FROM openjdk:17-jdk
 
 #RUN pwd
 #RUN ls -R build
 
-#ARG JAR_FILE=build/libs/*.jar
-#COPY build/libs/*.jar app.jar
-#EXPOSE 8080
-#ENTRYPOINT ["java", "-jar", "app.jar"]
-
-################
-FROM openjdk:17-jdk
-
-ARG JAR_FILE=./build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+ARG JAR_FILE=build/libs/*.jar
+COPY build/libs/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app.jar"]
-
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
