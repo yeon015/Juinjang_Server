@@ -81,7 +81,7 @@ jobs:
 
     - name: Check build directory
       run: |
-        ls -R /build
+        ls -R build
 
     # ## copy jar file
     - name: Copy jar file
