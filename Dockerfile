@@ -21,9 +21,13 @@
 # try~
 # Dockerfile-prod
 #########
-RUN pwd
-RUN ls -al
 FROM openjdk:17-jdk
+
+WORKDIR /home/runner/work/Spring/Spring
+
+RUN pwd
+
+RUN ls -al
 EXPOSE 8080
 ARG JAR_FILE=build/libs/*.jar
 COPY build/libs/*.jar app.jar
