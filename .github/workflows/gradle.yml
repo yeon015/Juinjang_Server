@@ -103,7 +103,9 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - name: Docker build
       run: |
-        docker build -t ${{ secrets.DOCKER_REPO }} -f Dockerfile .
+#        docker build -t ${{ secrets.DOCKER_REPO }} -f Dockerfile .
+        docker build -t ${{ secrets.DOCKER_REPO }} -f .
+
     - name: List directory
       run: ls -R
     - name: Docker push
