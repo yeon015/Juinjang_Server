@@ -23,7 +23,7 @@
 #########
 FROM openjdk:17-jdk
 
-WORKDIR /home/runner/work/Spring/Spring
+#WORKDIR /home/runner/work/Spring/Spring
 
 RUN pwd
 
