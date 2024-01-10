@@ -21,6 +21,8 @@
 # try~
 # Dockerfile-prod
 #########
+RUN pwd
+RUN ls -al
 FROM openjdk:17-jdk
 EXPOSE 8080
 ARG JAR_FILE=build/libs/*.jar

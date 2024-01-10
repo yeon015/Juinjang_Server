@@ -87,9 +87,9 @@ jobs:
       run: |
         pwd
 
-    # ## copy jar file
-    - name: Copy jar file
-      run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
+#    # ## copy jar file
+#    - name: Copy jar file
+#      run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
       
     - name: List directory
       run: ls -R
