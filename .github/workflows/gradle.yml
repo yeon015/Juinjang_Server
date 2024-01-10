@@ -38,39 +38,33 @@ jobs:
           ${{ runner.os }}-gradle-
           
 
-#    # create application-prod.properties
-#    - name: make application-prod.properties
-#      if: contains(github.ref, 'main')
-#      run: |
-#          cd ./src/main
-#          mkdir resources
-#          cd ./resources
-#
-#          touch ./application.properties
-#          echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
-#      shell: bash
-
-## try~~~~
-      # create application-aws.properties
-    - name: Make application.properties
-      if: contains(github.ref, 'master')
+    # create application-prod.properties
+    - name: make application-prod.properties
+      if: contains(github.ref, 'main')
       run: |
-        cd ./src/main/resources
-        rm ./application.properties
+          cd ./src/main
+          mkdir resources
+          cd ./resources
 
-        ls -al
-        touch ./application.properties
-
-        echo "copy properties"
-        echo "${{ secrets.MYSQL_DATABASE_PROPERTIES }}" >> ./application.properties
+          touch ./application.properties
+          echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
 
-
-
-
-
-
-
+#
+### try~~~~
+#      # create application-aws.properties
+#    - name: Make application.properties
+#      if: contains(github.ref, 'master')
+#      run: |
+#        cd ./src/main/resources
+#        rm ./application.properties
+#
+#        ls -al
+#        touch ./application.properties
+#
+#        echo "copy properties"
+#        echo "${{ secrets.MYSQL_DATABASE_PROPERTIES }}" >> ./application.properties
+#      shell: bash
 
       ## gradle build
     - name: Build with Gradle
@@ -87,9 +81,9 @@ jobs:
       run: |
         pwd
 
-#    # ## copy jar file
-#    - name: Copy jar file
-#      run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
+    # ## copy jar file
+    - name: Copy jar file
+      run: cp build/libs/*-0.0.1-SNAPSHOT.jar app.jar
       
     - name: List directory
       run: ls -R
@@ -103,8 +97,7 @@ jobs:
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
     - name: Docker build
       run: |
-#        docker build -t ${{ secrets.DOCKER_REPO }} -f Dockerfile .
-        docker build -t ${{ secrets.DOCKER_REPO }} .
+        docker build -t ${{ secrets.DOCKER_REPO }} -f Dockerfile .
     - name: List directory
       run: ls -R
     - name: Docker push
