@@ -26,6 +26,7 @@ FROM openjdk:17-jdk
 #WORKDIR /home/runner/work/Spring/Spring
 
 RUN pwd
+RUN cd /home/runner/work/Spring/Spring
 
 RUN ls -R build
 EXPOSE 8080
