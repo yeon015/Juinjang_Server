@@ -104,7 +104,7 @@ jobs:
     - name: Docker build
       run: |
 #        docker build -t ${{ secrets.DOCKER_REPO }} -f Dockerfile .
-        docker build -t ${{ secrets.DOCKER_REPO }} -f .
+        docker build -t ${{ secrets.DOCKER_REPO }} .
 
     - name: List directory
       run: ls -R
