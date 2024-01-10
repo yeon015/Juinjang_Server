@@ -36,7 +36,9 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    ## create application-prod.properties
+          
+
+#    # create application-prod.properties
 #    - name: make application-prod.properties
 #      if: contains(github.ref, 'main')
 #      run: |
@@ -48,8 +50,29 @@ jobs:
 #          echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
 #      shell: bash
 
+## try~~~~
+      # create application-aws.properties
+    - name: Make application.properties
+      if: contains(github.ref, 'master')
+      run: |
+        cd ./src/main/resources
+        rm ./application.properties
 
-    ## gradle build
+        ls -al
+        touch ./application.properties
+
+        echo "copy properties"
+        echo "${{ secrets.MYSQL_DATABASE_PROPERTIES }}" >> ./application.properties
+      shell: bash
+
+
+
+
+
+
+
+
+      ## gradle build
     - name: Build with Gradle
       run: |
        chmod +x gradlew
