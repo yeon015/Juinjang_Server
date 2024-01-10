@@ -82,6 +82,9 @@ jobs:
     - name: Check build directory
       run: |
         ls -R build
+
+    - name: CHECK THIS directory
+      run: |
         pwd
 
     # ## copy jar file
