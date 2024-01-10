@@ -11,8 +11,14 @@
 
 ## Dockerfile-prod
 ##########
-FROM openjdk:17-jdk
-#EXPOSE 8080
+FROM openjdk:17-jdk as builder
+WORKDIR /build
+EXPOSE 8080
+
+# 빌더 이미지에서 애플리케이션 빌드
+COPY . /build
+RUN gradle build -x test --parallel
+
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
