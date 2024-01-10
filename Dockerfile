@@ -27,7 +27,7 @@ FROM openjdk:17-jdk
 
 RUN pwd
 
-RUN ls -R
+RUN ls -R build
 EXPOSE 8080
 ARG JAR_FILE=build/libs/*.jar
 COPY build/libs/*.jar app.jar

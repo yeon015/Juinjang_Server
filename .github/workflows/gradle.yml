@@ -50,22 +50,6 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
 
-#
-### try~~~~
-#      # create application-aws.properties
-#    - name: Make application.properties
-#      if: contains(github.ref, 'master')
-#      run: |
-#        cd ./src/main/resources
-#        rm ./application.properties
-#
-#        ls -al
-#        touch ./application.properties
-#
-#        echo "copy properties"
-#        echo "${{ secrets.MYSQL_DATABASE_PROPERTIES }}" >> ./application.properties
-#      shell: bash
-
       ## gradle build
     - name: Build with Gradle
       run: |
