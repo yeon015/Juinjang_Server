@@ -28,8 +28,9 @@ FROM openjdk:17-jdk
 
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
+RUN pwd
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "./*.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
