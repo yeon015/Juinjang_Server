@@ -27,7 +27,8 @@ FROM openjdk:17-jdk
 #RUN ls -R build
 
 ARG JAR_FILE=build/libs/*.jar
-COPY build/libs/*.jar app.jar
+# COPY build/libs/*.jar app.jar
+COPY ./*.jar /var/lib/docker/app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
