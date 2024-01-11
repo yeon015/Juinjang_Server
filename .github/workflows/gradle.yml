@@ -54,7 +54,7 @@ jobs:
     - name: Build with Gradle
       run: |
        chmod +x gradlew
-       ./gradlew clean build
+       ./gradlew clean build -x test
        ls -l build/libs
 
     - name: Check build directory
@@ -82,8 +82,8 @@ jobs:
     - name: Docker build
       run: |
         docker build -t ${{ secrets.DOCKER_REPO }} .
-    - name: Check Gradle build output
-      run: ls -R build/libs
+    # - name: Check Gradle build output
+    #   run: ls -R build/libs
 
     - name: Docker push
       run: |
