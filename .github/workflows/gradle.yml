@@ -82,8 +82,9 @@ jobs:
     - name: Docker build
       run: |
         docker build -t ${{ secrets.DOCKER_REPO }} .
-    - name: List directory
-      run: ls -R
+    - name: Check Gradle build output
+      run: ls -R build/libs
+
     - name: Docker push
       run: |
         docker push ${{ secrets.DOCKER_REPO }}
