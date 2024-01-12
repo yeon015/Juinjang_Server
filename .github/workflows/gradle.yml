@@ -94,7 +94,7 @@ jobs:
       id: deploy-prod
       if: contains(github.ref, 'main')
       with:
-        host: ${{ secrets.EC2_HOST_PROD }}
+        host: ${{ secrets.HOST_PROD }}
         username: ubuntu
         key: ${{ secrets.PRIVATE_KEY }}
         envs: GITHUB_SHA
