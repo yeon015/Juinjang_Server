@@ -26,7 +26,7 @@ FROM openjdk:17-jdk
 #RUN pwd
 
 ARG JAR_FILE=./build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY --chown=appuser:appuser target/**.jar /home/appuser/app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
