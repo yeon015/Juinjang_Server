@@ -100,10 +100,11 @@ jobs:
         port: 22
         envs: GITHUB_SHA
         script: |
-            sudo docker rm $(sudo docker ps -aq)
-            sudo docker pull ${{ secrets.DOCKER_REPO }}
-            docker-compose up -d
-            docker image prune -f
+           sudo docker stop ${{ secrets.DOCKER_REPO }} || true
+           sudo docker rm ${{ secrets.DOCKER_REPO }} || true
+           sudo docker pull ${{ secrets.DOCKER_REPO }}
+           docker-compose up -d
+           docker image prune -f
   ## time
   current-time:
     needs: CI-CD
