@@ -36,7 +36,13 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-          
+
+      ## gradle build
+    - name: Build with Gradle
+      run: |
+       chmod +x gradlew
+       ./gradlew build -x test
+      shell: bash
 
     # create application-prod.properties
     - name: make application-prod.properties
@@ -49,14 +55,7 @@ jobs:
           touch ./application.properties
           echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
-
-      ## gradle build
-    - name: Build with Gradle
-      run: |
-       chmod +x gradlew
-       ./gradlew clean build -x test
-      shell: bash
-
+      
     - name: Check build directory
       run: |
         ls -R build
@@ -90,7 +89,7 @@ jobs:
         docker push ${{ secrets.DOCKER_REPO }}
     ## deploy to production
     - name: Deploy to prod
-      uses: appleboy/ssh-action@v0.1.9
+      uses: appleboy/ssh-action@master
       id: deploy-prod
       if: contains(github.ref, 'main')
       with:
