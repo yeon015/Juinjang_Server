@@ -24,11 +24,11 @@
 FROM openjdk:17-jdk
 
 #RUN pwd
-#RUN ls -R build
+
 
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
-RUN pwd
+RUN ls -R /build
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
