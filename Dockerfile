@@ -27,7 +27,7 @@ FROM openjdk:17-jdk
 
 WORKDIR /usr/app
 ARG JAR_FILE=build/libs/*.jar
-COPY ${JAR_FILE} app.jar
+COPY ./*.jar app.jar
 ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
 
 # FROM openjdk:17-jdk
