@@ -30,7 +30,7 @@ FROM openjdk:17-jdk
 # COPY ${JAR_FILE} app.jar
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-WORKDIR /usr/app
+WORKDIR /home/ubuntu/app
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
 ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
