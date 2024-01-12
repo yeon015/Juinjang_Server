@@ -55,7 +55,7 @@ jobs:
       run: |
        chmod +x gradlew
        ./gradlew clean build -x test
-       ls -l build/libs
+      shell: bash
 
     - name: Check build directory
       run: |
