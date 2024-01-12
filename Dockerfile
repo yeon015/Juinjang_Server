@@ -28,7 +28,7 @@ FROM openjdk:17-jdk
 
 ARG JAR_FILE=build/libs/*.jar
 COPY ./*.jar app.jar
-RUN ls -R /build
+#RUN ls -R /build
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
