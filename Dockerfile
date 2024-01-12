@@ -27,10 +27,7 @@ FROM openjdk:17-jdk
 
 
 ARG JAR_FILE=/build/libs/*.jar
-#COPY ./*.jar app.jar
-COPY ${JAR_FILE} app.jar
-#COPY /build/libs/*.jar app.jar
-#RUN ls -R /build
+COPY ./*.jar app.jar
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
