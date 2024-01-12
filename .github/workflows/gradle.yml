@@ -94,16 +94,15 @@ jobs:
       id: deploy-prod
       if: contains(github.ref, 'main')
       with:
-          host: ${{ secrets.HOST_PROD }}
-          username: ubuntu
-          key: ${{ secrets.PRIVATE_KEY }}
-          envs: GITHUB_SHA
-          script: |
-            sudo docker stop $(sudo docker ps -a -q)
+        host: ${{ secrets.EC2_HOST_PROD }}
+        username: ubuntu
+        key: ${{ secrets.PRIVATE_KEY }}
+        envs: GITHUB_SHA
+        script: |
             sudo docker rm $(sudo docker ps -a -q)
-            sudo docker image rm ${{ secrets.DOCKER_REPO }}
             sudo docker pull ${{ secrets.DOCKER_REPO }}
-            sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO }}
+            docker-compose up -d
+            docker image prune -f
   ## time
   current-time:
     needs: CI-CD
