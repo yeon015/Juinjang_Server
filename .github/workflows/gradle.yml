@@ -49,12 +49,16 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
       
-      ## gradle build
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+        
     - name: Build with Gradle
-      run: |
-       chmod +x gradlew
-       ./gradlew build -x test
+      run: ./gradlew build -x test
       shell: bash
+      
+    - name: Build With Gradle
+      if: contains(github.ref, 'main')
+      run: ./gradlew build -x test
 
     - name: Check build directory
       run: |
@@ -75,11 +79,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      with:
-       version: v0.7.0
-       
     - name: Docker login
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
