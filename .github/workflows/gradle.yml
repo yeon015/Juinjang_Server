@@ -37,14 +37,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-      ## gradle build
-    - name: Build with Gradle
-      run: |
-       chmod +x gradlew
-       ./gradlew build -x test
-      shell: bash
-
-    # create application-prod.properties
+ # create application-prod.properties
     - name: make application-prod.properties
       if: contains(github.ref, 'main')
       run: |
@@ -56,6 +49,13 @@ jobs:
           echo "${{ secrets.PROPERTIES_PROD }}" >> ./application.properties
       shell: bash
       
+      ## gradle build
+    - name: Build with Gradle
+      run: |
+       chmod +x gradlew
+       ./gradlew build -x test
+      shell: bash
+
     - name: Check build directory
       run: |
         ls -R build
