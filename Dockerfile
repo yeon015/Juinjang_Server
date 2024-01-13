@@ -38,14 +38,15 @@ FROM openjdk:17-jdk
 
 FROM openjdk:17-jdk
 
-ARG JAR_FILE=build/libs/app.jar
+ARG JAR_FILE=build/libs/*.jar
 
 RUN pwd && ls -l
-COPY ./*.jar /app/app.jar
+# COPY ./*.jar /app/app.jar
+ADD ${JAR_FILE} app.jar
 
 # Set executable permissions
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
