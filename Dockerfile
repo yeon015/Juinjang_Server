@@ -42,7 +42,7 @@ ARG JAR_FILE=build/libs/*.jar
 
 RUN pwd && ls -l
 # COPY ./*.jar /app/app.jar
-ADD ${JAR_FILE} app.jar
+ADD ./*.jar app.jar
 
 # Set executable permissions
 
