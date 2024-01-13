@@ -30,10 +30,22 @@ FROM openjdk:17-jdk
 # COPY ${JAR_FILE} app.jar
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-ARG JAR_FILE=build/libs/*.jar
+# ARG JAR_FILE=build/libs/*.jar
+# RUN pwd && ls -l
+# COPY ./*.jar app.jar
+# ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+
+FROM openjdk:17-jdk
+
+ARG JAR_FILE=build/libs/app.jar
+
 RUN pwd && ls -l
-COPY ./*.jar app.jar
-# ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
+COPY ./*.jar /app.jar
+
+# Set executable permissions
+RUN chmod +rx /app.jar
+
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
