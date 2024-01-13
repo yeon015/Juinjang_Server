@@ -111,7 +111,7 @@ jobs:
           fi
     
           sudo docker pull ${{ secrets.DOCKER_REPO }}
-          sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_REPO }}
+          docker-compose up -d
           docker image prune -f
   ## time
   current-time:
