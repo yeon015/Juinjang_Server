@@ -41,11 +41,11 @@ FROM openjdk:17-jdk
 ARG JAR_FILE=build/libs/app.jar
 
 RUN pwd && ls -l
-COPY ./*.jar /app.jar
+COPY ./*.jar app.jar
 
 # Set executable permissions
 
-# ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
