@@ -111,6 +111,7 @@ jobs:
           fi
     
           sudo docker pull ${{ secrets.DOCKER_REPO }}
+          cd /home/ubuntu
           docker-compose up -d
           docker image prune -f
   ## time
