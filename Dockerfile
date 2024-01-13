@@ -44,9 +44,8 @@ RUN pwd && ls -l
 COPY ./*.jar /app.jar
 
 # Set executable permissions
-RUN chmod +rx /app.jar
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
