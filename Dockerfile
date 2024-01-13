@@ -30,10 +30,11 @@ FROM openjdk:17-jdk
 # COPY ${JAR_FILE} app.jar
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
-WORKDIR /home/ubuntu/app
 ARG JAR_FILE=build/libs/*.jar
-COPY ./*.jar app.jar
-ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
+COPY ./*.jar /app/app.jar
+# ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
 # FROM openjdk:17-jdk
 # WORKDIR /app
 # ARG JAR_FILE=build/libs/*.jar
