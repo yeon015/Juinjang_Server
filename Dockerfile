@@ -31,7 +31,7 @@ FROM openjdk:17-jdk
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 ARG JAR_FILE=build/libs/*.jar
-COPY ./*.jar /app/app.jar
+COPY *.jar /app/app.jar
 # ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
