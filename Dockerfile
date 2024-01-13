@@ -31,7 +31,7 @@ FROM openjdk:17-jdk
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 ARG JAR_FILE=build/libs/*.jar
-RUN pwd
+RUN pwd && ls -l
 COPY ./*.jar app.jar
 # ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
 ENTRYPOINT ["java", "-jar", "/app.jar"]
