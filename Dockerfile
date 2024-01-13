@@ -31,9 +31,9 @@ FROM openjdk:17-jdk
 # ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 ARG JAR_FILE=build/libs/*.jar
-COPY ./build/libs/juinjang-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY ./juinjang-0.0.1-SNAPSHO.jar /var/lib/docker/tmp/buildkit-mount3096344381/app/app.jar
 # ENTRYPOINT ["java", "-jar", "-Xms2048M", "-Xmx2048M", "/app.jar"]
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/var/lib/docker/tmp/buildkit-mount3096344381/app/app.jar"]
 
 # FROM openjdk:17-jdk
 # WORKDIR /app
