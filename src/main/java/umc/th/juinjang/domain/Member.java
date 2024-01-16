@@ -1,20 +1,16 @@
 package umc.th.juinjang.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.th.juinjang.domain.common.BaseEntity;
-import umc.th.juinjang.domain.enums.Provider;
+import umc.th.juinjang.domain.enums.MemberProvider;
 
 @Entity
 @Getter
@@ -24,6 +20,7 @@ import umc.th.juinjang.domain.enums.Provider;
 public class Member extends BaseEntity {
 
   @Id
+  @Column(name="member_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long memberId;
 
@@ -35,11 +32,14 @@ public class Member extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private Provider provider;
+  private MemberProvider provider;
 
   @Column(nullable = false)
   private String refreshToken;
 
   @Column(nullable = false)
   private LocalDateTime refreshTokenExpiresAt;
+
+  @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
+  private List<Limjang> limjangList = new ArrayList<>();
 }
