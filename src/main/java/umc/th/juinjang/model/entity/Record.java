@@ -1,4 +1,4 @@
-package umc.th.juinjang.domain;
+package umc.th.juinjang.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,14 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import java.util.Random;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.th.juinjang.domain.common.BaseEntity;
+import umc.th.juinjang.model.entity.common.BaseEntity;
 
 @Entity
 @Getter

@@ -1,4 +1,4 @@
-package umc.th.juinjang.domain.enums;
+package umc.th.juinjang.model.entity.enums;
 
 // 매물유형
 public enum LimjangPropertyType {

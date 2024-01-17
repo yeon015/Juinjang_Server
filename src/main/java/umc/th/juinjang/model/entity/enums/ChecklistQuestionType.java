@@ -1,4 +1,4 @@
-package umc.th.juinjang.domain.enums;
+package umc.th.juinjang.model.entity.enums;
 
 public enum ChecklistQuestionType {
 

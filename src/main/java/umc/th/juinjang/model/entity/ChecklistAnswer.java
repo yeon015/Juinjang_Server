@@ -1,6 +1,5 @@
-package umc.th.juinjang.domain;
+package umc.th.juinjang.model.entity;
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.th.juinjang.domain.common.BaseEntity;
+import umc.th.juinjang.model.entity.common.BaseEntity;
 
 @Entity
 @Getter
