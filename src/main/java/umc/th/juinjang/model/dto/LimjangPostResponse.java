@@ -11,7 +11,7 @@ public class LimjangPostResponse {
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class TempTestDTO{
-    String testString;
+  public static class PostResulttDTO{
+    Long limjangId;
   }
 }
