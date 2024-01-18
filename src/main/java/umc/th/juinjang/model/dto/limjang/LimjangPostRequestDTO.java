@@ -1,13 +1,10 @@
 package umc.th.juinjang.model.dto.limjang;
 
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
-public class LimjangPostRequest {
+public class LimjangPostRequestDTO {
 
   @Getter
   public static class PostDto {
