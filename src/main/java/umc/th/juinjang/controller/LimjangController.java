@@ -36,8 +36,7 @@ public class LimjangController {
       throw new LimjangHandler(ErrorStatus.LIMJANG_POST_REQUEST_NULL);
     }
 
-    return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto)
-        .getLimjangId()));
+    return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto)));
   }
 
 

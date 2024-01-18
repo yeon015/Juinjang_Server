@@ -24,9 +24,10 @@ public class LimjangPostConverter {
   }
 
   // 응답
-  public static LimjangPostResponseDTO.PostDTO toPostDTO(Long limjangId){
+  public static LimjangPostResponseDTO.PostDTO toPostDTO(Limjang limjang){
     return PostDTO.builder()
-        .limjangId(limjangId)
+        .limjangId(limjang.getLimjangId())
+        .createdAt(limjang.getCreatedAt())
         .build();
   }
 

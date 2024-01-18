@@ -1,6 +1,6 @@
 package umc.th.juinjang.model.dto.limjang;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import java.util.List;
 import lombok.Getter;
 
@@ -18,16 +18,16 @@ public class LimjangPostRequestDTO {
     @NotNull
     private int priceType;
 
-    @NotNull
+    @NotBlank
     private List<String> price;
 
-    @NotNull
+    @NotBlank
     private String address;
 
-    @NotNull
+    @NotBlank
     private String addressDetail;
 
-    @NotNull
+    @NotBlank
     private String nickname;
   }
 }
