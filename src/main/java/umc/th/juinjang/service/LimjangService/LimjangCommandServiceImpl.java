@@ -48,8 +48,8 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
       limjang.postLimjang(findMember, limjangPrice);
 
       return limjangRepository.save(limjang);
-    } catch (NullPointerException e) {
-      log.warn("NullPointerException");
+    } catch (IllegalArgumentException e) {
+      log.warn("IllegalArgumentException");
     }
     return null;
   }
