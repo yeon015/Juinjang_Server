@@ -1,4 +1,4 @@
-package umc.th.juinjang.model.dto;
+package umc.th.juinjang.model.dto.limjang;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;

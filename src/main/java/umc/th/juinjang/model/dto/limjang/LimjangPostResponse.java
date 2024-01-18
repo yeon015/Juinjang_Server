@@ -1,4 +1,4 @@
-package umc.th.juinjang.model.dto;
+package umc.th.juinjang.model.dto.limjang;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,16 @@ public class LimjangPostResponse {
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class PostResulttDTO{
+  public static class PostDTO {
     Long limjangId;
   }
+
+  @Builder
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class PostExceptionDTO {
+    Integer flag;
+  }
+
 }
