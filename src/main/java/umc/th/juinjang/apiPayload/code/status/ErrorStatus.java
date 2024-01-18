@@ -19,10 +19,12 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Member Error
 
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다.");
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
 
-
-
+    // Limjang Error
+    LIMJANG_POST_REQUEST_NULL(HttpStatus.BAD_REQUEST, "LIMJANG400", "입력 값이 모두 넘어오지 않았습니다. 누락된 값이 있는지 다시 확인해주세요."),
+    LIMJANG_POST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG400", "거래목적, 매물유형, 가격유형 입력값 중 하나가 정해지지 않은 값입니다. 다시 확인해주세요."),
+    LIMJANG_POST_PRICE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG400", "전달된 가격이 잘못되었습니다. 입력값을 확인해주세요.");
 
     private final HttpStatus httpStatus;
     private final String code;
