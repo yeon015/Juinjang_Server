@@ -20,7 +20,6 @@ import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
-import umc.th.juinjang.utils.ValidationUtils;
 
 @RestController
 @RequestMapping("/api/limjang")

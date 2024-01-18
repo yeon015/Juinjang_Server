@@ -79,6 +79,8 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
         case 2 : // 월세 : 0, 보증금 : 1 이 경우 배열 길이는 무조건 2여야만 함.
           return LimjangPrice.builder().depositPrice(priceList.get(0))
               .monthlyRent(request.getPrice().get(1)).build();
+        case 3 :
+          return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
       }
     }
     return null;
