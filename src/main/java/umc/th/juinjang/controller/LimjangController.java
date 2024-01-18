@@ -1,7 +1,9 @@
 package umc.th.juinjang.controller;
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
@@ -18,6 +20,7 @@ import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
+import umc.th.juinjang.utils.ValidationUtils;
 
 @RestController
 @RequestMapping("/api/limjang")
@@ -31,10 +34,7 @@ public class LimjangController {
   @Operation(summary = "임장 생성 API")
   @PostMapping("")
   public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(
-      @RequestBody @Valid LimjangPostRequestDTO.PostDto postDto, Errors errors){
-    if (errors.hasErrors()){
-      throw new LimjangHandler(ErrorStatus.LIMJANG_POST_REQUEST_NULL);
-    }
+      @RequestBody @Valid LimjangPostRequestDTO.PostDto postDto){
 
     return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto)));
   }

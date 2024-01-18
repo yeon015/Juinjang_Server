@@ -18,7 +18,7 @@ public class LimjangPostRequestDTO {
     @NotNull
     private int priceType;
 
-    @NotBlank
+    @NotEmpty
     private List<String> price;
 
     @NotBlank
