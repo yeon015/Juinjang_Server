@@ -1,4 +1,4 @@
-package umc.th.juinjang.domain.common;
+package umc.th.juinjang.model.entity.common;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
