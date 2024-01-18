@@ -13,13 +13,13 @@ public class LimjangPostRequest {
   public static class PostDto {
 
     @NotNull
-    private Integer purpose;
+    private int purpose;
 
     @NotNull
-    private Integer propertyType;
+    private int propertyType;
 
     @NotNull
-    private Integer priceType;
+    private int priceType;
 
     @NotNull
     private List<String> price;
