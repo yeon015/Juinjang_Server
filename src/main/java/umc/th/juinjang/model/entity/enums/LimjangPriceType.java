@@ -7,7 +7,7 @@ public enum LimjangPriceType {
   MONTHLY_RENT(1), //월세
   PULL_RENT(2), // 전세
 
-  MARKET_PRICE(4); // 실거래가
+  MARKET_PRICE(3); // 실거래가
 
 
   private final int value;
