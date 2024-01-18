@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.Limjang;
@@ -30,22 +32,21 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
     // 임장에 회원 정보 넣는 로직
     // 임시로 아무거나 넣게함
-    Optional<Member> findMember = memberRepository.findById(1L);
-
-    // 넣기.. 멤버 id
-
+    Member findMember = memberRepository.findById(1L)
+        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 임장 가격 테이블에 가격 저장
     try {
+
       LimjangPrice limjangPrice = determineLimjangPrice(request);
       limjangPriceRepository.save(limjangPrice);
-      limjang.postLimjang(findMember.orElseThrow(), limjangPrice);
+
+      limjang.postLimjang(findMember, limjangPrice);
+
       limjangRepository.save(limjang);
     } catch (NullPointerException e) {
       log.warn("price가 NULL");
     }
-
-
     return null;
   }
 
