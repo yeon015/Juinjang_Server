@@ -54,7 +54,7 @@ public class Limjang extends BaseEntity {
 
   // 매물 유형
   @Enumerated(EnumType.STRING)
-  private LimjangPropertyType type;
+  private LimjangPropertyType propertyType;
 
   // 가격 유형
   @Enumerated(EnumType.STRING)
