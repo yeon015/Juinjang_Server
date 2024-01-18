@@ -1,6 +1,9 @@
 package umc.th.juinjang.model.entity.enums;
 
 import java.util.Arrays;
+import umc.th.juinjang.apiPayload.code.BaseErrorCode;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 
 // 매물유형
 public enum LimjangPropertyType {
@@ -24,6 +27,6 @@ public enum LimjangPropertyType {
     return Arrays.stream(LimjangPropertyType.values())
         .filter(it -> it.value == inputValue)
         .findAny()
-        .orElseThrow(() -> new IllegalArgumentException("해당 입력값은 잘못되었습니다.."));
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_POST_TYPE_ERROR));
   }
 }

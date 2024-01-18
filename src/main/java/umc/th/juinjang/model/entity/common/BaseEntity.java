@@ -12,7 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@Builder
 public abstract class BaseEntity {
 
   @CreatedDate
