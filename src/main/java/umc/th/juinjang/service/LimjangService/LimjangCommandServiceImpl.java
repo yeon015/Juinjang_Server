@@ -1,13 +1,11 @@
 package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
@@ -31,7 +29,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Transactional
   public Limjang postLimjang(PostDto request) {
 
-    Limjang limjang = LimjangPostConverter.toEntity(request);
+    Limjang limjang = LimjangPostConverter.toLimjang(request);
 
     // 임장에 회원 정보 넣는 로직
     // 임시로 아무거나 넣게함
@@ -58,19 +56,12 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   public LimjangPrice determineLimjangPrice(PostDto request){
 
     List<String> priceList = request.getPrice();
-    int purpose = request.getPurpose();
-    int priceType = request.getPriceType();
-
-    // 월세의 경우 가격 배열길이 2여야만 함. 나머지는 1
-    if ((priceType == 2 && priceList.size() != 2) || (priceType != 2 && priceList.size() != 1)) {
-      throw new LimjangHandler(ErrorStatus.LIMJANG_POST_PRICE_ERROR);
-    }
+    Integer purpose = request.getPurposeType();
+    Integer priceType = request.getPriceType();
 
     if (purpose == 0){ // 부동산 투자 목적 -> 실거래가
-
       return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
     } else if (purpose == 1){ // 직접 거래 목적
-
       switch (priceType){
         case 0 : // 매매
           return LimjangPrice.builder().sellingPrice(priceList.get(0)).build();
@@ -78,7 +69,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
           return LimjangPrice.builder().pullRent(priceList.get(0)).build();
         case 2 : // 월세 : 0, 보증금 : 1 이 경우 배열 길이는 무조건 2여야만 함.
           return LimjangPrice.builder().depositPrice(priceList.get(0))
-              .monthlyRent(request.getPrice().get(1)).build();
+              .monthlyRent(priceList.get(1)).build();
         case 3 :
           return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
       }

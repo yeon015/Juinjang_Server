@@ -3,6 +3,7 @@ package umc.th.juinjang.model.dto.limjang;
 import jakarta.validation.constraints.*;
 import java.util.List;
 import lombok.Getter;
+import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 public class LimjangPostRequestDTO {
 
@@ -10,15 +11,15 @@ public class LimjangPostRequestDTO {
   public static class PostDto {
 
     @NotNull
-    private int purpose;
+    private Integer purposeType;
 
     @NotNull
-    private int propertyType;
+    private Integer propertyType;
 
     @NotNull
-    private int priceType;
+    private Integer priceType;
 
-    @NotEmpty
+    @VaildPriceListSize(minSize = 1, maxSize = 2)
     private List<String> price;
 
     @NotBlank
@@ -30,4 +31,5 @@ public class LimjangPostRequestDTO {
     @NotBlank
     private String nickname;
   }
+
 }
