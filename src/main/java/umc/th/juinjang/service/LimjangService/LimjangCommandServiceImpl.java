@@ -1,5 +1,7 @@
 package umc.th.juinjang.service.LimjangService;
 
+import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,6 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   public Limjang postLimjang(PostDto request) {
 
     Limjang limjang = LimjangPostConverter.toLimjang(request);
-
     // 임장에 회원 정보 넣는 로직
     // 임시로 아무거나 넣게함
     Member findMember = memberRepository.findById(1L)
@@ -39,8 +40,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     // 임장 가격 테이블에 가격 저장 후 입장에 member, limjangprice추가
     // 임장 테이블에 저장.
     try {
+      List<String> priceList = request.getPrice();
+      Integer purpose = request.getPurposeType();
+      Integer priceType = request.getPriceType();
 
-      LimjangPrice limjangPrice = determineLimjangPrice(request);
+      LimjangPrice limjangPrice = determineLimjangPrice(priceList, purpose, priceType);
       limjangPriceRepository.save(limjangPrice);
 
       limjang.postLimjang(findMember, limjangPrice);
@@ -48,31 +52,6 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
       return limjangRepository.save(limjang);
     } catch (IllegalArgumentException e) {
       log.warn("IllegalArgumentException");
-    }
-    return null;
-  }
-
-
-  public LimjangPrice determineLimjangPrice(PostDto request){
-
-    List<String> priceList = request.getPrice();
-    Integer purpose = request.getPurposeType();
-    Integer priceType = request.getPriceType();
-
-    if (purpose == 0){ // 부동산 투자 목적 -> 실거래가
-      return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
-    } else if (purpose == 1){ // 직접 거래 목적
-      switch (priceType){
-        case 0 : // 매매
-          return LimjangPrice.builder().sellingPrice(priceList.get(0)).build();
-        case 1 :// 전세
-          return LimjangPrice.builder().pullRent(priceList.get(0)).build();
-        case 2 : // 월세 : 0, 보증금 : 1 이 경우 배열 길이는 무조건 2여야만 함.
-          return LimjangPrice.builder().depositPrice(priceList.get(0))
-              .monthlyRent(priceList.get(1)).build();
-        case 3 :
-          return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
-      }
     }
     return null;
   }
