@@ -41,13 +41,13 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     // 스크랩 된 게시글
     List<LimjangTotalListResponseDTO.ListDto> scrapdList = findAllLimjangList.stream()
         .filter(limjang -> limjang.getScrap() != null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId()))
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
             .toList();
 
     // 스크랩 안 된 리스트
     List<LimjangTotalListResponseDTO.ListDto> unScrapdList = findAllLimjangList.stream()
         .filter(limjang -> limjang.getScrap() == null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId()))
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
         .toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(scrapdList, unScrapdList);

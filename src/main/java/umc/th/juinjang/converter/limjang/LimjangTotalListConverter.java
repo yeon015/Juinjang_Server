@@ -4,6 +4,7 @@ import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
 
 import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.List;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Image;
@@ -29,10 +30,12 @@ public class LimjangTotalListConverter {
   }
 
   public static LimjangTotalListResponseDTO.ListDto toLimjangList(
-      Limjang limjang, LimjangPrice limjangPrice) {
+      Limjang limjang, LimjangPrice limjangPrice, int limitImageListSize) {
     
     List<String> urlList = limjang.getImageList().stream()
+        .sorted(Comparator.comparing(Image::getCreatedAt)) // createdAt 기준으로 정렬
         .map(Image::getImageUrl)
+        .limit(limitImageListSize)
         .toList();
 
     Integer purposeType = limjang.getPurpose().getValue();
