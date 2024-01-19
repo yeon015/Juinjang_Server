@@ -3,6 +3,7 @@ package umc.th.juinjang.converter.limjang;
 import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Image;
@@ -15,7 +16,7 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 public class LimjangTotalListConverter {
 
   private static LimjangPriceType lim;
-  LimjangTotalListResponseDTO.ListDto
+
   public static LimjangTotalListResponseDTO.TotalListDto toLimjangTotalList(
       List<LimjangTotalListResponseDTO.ListDto> scrapedList,
       List<LimjangTotalListResponseDTO.ListDto> notScrapedList
@@ -46,7 +47,8 @@ public class LimjangTotalListConverter {
         .nickname(limjang.getNickname())
         .priceType(priceType)
         .priceList(priceList)
-        .totalAverage(limjang.getReport().getTotalRate())
+        .totalAverage(String.format("%.1f", 4.0f))
+//        .totalAverage(limjang.getReport().getTotalRate())
         .address(limjang.getAddress())
         .createdAt(limjang.getCreatedAt())
         .updatedAt(limjang.getUpdatedAt())
