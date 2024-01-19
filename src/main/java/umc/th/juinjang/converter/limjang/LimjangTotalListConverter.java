@@ -16,8 +16,6 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 
 public class LimjangTotalListConverter {
 
-  private static LimjangPriceType lim;
-
   public static LimjangTotalListResponseDTO.TotalListDto toLimjangTotalList(
       List<LimjangTotalListResponseDTO.ListDto> scrapedList,
       List<LimjangTotalListResponseDTO.ListDto> notScrapedList
@@ -41,8 +39,6 @@ public class LimjangTotalListConverter {
     Integer purposeType = limjang.getPurpose().getValue();
     Integer priceType = limjang.getPriceType().getValue();
     List<String> priceList = makePriceList(priceType, purposeType,limjangPrice);
-
-    determineLimjangPrice(priceList, purposeType, priceType);
 
     return LimjangTotalListResponseDTO.ListDto.builder()
         .limjangId(limjang.getLimjangId())
