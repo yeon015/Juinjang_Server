@@ -32,7 +32,7 @@ public class ScrapController {
   @CrossOrigin
   @Operation(summary = "스크랩 등록/삭제 API")
   @PostMapping("/{limjangId}")
-  public ApiResponse<PostDTO> postLimjang(
+  public ApiResponse postLimjang(
       @PathVariable(name = "limjangId") @Valid Long limjangId){
 
     ScrapActionType scrapActionType = scrapCommandService.actionScrap(limjangId);
