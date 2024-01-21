@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionCategory;
+import umc.th.juinjang.model.entity.enums.ChecklistQuestionType;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionVersion;
 
 @Entity
@@ -33,13 +34,16 @@ public class ChecklistQuestion extends BaseEntity {
   @Column(nullable = false)
   private ChecklistQuestionCategory category;
 
+  @Column(nullable = false)
+  private String subCategory;
+
   private String question;
 
   @Column(nullable = false)
   private ChecklistQuestionVersion version;
 
   @Column(nullable = false)
-  private ChecklistQuestionVersion answerType;
+  private ChecklistQuestionType answerType;
 
   @OneToMany(mappedBy = "questionId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
