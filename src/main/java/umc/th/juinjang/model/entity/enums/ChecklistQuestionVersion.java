@@ -1,5 +1,10 @@
 package umc.th.juinjang.model.entity.enums;
 
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.ChecklistHandler;
+
+import java.util.Arrays;
+
 public enum ChecklistQuestionVersion {
 
   // 원룸용 체크리스트
@@ -16,5 +21,12 @@ public enum ChecklistQuestionVersion {
   // 숫자 리턴
   public int getValue() {
     return value;
+  }
+
+  public static ChecklistQuestionVersion find(int inputValue) {
+    return Arrays.stream(ChecklistQuestionVersion.values())
+            .filter(it -> it.value == inputValue)
+            .findAny()
+            .orElseThrow(() -> new ChecklistHandler(ErrorStatus.CHECKLIST_TYPE_ERROR));
   }
 }

@@ -1,12 +1,7 @@
 package umc.th.juinjang.model.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -32,6 +27,7 @@ public class ChecklistQuestion extends BaseEntity {
   private Long questionId;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.ORDINAL)
   private ChecklistQuestionCategory category;
 
   @Column(nullable = false)
@@ -40,9 +36,11 @@ public class ChecklistQuestion extends BaseEntity {
   private String question;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.ORDINAL)
   private ChecklistQuestionVersion version;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.ORDINAL)
   private ChecklistQuestionType answerType;
 
   @OneToMany(mappedBy = "questionId", cascade = CascadeType.ALL)
