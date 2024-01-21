@@ -1,11 +1,16 @@
 package umc.th.juinjang.model.entity.enums;
 
 import java.util.Arrays;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 
 public enum LimjangPriceType {
   SALE(0), // 매매
-  MONTHLY_RENT(1), //월세
-  PULL_RENT(2); // 전세
+  PULL_RENT(1), // 전세
+  MONTHLY_RENT(2), //월세
+
+  MARKET_PRICE(3); // 실거래가
+
 
   private final int value;
 
@@ -22,6 +27,6 @@ public enum LimjangPriceType {
     return Arrays.stream(LimjangPriceType.values())
         .filter(it -> it.value == inputValue)
         .findAny()
-        .orElseThrow(() -> new IllegalArgumentException("해당 입력값은 잘못되었습니다.."));
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_POST_TYPE_ERROR));
   }
 }

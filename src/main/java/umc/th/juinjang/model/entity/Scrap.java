@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +32,9 @@ public class Scrap extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "limjang_id", referencedColumnName = "limjang_id")
   private Limjang limjangId;
+
+  public void saveScrap(Limjang limjang){
+    this.limjangId = limjang;
+  }
 
 }

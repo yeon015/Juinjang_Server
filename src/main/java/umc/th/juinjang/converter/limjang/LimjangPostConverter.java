@@ -1,8 +1,11 @@
 package umc.th.juinjang.converter.limjang;
 
-import umc.th.juinjang.model.dto.limjang.LimjangPostRequest;
-import umc.th.juinjang.model.dto.limjang.LimjangPostResponse;
-import umc.th.juinjang.model.dto.limjang.LimjangPostResponse.PostDTO;
+import java.util.List;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
+import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO.PostDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
@@ -11,12 +14,21 @@ import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 public class LimjangPostConverter {
 
   // 요청
-  public static Limjang toEntity(LimjangPostRequest.PostDto postDto) {
+  public static Limjang toLimjang(LimjangPostRequestDTO.PostDto postDto) {
+    List<String> priceList = postDto.getPrice();
+    Integer priceType = postDto.getPriceType();
+
+    // 월세의 경우 가격 배열길이 2여야만 함. 나머지는 1
+    int expectedSize = (priceType == 2) ? 2 : 1;
+
+    if (priceList.size() != expectedSize) {
+      throw new LimjangHandler(ErrorStatus.LIMJANG_POST_PRICE_ERROR);
+    }
 
     return Limjang.builder()
-        .purpose(LimjangPurpose.find(postDto.getPurpose()))
+        .purpose(LimjangPurpose.find(postDto.getPurposeType()))
         .propertyType(LimjangPropertyType.find(postDto.getPropertyType()))
-        .priceType(LimjangPriceType.find(postDto.getPriceType()))
+        .priceType(LimjangPriceType.find(priceType))
         .address(postDto.getAddress())
         .addressDetail(postDto.getAddressDetail())
         .nickname(postDto.getNickname())
@@ -24,14 +36,15 @@ public class LimjangPostConverter {
   }
 
   // 응답
-  public static LimjangPostResponse.PostDTO toPostDTO(Long limjangId){
+  public static LimjangPostResponseDTO.PostDTO toPostDTO(Limjang limjang){
     return PostDTO.builder()
-        .limjangId(limjangId)
+        .limjangId(limjang.getLimjangId())
+        .createdAt(limjang.getCreatedAt())
         .build();
   }
 
-  public static LimjangPostResponse.PostExceptionDTO toPostExceptionDTO(Integer flag){
-    return LimjangPostResponse.PostExceptionDTO.builder()
+  public static LimjangPostResponseDTO.PostExceptionDTO toPostExceptionDTO(Integer flag){
+    return LimjangPostResponseDTO.PostExceptionDTO.builder()
         .flag(flag)
         .build();
   }
