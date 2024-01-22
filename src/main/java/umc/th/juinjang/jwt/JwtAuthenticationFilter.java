@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
             logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}");
         } else {
             logger.debug("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
-            throw new ExceptionHandler(ErrorStatus.UnauthorizedException);
+            throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);
         }
 
         chain.doFilter(request, response);
