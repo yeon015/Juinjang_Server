@@ -19,8 +19,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Member Error
 
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다.");
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
 
+    //JWT 토큰 에러
+    UnauthorizedException(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다.");
 
 
 
