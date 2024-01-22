@@ -30,10 +30,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _SCRAP_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "해당 게시글이 DB에 존재하지 않습니다. 관리자에게 문의 바랍니다."),
     _SCRAP_SCRAP_FAILD(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4004", "스크랩 실패. 재시도하거나 관리자에게 문의 바랍니다."),
 
-    CHECKLIST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST400", "정해지지 않은 요청값입니다. 다시 확인해주세요.")
+    CHECKLIST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST400", "정해지지 않은 요청값입니다. 다시 확인해주세요."),
       
     //JWT 토큰 에러
-    UnauthorizedException(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다.");
+    TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다.");
 
     ;
 
