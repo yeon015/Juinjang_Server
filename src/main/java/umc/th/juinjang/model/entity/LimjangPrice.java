@@ -38,4 +38,9 @@ public class LimjangPrice extends BaseEntity {
   @OneToOne(mappedBy = "priceId")
   private Limjang limjang;
 
+  // 매매
+
+  // 월세
+
+  // 전세
 }

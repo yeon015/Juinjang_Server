@@ -1,11 +1,12 @@
 package umc.th.juinjang.model.dto.limjang;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class LimjangPostResponse {
+public class LimjangPostResponseDTO {
 
   @Builder
   @Getter
@@ -13,6 +14,7 @@ public class LimjangPostResponse {
   @AllArgsConstructor
   public static class PostDTO {
     Long limjangId;
+    LocalDateTime createdAt;
   }
 
   @Builder

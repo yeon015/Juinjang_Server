@@ -2,6 +2,8 @@ package umc.th.juinjang.model.entity.enums;
 
 import java.util.Arrays;
 import org.hibernate.sql.ComparisonRestriction.Operator;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 
 public enum LimjangPurpose {
 
@@ -23,7 +25,7 @@ public enum LimjangPurpose {
     return Arrays.stream(LimjangPurpose.values())
         .filter(it -> it.value == inputValue)
         .findAny()
-        .orElseThrow(() -> new IllegalArgumentException("해당 입력값은 잘못되었습니다.."));
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_POST_TYPE_ERROR));
   }
 
 }

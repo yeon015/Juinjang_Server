@@ -93,4 +93,9 @@ public class Limjang extends BaseEntity {
   @OneToOne(mappedBy = "limjangId")
   private Scrap scrap;
 
+  public void postLimjang(Member member, LimjangPrice limjangPrice){
+    this.priceId = limjangPrice;
+    this.memberId = member;
+  }
+
 }
