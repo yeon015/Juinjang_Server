@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtService jwtService;
 
-    //private final JwtExceptionFilter jwtExceptionFilter;
+//    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     @Order(0)
@@ -73,8 +73,8 @@ public class SecurityConfig {
                                         .frameOptions(
                                                 HeadersConfigurer.FrameOptionsConfig::sameOrigin
                                         )
-                );
-                //.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+                )
+                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
 
         return http.build();
     }
