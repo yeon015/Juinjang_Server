@@ -1,10 +1,12 @@
 package umc.th.juinjang.service.ChecklistService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.ChecklistHandler;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.converter.checklist.ChecklistAnswerConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerRequestDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
@@ -26,13 +28,18 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
     private final ChecklistQuestionRepository checklistQuestionRepository;
     private final LimjangRepository limjangRepository;
 
+    @Transactional
     public List<ChecklistAnswerResponseDTO.AnswerDto> saveChecklistAnswerList(Long limjangId, List<ChecklistAnswerRequestDTO.AnswerDto> answerDtoList) {
+        Limjang limjang = limjangRepository.findById(limjangId)
+                .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+        if (!checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang).isEmpty()) {
+            checklistAnswerRepository.deleteAllByLimjangId(limjang);
+        }
+
         List<ChecklistAnswer> answerList = answerDtoList.stream()
                 .map(dto -> {
                     ChecklistQuestion question = checklistQuestionRepository.findById(dto.getQuestionId())
                             .orElseThrow(() -> new ChecklistHandler(ErrorStatus.CHECKLIST_NOTFOUND_ERROR));
-                    Limjang limjang = limjangRepository.findById(limjangId)
-                            .orElseThrow(() -> new ChecklistHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
                     return ChecklistAnswer.builder()
                             .questionId(question)
@@ -53,4 +60,6 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
                         .build())
                 .collect(Collectors.toList());
     }
+
+
 }

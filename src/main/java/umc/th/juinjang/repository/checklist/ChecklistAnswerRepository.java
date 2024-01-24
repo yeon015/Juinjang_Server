@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ChecklistAnswerRepository extends JpaRepository<ChecklistAnswer, Long> {
     List<ChecklistAnswer> findChecklistAnswerByLimjangId(Limjang limjang);
+    void deleteAllByLimjangId(Limjang limjang);
 }
