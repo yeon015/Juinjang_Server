@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
+import umc.th.juinjang.model.dto.checklist.ChecklistAnswerRequestDTO;
+import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistQuestionDTO;
+import umc.th.juinjang.service.ChecklistService.ChecklistCommandService;
 import umc.th.juinjang.service.ChecklistService.ChecklistQueryService;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 public class ChecklistController {
 
     private final ChecklistQueryService checklistQueryService;
+    private final ChecklistCommandService checklistCommandService;
 
     @CrossOrigin
     @Operation(summary = "버전별 체크리스트 질문 조회")
@@ -25,4 +29,10 @@ public class ChecklistController {
         return ApiResponse.onSuccess(checklistQueryService.getChecklistQuestionListByVersion(version));
     }
 
+    @CrossOrigin
+    @Operation(summary = "체크리스트 답변 저장")
+    @PostMapping("/{limjangId}")
+    public ApiResponse<List<ChecklistAnswerResponseDTO.AnswerDto>> postChecklistAnswer(@PathVariable Long limjangId, @RequestBody List<ChecklistAnswerRequestDTO.AnswerDto> answerDtos){
+        return ApiResponse.onSuccess(checklistCommandService.saveChecklistAnswerList(limjangId, answerDtos));
+    }
 }
