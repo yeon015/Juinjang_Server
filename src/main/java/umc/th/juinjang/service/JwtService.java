@@ -111,7 +111,7 @@ public class JwtService {
        // UserDetails userDetails = .loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
         //memberRepository에서
         UserDetails userDetails = userDetailService.loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
-//        UserDetails userDetails =null;
+//        UserDetails userDetails =ngull;
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
