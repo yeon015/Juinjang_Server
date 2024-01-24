@@ -2,6 +2,7 @@ package umc.th.juinjang.converter.checklist;
 
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerAndReportResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
+import umc.th.juinjang.model.dto.checklist.ReportResponseDTO;
 import umc.th.juinjang.model.entity.ChecklistAnswer;
 import umc.th.juinjang.model.entity.Report;
 
@@ -19,7 +20,7 @@ public class ChecklistAnswerAndReportConverter {
                         answer.getAnswer()))
                 .collect(Collectors.toList());
 
-        ChecklistAnswerAndReportResponseDTO.ReportResponseDTO reportDto = new ChecklistAnswerAndReportResponseDTO.ReportResponseDTO(
+        ReportResponseDTO.ReportDTO reportDto = new ReportResponseDTO.ReportDTO(
                 report.getReportId(),
                 report.getIndoorKeyword(),
                 report.getPublicSpaceKeyword(),
@@ -30,6 +31,18 @@ public class ChecklistAnswerAndReportConverter {
                 report.getTotalRate());
 
         return new ChecklistAnswerAndReportResponseDTO(answerDtoList, reportDto);
+    }
+    public static ReportResponseDTO.ReportDTO toReportDto(Report report) {
+        return ReportResponseDTO.ReportDTO.builder()
+                .reportId(report.getReportId())
+                .indoorKeyWord(report.getIndoorKeyword())
+                .publicSpaceKeyWord(report.getPublicSpaceKeyword())
+                .locationConditionsWord(report.getLocationConditionsKeyword())
+                .indoorRate(report.getIndoorRate())
+                .publicSpaceRate(report.getPublicSpaceRate())
+                .locationConditionsRate(report.getLocationConditionsRate())
+                .totalRate(report.getTotalRate())
+                .build();
     }
 
 }

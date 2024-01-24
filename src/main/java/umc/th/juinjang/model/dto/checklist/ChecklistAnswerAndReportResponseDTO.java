@@ -9,20 +9,6 @@ import java.util.List;
 @Getter
 public class ChecklistAnswerAndReportResponseDTO {
     private List<ChecklistAnswerResponseDTO.AnswerDto> answerDtoList;
-    private ReportResponseDTO reportDto;
+    private ReportResponseDTO.ReportDTO reportDto;
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReportResponseDTO {
-        private Long reportId;
-        private String indoorKeyWord;
-        private String publicSpaceKeyWord;
-        private String locationConditionsWord;
-        private Float indoorRate;
-        private Float publicSpaceRate;
-        private Float locationConditionsRate;
-        private Float totalRate;
-    }
 }

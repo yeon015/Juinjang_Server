@@ -4,17 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.ChecklistHandler;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
+import umc.th.juinjang.converter.checklist.ChecklistAnswerAndReportConverter;
 import umc.th.juinjang.converter.checklist.ChecklistAnswerConverter;
 import umc.th.juinjang.converter.checklist.ChecklistQuestionConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistQuestionDTO;
+import umc.th.juinjang.model.dto.checklist.ReportResponseDTO;
 import umc.th.juinjang.model.entity.ChecklistAnswer;
 import umc.th.juinjang.model.entity.Limjang;
+import umc.th.juinjang.model.entity.Report;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionCategory;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionVersion;
 import umc.th.juinjang.repository.checklist.ChecklistAnswerRepository;
 import umc.th.juinjang.repository.checklist.ChecklistQuestionRepository;
+import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
 
@@ -30,6 +35,7 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     private final ChecklistQuestionRepository checklistQuestionRepository;
     private final ChecklistAnswerRepository checklistAnswerRepository;
     private final LimjangRepository limjangRepository;
+    private final ReportRepository reportRepository;
 
     @Override
     public List<ChecklistQuestionDTO.QuestionDto> getChecklistQuestionListByVersion(int version) {
@@ -49,5 +55,13 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                         .answer(entity.getAnswer())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public ReportResponseDTO.ReportDTO getReportByLimjangId(Long limjangId) {
+        Limjang limjang = limjangRepository.findById(limjangId)
+                .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+        Report report = reportRepository.findByLimjangId(limjang)
+                .orElseThrow(() -> new ChecklistHandler(ErrorStatus.REPORT_NOTFOUND_ERROR));
+        return ChecklistAnswerAndReportConverter.toReportDto(report);
     }
 }
