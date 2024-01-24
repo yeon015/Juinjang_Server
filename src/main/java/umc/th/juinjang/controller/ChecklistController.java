@@ -35,4 +35,12 @@ public class ChecklistController {
     public ApiResponse<List<ChecklistAnswerResponseDTO.AnswerDto>> postChecklistAnswer(@PathVariable Long limjangId, @RequestBody List<ChecklistAnswerRequestDTO.AnswerDto> answerDtos){
         return ApiResponse.onSuccess(checklistCommandService.saveChecklistAnswerList(limjangId, answerDtos));
     }
+
+    @CrossOrigin
+    @Operation(summary = "체크리스트 답변 조회")
+    @GetMapping("/{limjangId}")
+    public ApiResponse<List<ChecklistAnswerResponseDTO.AnswerDto>> getChecklistAnswer(@PathVariable Long limjangId){
+        return ApiResponse.onSuccess(checklistQueryService.getChecklistAnswerListByLimjang(limjangId));
+    }
+
 }

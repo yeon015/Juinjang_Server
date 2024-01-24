@@ -3,6 +3,8 @@ package umc.th.juinjang.service.ChecklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.ChecklistHandler;
 import umc.th.juinjang.converter.checklist.ChecklistAnswerConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerRequestDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
@@ -28,9 +30,9 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         List<ChecklistAnswer> answerList = answerDtoList.stream()
                 .map(dto -> {
                     ChecklistQuestion question = checklistQuestionRepository.findById(dto.getQuestionId())
-                            .orElseThrow(() -> new IllegalArgumentException("Question not found: " + dto.getQuestionId()));
+                            .orElseThrow(() -> new ChecklistHandler(ErrorStatus.CHECKLIST_NOTFOUND_ERROR));
                     Limjang limjang = limjangRepository.findById(limjangId)
-                            .orElseThrow(() -> new IllegalArgumentException("Limjang not found: " + limjangId));
+                            .orElseThrow(() -> new ChecklistHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
                     return ChecklistAnswer.builder()
                             .questionId(question)
