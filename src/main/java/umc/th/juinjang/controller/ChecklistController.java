@@ -5,17 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
-import umc.th.juinjang.model.dto.checklist.ChecklistAnswerAndReportResponseDTO;
-import umc.th.juinjang.model.dto.checklist.ChecklistAnswerRequestDTO;
-import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
-import umc.th.juinjang.model.dto.checklist.ChecklistQuestionDTO;
+import umc.th.juinjang.model.dto.checklist.*;
 import umc.th.juinjang.service.ChecklistService.ChecklistCommandService;
 import umc.th.juinjang.service.ChecklistService.ChecklistQueryService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/checklist")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Validated
 public class ChecklistController {
@@ -25,24 +22,30 @@ public class ChecklistController {
 
     @CrossOrigin
     @Operation(summary = "버전별 체크리스트 질문 조회")
-    @GetMapping("")
+    @GetMapping("/checklist")
     public ApiResponse<List<ChecklistQuestionDTO.QuestionDto>> getChecklistQuestion(@RequestParam Integer version){
         return ApiResponse.onSuccess(checklistQueryService.getChecklistQuestionListByVersion(version));
     }
 
     @CrossOrigin
     @Operation(summary = "체크리스트 답변 생성/수정")
-    @PostMapping("/{limjangId}")
+    @PostMapping("/checklist/{limjangId}")
     public ApiResponse<ChecklistAnswerAndReportResponseDTO> postChecklistAnswer(@PathVariable Long limjangId, @RequestBody List<ChecklistAnswerRequestDTO.AnswerDto> answerDtos){
         return ApiResponse.onSuccess(checklistCommandService.saveChecklistAnswerList(limjangId, answerDtos));
     }
 
     @CrossOrigin
     @Operation(summary = "체크리스트 답변 조회")
-    @GetMapping("/{limjangId}")
+    @GetMapping("/checklist/{limjangId}")
     public ApiResponse<List<ChecklistAnswerResponseDTO.AnswerDto>> getChecklistAnswer(@PathVariable Long limjangId){
         return ApiResponse.onSuccess(checklistQueryService.getChecklistAnswerListByLimjang(limjangId));
     }
 
+    @CrossOrigin
+    @Operation(summary = "리포트 조회")
+    @GetMapping("/report/{limjangId}")
+    public ApiResponse<ReportResponseDTO.ReportDTO> getReport(@PathVariable Long limjangId){
+        return ApiResponse.onSuccess(checklistQueryService.getReportByLimjangId(limjangId));
+    }
 
 }
