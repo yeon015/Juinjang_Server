@@ -33,6 +33,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     CHECKLIST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST400", "정해지지 않은 요청값입니다. 다시 확인해주세요."),
     CHECKLIST_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST404", "해당 체크리스트 질문 또는 답변이 존재하지 않습니다.")
+
+      
+    //JWT 토큰 에러
+    TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다.");
     ;
 
     private final HttpStatus httpStatus;
