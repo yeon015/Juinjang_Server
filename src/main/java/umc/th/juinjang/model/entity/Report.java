@@ -9,15 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.util.Random;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -33,13 +31,13 @@ public class Report extends BaseEntity {
   private Limjang limjangId;
 
   @Column(nullable = false)
-  private String indoorKeyWord;
+  private String indoorKeyword;
 
   @Column(nullable = false)
-  private String publicSpaceKeyWord;
+  private String publicSpaceKeyword;
 
   @Column(nullable = false)
-  private String locationConditionsWord;
+  private String locationConditionsKeyword;
 
   @Column(nullable = false)
   private Float indoorRate;
@@ -54,27 +52,6 @@ public class Report extends BaseEntity {
   private Float totalRate;
 
   // ================ 이거 점검해주세요
-  public String setRandomKeyword(Float rate){
 
-    String[] oneToTwo = { "불안한" ,"불안정한" ,"불쾌한"};
-    String[] twoToThree = {"평균적인", "보통의", "나쁘지 않은"};
-    String[] threeToFour = {"좋은", "좋은 편인", "훌륭한", "쾌적한"};
-    String[] fourToFive = {"최상의", "최고의", "상당히 좋은", "상당히 쾌적한"};
-
-    Random random = new Random();
-
-    if (rate >= 1 && rate < 2) {
-      return oneToTwo[random.nextInt(oneToTwo.length)];
-    } else if (rate >= 2 && rate < 3) {
-      return twoToThree[random.nextInt(twoToThree.length)];
-    } else if (rate >= 3 && rate < 4) {
-      return threeToFour[random.nextInt(threeToFour.length)];
-    } else if (rate >= 4 && rate <= 5) {
-      return threeToFour[random.nextInt(threeToFour.length)];
-    }
-
-    return null;
-
-  }
 
 }
