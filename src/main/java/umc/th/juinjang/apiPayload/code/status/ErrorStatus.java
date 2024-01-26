@@ -39,11 +39,14 @@ public enum ErrorStatus implements BaseErrorCode {
       
     //JWT 토큰 에러
     TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다."),
-    TOKEN_EMPTY(HttpStatus.BAD_REQUEST, "TOKEN401", "토큰값이 존재하지 않습니다.");
+    TOKEN_EMPTY(HttpStatus.BAD_REQUEST, "TOKEN401", "토큰값이 존재하지 않습니다."),
 
 
     //S3 에러
-    //FILE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "FILE400", "");
+    //FILE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "FILE400", ""),
+
+    //record 에러
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

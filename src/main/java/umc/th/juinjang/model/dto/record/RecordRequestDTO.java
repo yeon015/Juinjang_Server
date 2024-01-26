@@ -10,7 +10,6 @@ public class RecordRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-
     public static class RecordDto {
         private Long limjangId;
         private Long recordTime;
