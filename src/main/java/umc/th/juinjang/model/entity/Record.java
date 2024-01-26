@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 
 @Entity
@@ -42,10 +43,11 @@ public class Record extends BaseEntity {
   private String recordUrl;
 
   @Column(nullable = false, columnDefinition = "text")
-  private String recordScipt;
+  private String recordScript;
 
   //녹음 길이
   @Column(nullable = false)
   private Long recordTime;
+
 
 }
