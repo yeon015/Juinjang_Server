@@ -74,17 +74,5 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
       throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_FOUND);
     }
 
-
-    // limjangToDelete가 비어있으면 해당 ID에 해당하는 데이터가 없음
-//    if (limjangToDelete.isEmpty()) {
-//      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_FOUND);
-//    }
-//
-//    try {
-//      limjangRepository.deleteAllInBatch(limjangToDelete);
-//    } catch (DataAccessException e) {
-//      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
-//    }
-
   }
 }
