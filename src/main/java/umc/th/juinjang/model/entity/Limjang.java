@@ -13,6 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -22,10 +24,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
+import umc.th.juinjang.utils.LimjangUtil;
+import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 @Entity
 @Getter
@@ -107,6 +112,13 @@ public class Limjang extends BaseEntity {
 
   public void removeScrap(){
     this.scrap = null;
+  }
+
+  public void updateLimjang(Limjang newLimjang){
+      this.address = newLimjang.getAddress();
+      this.addressDetail = newLimjang.getAddressDetail();
+      this.nickname = newLimjang.getNickname();
+      this.priceType = newLimjang.getPriceType();
   }
 
 }
