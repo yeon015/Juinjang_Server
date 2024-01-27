@@ -1,5 +1,7 @@
 package umc.th.juinjang.converter.limjang;
 
+import static umc.th.juinjang.utils.LimjangUtil.checkExpectedSize;
+
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
@@ -18,14 +20,9 @@ public class LimjangPostConverter {
     List<String> priceList = postDto.getPrice();
     Integer priceType = postDto.getPriceType();
 
-    // 월세의 경우 가격 배열길이 2여야만 함. 나머지는 1
-    int expectedSize = (priceType == 2) ? 2 : 1;
+    checkExpectedSize(priceType, priceList.size(), ErrorStatus.LIMJANG_POST_PRICE_ERROR);
 
-    if (priceList.size() != expectedSize) {
-      throw new LimjangHandler(ErrorStatus.LIMJANG_POST_PRICE_ERROR);
-    }
-
-    return Limjang.builder()
+      return Limjang.builder()
         .purpose(LimjangPurpose.find(postDto.getPurposeType()))
         .propertyType(LimjangPropertyType.find(postDto.getPropertyType()))
         .priceType(LimjangPriceType.find(priceType))

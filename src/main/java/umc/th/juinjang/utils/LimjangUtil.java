@@ -2,6 +2,8 @@ package umc.th.juinjang.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
@@ -54,5 +56,14 @@ public class LimjangUtil {
       }
     }
     return priceList;
+  }
+
+  public static void checkExpectedSize(Integer priceType, Integer priceListSize, ErrorStatus errorStatus){
+    // 월세의 경우 가격 배열길이 2여야만 함. 나머지는 1
+    int expectedSize = (priceType == 2) ? 2 : 1;
+
+    if (priceListSize != expectedSize) {
+      throw new LimjangHandler(errorStatus);
+    }
   }
 }

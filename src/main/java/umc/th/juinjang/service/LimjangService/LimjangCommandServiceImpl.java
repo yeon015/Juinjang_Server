@@ -2,7 +2,10 @@ package umc.th.juinjang.service.LimjangService;
 
 import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -14,15 +17,19 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
+import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
+import umc.th.juinjang.utils.LimjangUtil;
+import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 @Slf4j
 @Service
@@ -75,4 +82,27 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     }
 
   }
+
+  @Override
+  @Transactional
+  public void updateLimjang(LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo) {
+
+    List<String> newPriceList = requestUpdateInfo.getPriceList();
+
+    // 임장 찾기
+    Limjang originalLimjang = limjangRepository.findById(requestUpdateInfo.getLimjangId())
+        .orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+    // 임장 가격 찾기
+    LimjangPrice originalLimjangPrice = limjangPriceRepository.findById(originalLimjang.getPriceId().getPriceId())
+        .orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANGPRICE_NOTFOUND_ERROR));
+
+    // 새 정보
+    Limjang newLimjang = LimjangUpdateConverter.toLimjang(requestUpdateInfo);
+    LimjangPrice newLimjangPrice = determineLimjangPrice(newPriceList, originalLimjang.getPurpose().getValue(), newLimjang.getPriceType().getValue());
+
+    //업데이트
+    originalLimjang.updateLimjang(newLimjang);
+    originalLimjangPrice.updateLimjangPriceList(newLimjangPrice);
+  }
+
 }

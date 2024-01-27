@@ -6,12 +6,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.th.juinjang.model.entity.common.BaseEntity;
+import umc.th.juinjang.utils.LimjangUtil;
 
 @Entity
 @Getter
@@ -38,9 +40,11 @@ public class LimjangPrice extends BaseEntity {
   @OneToOne(mappedBy = "priceId")
   private Limjang limjang;
 
-  // 매매
-
-  // 월세
-
-  // 전세
+  public void updateLimjangPriceList(LimjangPrice newLimjangPrice){
+      this.marketPrice = newLimjangPrice.getMarketPrice();
+      this.sellingPrice = newLimjangPrice.getSellingPrice();
+      this.depositPrice = newLimjangPrice.getDepositPrice();
+      this.monthlyRent = newLimjangPrice.getMonthlyRent();
+      this.pullRent = newLimjangPrice.getPullRent();
+  }
 }

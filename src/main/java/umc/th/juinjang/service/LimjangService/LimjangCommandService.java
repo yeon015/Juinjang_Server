@@ -3,6 +3,7 @@ package umc.th.juinjang.service.LimjangService;
 import java.util.List;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 
 public interface LimjangCommandService {
@@ -11,4 +12,6 @@ public interface LimjangCommandService {
 
   void deleteLimjangs(List<Long> ids
       );
+
+  void updateLimjang(LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo);
 }
