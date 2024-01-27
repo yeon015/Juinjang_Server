@@ -17,6 +17,8 @@ public enum SuccessStatus implements BaseCode {
 
     // 임장 관련 응답
     LIMJANG_DELETE(HttpStatus.OK, "LIMJANG2000", "임장 게시글 삭제 성공하였습니다."),
+    LIMJANG_UPDATE(HttpStatus.OK, "LIMJANG2001", "임장 게시글 수정 성공하였습니다."),
+
 
     // 스크랩 관련 응답
     _SCRAP_ACTION_SCRAP(HttpStatus.OK, "SCRAP2000", "스크랩 추가 성공하였습니다."),
