@@ -26,6 +26,8 @@ public class LimjangTotalListResponseDTO {
   public static class ListDto {
     private Long limjangId;
     private List<String> images;
+    private Integer purposeCode;
+    private Boolean isScraped;
     private String nickname;
     private Integer priceType;
     private List<String> priceList;

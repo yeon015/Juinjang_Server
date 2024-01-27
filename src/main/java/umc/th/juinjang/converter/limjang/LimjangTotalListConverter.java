@@ -51,10 +51,18 @@ public class LimjangTotalListConverter {
     Integer priceType = limjang.getPriceType().getValue();
     List<String> priceList = makePriceList(priceType, purposeType,limjangPrice);
 
+    Boolean isScraped = true;
+
+    if (limjang.getScrap() == null){
+      isScraped = false;
+    }
+
     return LimjangTotalListResponseDTO.ListDto.builder()
         .limjangId(limjang.getLimjangId())
         .images(urlList)
         .nickname(limjang.getNickname())
+        .isScraped(isScraped)
+        .purposeCode(limjang.getPurpose().getValue())
         .priceType(priceType)
         .priceList(priceList)
         .totalAverage(String.format("%.1f", 4.0f))

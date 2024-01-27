@@ -42,7 +42,6 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember);
 
     return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
-
   }
 
   @Override
