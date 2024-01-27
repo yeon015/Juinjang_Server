@@ -67,7 +67,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   public void deleteLimjangs(List<Long> ids) {
     // 게시글 여러개 삭제 가능
     try {
-      limjangRepository.deleteAllByIdInQuery(ids);
+      limjangRepository.deleteAllById(ids);
     } catch (DataIntegrityViolationException e) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
     } catch (EmptyResultDataAccessException e) {

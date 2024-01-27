@@ -18,7 +18,4 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long> {
   // 가장 최근에 update된 5개 순서대로
   List<Limjang> findTop5ByOrderByUpdatedAtDesc();
 
-  @Modifying
-  @Query("delete from Limjang i where i.limjangId in :ids")
-  void deleteAllByIdInQuery(@Param("ids") List<Long> ids);
 }
