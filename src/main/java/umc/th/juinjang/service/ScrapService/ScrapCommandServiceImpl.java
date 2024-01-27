@@ -1,6 +1,7 @@
 package umc.th.juinjang.service.ScrapService;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,19 +36,27 @@ public class ScrapCommandServiceImpl implements ScrapCommandService {
 
     Scrap findScrap= scrapRepository.findScrapByLimjangId(limjang);
 
-    if (findScrap == null){ // 스크랩 안되어있었음 -> 해줘야함. DB에 추가
+    if (findScrap == null){
       Scrap newScrap = Scrap.builder().limjangId(limjang).build();
       try{
-
-        scrapRepository.save(newScrap);
+        limjang.addScrap(newScrap);
+        limjangRepository.save(limjang);
         return ScrapActionType.SCRAP;
       }catch (IllegalArgumentException e) {
         log.warn("IllegalArgumentException");
         throw new ScrapHandler(ErrorStatus._SCRAP_SCRAP_FAILD);
       }
     } else { // 스크랩 되어있었음 -> DB에서 없애기
-      scrapRepository.delete(findScrap);
-      return ScrapActionType.UNSCRAP;
+      log.warn(findScrap.getScrapId()+"DB에서 없앨것");
+
+      try {
+        limjang.removeScrap();
+        scrapRepository.deleteById(findScrap.getScrapId());
+        return ScrapActionType.UNSCRAP;
+
+      } catch (Exception e) {
+        throw new ScrapHandler(ErrorStatus._SCRAP_UNSCRAP_FAILD);
+      }
     }
   }
 

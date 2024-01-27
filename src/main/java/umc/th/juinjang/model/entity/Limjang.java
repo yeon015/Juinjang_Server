@@ -20,6 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
@@ -96,6 +98,15 @@ public class Limjang extends BaseEntity {
   public void postLimjang(Member member, LimjangPrice limjangPrice){
     this.priceId = limjangPrice;
     this.memberId = member;
+  }
+
+  public void addScrap(Scrap scrap) {
+    this.scrap = scrap;
+    scrap.saveLimjang(this);
+  }
+
+  public void removeScrap(){
+    this.scrap = null;
   }
 
 }
