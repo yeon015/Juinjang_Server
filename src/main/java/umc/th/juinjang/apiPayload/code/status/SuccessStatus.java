@@ -22,7 +22,10 @@ public enum SuccessStatus implements BaseCode {
 
     // 스크랩 관련 응답
     _SCRAP_ACTION_SCRAP(HttpStatus.OK, "SCRAP2000", "스크랩 추가 성공하였습니다."),
-    _SCRAP_ACTION_UNSCRAP(HttpStatus.OK, "SCRAP2001", "스크랩 취소 성공하였습니다.");
+    _SCRAP_ACTION_UNSCRAP(HttpStatus.OK, "SCRAP2001", "스크랩 취소 성공하였습니다."),
+
+    // 이미지 관련 응답
+    IMAGE_UPDATE(HttpStatus.OK, "IMAGE2000", "이미지 업로드 성공하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

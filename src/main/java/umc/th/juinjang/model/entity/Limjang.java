@@ -121,4 +121,7 @@ public class Limjang extends BaseEntity {
       this.priceType = newLimjang.getPriceType();
   }
 
+  public void saveImages(Image image){
+    this.imageList.add(image);
+  }
 }
