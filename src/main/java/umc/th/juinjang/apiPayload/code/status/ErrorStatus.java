@@ -30,6 +30,10 @@ public enum ErrorStatus implements BaseErrorCode {
     LIMJANG_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIMJANG4005", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
     LIMJANG_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "LIMJANG4006", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다. 다시 시도하거나 백엔드 팀에 문의바랍니다."),
 
+    // LimjangPrice Error
+    LIMJANGPRICE_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "LIMJANGPRICE4000", "해당 임장가격 레코드가 존재하지 않습니다."),
+
+
     // scrap
     _SCRAP_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4000", "해당 게시글이 DB에 존재하지 않습니다. 관리자에게 문의 바랍니다."),
     _SCRAP_SCRAP_FAILD(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4001", "스크랩 등록 실패. 재시도하거나 관리자에게 문의 바랍니다."),
