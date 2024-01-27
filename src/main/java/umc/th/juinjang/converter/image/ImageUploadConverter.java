@@ -1,4 +1,4 @@
-package umc.th.juinjang.converter;
+package umc.th.juinjang.converter.image;
 
 import umc.th.juinjang.model.dto.image.ImageUploadRequestDTO;
 import umc.th.juinjang.model.entity.Image;
