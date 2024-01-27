@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +19,6 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
-import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
@@ -57,7 +55,7 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 메인화면에서 최근 임장 조회 API", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
   @GetMapping("/main")
-  public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> deleteList(
+  public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
   ){
 
     return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList()));
@@ -71,5 +69,14 @@ public class LimjangController {
 
     limjangCommandService.deleteLimjangs(deleteDto);
     return ApiResponse.of(SuccessStatus.LIMJANG_DELETE, null);
+  }
+
+  @CrossOrigin
+  @Operation(summary = "임장 검색", description = "임장 게시글을 검색하는 api입니다. 집별명, 일반주소, 상세주소로 검색이 가능합니다.")
+  @GetMapping("/{keyword}")
+  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> searchLimjangs(@PathVariable(name = "keyword") @Valid String keyword
+  ) {
+
+      return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(keyword));
   }
 }
