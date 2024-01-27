@@ -1,6 +1,7 @@
 package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangTotalListConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO.TotalListDto;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
@@ -39,20 +41,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     // 멤버가 가지고있는 모든 글
     List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember);
 
-    // 스크랩 된 게시글
-    List<LimjangTotalListResponseDTO.ListDto> scrapdList = findAllLimjangList.stream()
-        .filter(limjang -> limjang.getScrap() != null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
-            .toList();
-
-    // 스크랩 안 된 리스트
-    List<LimjangTotalListResponseDTO.ListDto> unScrapdList = findAllLimjangList.stream()
-        .filter(limjang -> limjang.getScrap() == null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
-        .toList();
-
-    return LimjangTotalListConverter.toLimjangTotalList(scrapdList, unScrapdList);
-
+    return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
   }
 
   @Override
@@ -65,5 +54,17 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     return limjangRepository.findTop5ByOrderByUpdatedAtDesc().stream()
         .map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId()))
         .toList();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword) {
+    // 멤버 찾기(임시구현)
+    Member findMember = memberRepository.findById(1L)
+        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword);
+
+    return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
   }
 }

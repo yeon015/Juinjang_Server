@@ -17,13 +17,24 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 public class LimjangTotalListConverter {
 
   public static LimjangTotalListResponseDTO.TotalListDto toLimjangTotalList(
-      List<LimjangTotalListResponseDTO.ListDto> scrapedList,
-      List<LimjangTotalListResponseDTO.ListDto> notScrapedList
+      List<Limjang> limjangList
       ) {
+
+    List<LimjangTotalListResponseDTO.ListDto> scrapedList = limjangList.stream()
+        .filter(limjang -> limjang.getScrap() != null)
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
+        .toList();
+
+    // 스크랩 안 된 리스트
+    List<LimjangTotalListResponseDTO.ListDto> unScrapedList = limjangList.stream()
+        .filter(limjang -> limjang.getScrap() == null)
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
+        .toList();
+
 
     return LimjangTotalListResponseDTO.TotalListDto.builder()
         .scrapedList(scrapedList)
-        .notScrapedList(notScrapedList)
+        .notScrapedList(unScrapedList)
         .build();
   }
 
@@ -40,10 +51,18 @@ public class LimjangTotalListConverter {
     Integer priceType = limjang.getPriceType().getValue();
     List<String> priceList = makePriceList(priceType, purposeType,limjangPrice);
 
+    Boolean isScraped = true;
+
+    if (limjang.getScrap() == null){
+      isScraped = false;
+    }
+
     return LimjangTotalListResponseDTO.ListDto.builder()
         .limjangId(limjang.getLimjangId())
         .images(urlList)
         .nickname(limjang.getNickname())
+        .isScraped(isScraped)
+        .purposeCode(limjang.getPurpose().getValue())
         .priceType(priceType)
         .priceList(priceList)
         .totalAverage(String.format("%.1f", 4.0f))
