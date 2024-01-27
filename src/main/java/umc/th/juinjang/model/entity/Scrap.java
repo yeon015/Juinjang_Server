@@ -1,5 +1,6 @@
 package umc.th.juinjang.model.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +31,10 @@ public class Scrap extends BaseEntity {
   private Long scrapId;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "limjang_id", referencedColumnName = "limjang_id")
+  @JoinColumn(name = "limjang_id")
   private Limjang limjangId;
 
-  public void saveScrap(Limjang limjang){
+  public void saveLimjang(Limjang limjang){
     this.limjangId = limjang;
   }
 

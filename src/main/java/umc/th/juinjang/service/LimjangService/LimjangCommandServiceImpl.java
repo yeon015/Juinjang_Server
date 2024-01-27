@@ -5,11 +5,17 @@ import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
@@ -56,4 +62,17 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     return null;
   }
 
+  @Override
+  @Transactional
+  public void deleteLimjangs(List<Long> ids) {
+    // 게시글 여러개 삭제 가능
+    try {
+      limjangRepository.deleteAllById(ids);
+    } catch (DataIntegrityViolationException e) {
+      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
+    } catch (EmptyResultDataAccessException e) {
+      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_FOUND);
+    }
+
+  }
 }

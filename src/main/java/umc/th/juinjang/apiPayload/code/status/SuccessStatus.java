@@ -15,10 +15,12 @@ public enum SuccessStatus implements BaseCode {
 
     // 멤버 관련 응답
 
-    // ~~~ 관련 응답
+    // 임장 관련 응답
+    LIMJANG_DELETE(HttpStatus.OK, "LIMJANG2000", "임장 게시글 삭제 성공하였습니다."),
+
     // 스크랩 관련 응답
-    _SCRAP_ACTION_SCRAP(HttpStatus.OK, "SCRAP200", "스크랩 추가 성공하였습니다."),
-    _SCRAP_ACTION_UNSCRAP(HttpStatus.OK, "SCRAP200", "스크랩 취소 성공하였습니다.");
+    _SCRAP_ACTION_SCRAP(HttpStatus.OK, "SCRAP2000", "스크랩 추가 성공하였습니다."),
+    _SCRAP_ACTION_UNSCRAP(HttpStatus.OK, "SCRAP2001", "스크랩 취소 성공하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
