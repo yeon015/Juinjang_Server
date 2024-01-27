@@ -17,13 +17,24 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 public class LimjangTotalListConverter {
 
   public static LimjangTotalListResponseDTO.TotalListDto toLimjangTotalList(
-      List<LimjangTotalListResponseDTO.ListDto> scrapedList,
-      List<LimjangTotalListResponseDTO.ListDto> notScrapedList
+      List<Limjang> limjangList
       ) {
+
+    List<LimjangTotalListResponseDTO.ListDto> scrapedList = limjangList.stream()
+        .filter(limjang -> limjang.getScrap() != null)
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
+        .toList();
+
+    // 스크랩 안 된 리스트
+    List<LimjangTotalListResponseDTO.ListDto> unScrapedList = limjangList.stream()
+        .filter(limjang -> limjang.getScrap() == null)
+        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
+        .toList();
+
 
     return LimjangTotalListResponseDTO.TotalListDto.builder()
         .scrapedList(scrapedList)
-        .notScrapedList(notScrapedList)
+        .notScrapedList(unScrapedList)
         .build();
   }
 
