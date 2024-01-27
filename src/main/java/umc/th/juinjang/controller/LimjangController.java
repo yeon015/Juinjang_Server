@@ -9,10 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
 
@@ -24,6 +27,7 @@ import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
 
@@ -87,5 +91,15 @@ public class LimjangController {
   public ApiResponse<LimjangDetailResponseDTO.DetailDto> getDetailLimjang(@PathVariable(name = "limjangId") @Valid Long limjangId
   ) {
     return ApiResponse.onSuccess(limjangQueryService.getLimjangDetail(limjangId));
+  }
+
+  @CrossOrigin
+  @Operation(summary = "임장 기본정보 수정", description = "임장 기본정보수정 api입니다. 수정할 정보를 전달해주세요.")
+  @PatchMapping("")
+  public ApiResponse updateLimjang(@RequestBody @Valid
+      LimjangUpdateRequestDTO.UpdateDto updateLimjang
+  ) {
+    limjangCommandService.updateLimjang(updateLimjang);
+    return ApiResponse.onSuccess(SuccessStatus.LIMJANG_UPDATE);
   }
 }
