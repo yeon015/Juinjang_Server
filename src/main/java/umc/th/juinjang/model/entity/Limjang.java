@@ -90,7 +90,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId")
+  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Scrap scrap;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){

@@ -22,10 +22,13 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
 
     // Limjang Error
-    LIMJANG_POST_REQUEST_NULL(HttpStatus.BAD_REQUEST, "LIMJANG400", "입력 값이 모두 넘어오지 않았습니다. 누락된 값이 있는지 다시 확인해주세요."),
-    LIMJANG_POST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG400", "거래목적, 매물유형, 가격유형 입력값 중 하나가 정해지지 않은 값입니다. 다시 확인해주세요."),
-    LIMJANG_POST_PRICE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG400", "전달된 가격이 잘못되었습니다. 입력값을 확인해주세요."),
+    LIMJANG_POST_REQUEST_NULL(HttpStatus.BAD_REQUEST, "LIMJANG4001", "입력 값이 모두 넘어오지 않았습니다. 누락된 값이 있는지 다시 확인해주세요."),
+    LIMJANG_POST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG4002", "거래목적, 매물유형, 가격유형 입력값 중 하나가 정해지지 않은 값입니다. 다시 확인해주세요."),
+    LIMJANG_POST_PRICE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG4003", "전달된 가격이 잘못되었습니다. 입력값을 확인해주세요."),
     LIMJANG_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG404", "해당 임장이 존재하지 않습니다."),
+    
+    LIMJANG_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIMJANG4006", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
+    LIMJANG_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "LIMJANG4007", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다. 다시 시도하거나 백엔드 팀에 문의바랍니다."),
 
     // scrap
     _SCRAP_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "해당 게시글이 DB에 존재하지 않습니다. 관리자에게 문의 바랍니다."),
