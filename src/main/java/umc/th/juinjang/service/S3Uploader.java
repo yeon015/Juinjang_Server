@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,31 +32,33 @@ public class S3Uploader {
   public String upload(MultipartFile multipartFile, String dirName) throws IOException {
     File uploadFile = convert(multipartFile)
         .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-    return upload(uploadFile, dirName);
+    return upload(uploadFile, dirName, multipartFile.getInputStream(), multipartFile.getSize(), multipartFile.getContentType());
   }
 
-  private String upload(File uploadFile, String dirName) {
+  private String upload(File uploadFile,String dirName, InputStream inputStream, Long fileSize, String contentType) {
     String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();
-    String uploadImageUrl = putS3(uploadFile, fileName);
+    String uploadImageUrl = putS3(fileName, inputStream, fileSize, contentType);
 
     removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
 
     return uploadImageUrl;      // 업로드된 파일의 S3 URL 주소 반환
   }
 
-  private String putS3(File uploadFile, String fileName) {
+  private String putS3(String fileName, InputStream inputStream, Long fileSize, String contentType) {
 
     amazonS3Client.putObject(
-        new PutObjectRequest(bucket, fileName, uploadFile)
-//            .withCannedAcl(CannedAccessControlList.PublicRead)	// PublicRead 권한으로 업로드 됨
+        new PutObjectRequest(bucket, fileName, inputStream, makeObjectMetadata(fileSize, contentType))
     );
 
     return amazonS3Client.getUrl(bucket, fileName).toString();
   }
 
-//  //S3에 저장
-//            amazonS3Client.putObject(bucket, "record/"+newfileName, multipartFile.getInputStream(), metadata);
-//  //DB에 저장
+  private ObjectMetadata makeObjectMetadata(Long fileSize, String contentType) {
+    ObjectMetadata objMeta = new ObjectMetadata();
+    objMeta.setContentLength(fileSize);
+    objMeta.setContentType(contentType); // 해결 방법
+    return objMeta;
+  }
 
   private void removeNewFile(File targetFile) {
     if(targetFile.delete()) {
