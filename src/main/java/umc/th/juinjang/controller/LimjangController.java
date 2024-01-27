@@ -19,6 +19,7 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
@@ -78,5 +79,13 @@ public class LimjangController {
   ) {
 
       return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(keyword));
+  }
+
+  @CrossOrigin
+  @Operation(summary = "임장 상세보기", description = "임장 상세보기 api입니다. 임장 id를 전달해주세요.")
+  @GetMapping("/detail/{limjangId}")
+  public ApiResponse<LimjangDetailResponseDTO.DetailDto> getDetailLimjang(@PathVariable(name = "limjangId") @Valid Long limjangId
+  ) {
+    return ApiResponse.onSuccess(limjangQueryService.getLimjangDetail(limjangId));
   }
 }

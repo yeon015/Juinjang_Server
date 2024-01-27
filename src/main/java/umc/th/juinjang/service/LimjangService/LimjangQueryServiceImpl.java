@@ -1,18 +1,19 @@
 package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
+import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
 import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangTotalListConverter;
+import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO.DetailDto;
 import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO.TotalListDto;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
@@ -66,5 +67,18 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword);
 
     return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public DetailDto getLimjangDetail(Long limjangId) {
+    // 멤버 찾기(임시구현)
+    Member findMember = memberRepository.findById(1L)
+        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+    Limjang findLimjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, findMember)
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getPriceId());
   }
 }
