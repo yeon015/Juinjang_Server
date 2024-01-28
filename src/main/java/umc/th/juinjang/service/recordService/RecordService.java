@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
+import umc.th.juinjang.converter.record.LimjangMemoConverter;
 import umc.th.juinjang.converter.record.RecordConverter;
+import umc.th.juinjang.model.dto.limjang.LimjangMemoResponseDTO;
 import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
@@ -46,6 +48,7 @@ public class RecordService {
 
     @Autowired
     private LimjangRepository limjangRepository;
+
 
     public RecordResponseDTO.RecordDto uploadRecord(RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
         System.out.println(recordRequestDTO.getRecordScript());
@@ -127,14 +130,24 @@ public class RecordService {
 
     }
 
-    public List<RecordResponseDTO.RecordDto> getThreeRecord(Long limjangId) {
+    public RecordResponseDTO.RecordMemoDto getThreeRecord(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-
         List<Record> records = recordRepository.findTop3ByLimjangIdOrderByRecordIdDesc(limjang);
 
-        return RecordConverter.toDtoList(records);
-        //파일 가져오는 부분 공부하고 올게요 총총,,,
+        return RecordConverter.toDto(records, limjang);
 
+    }
+
+    public LimjangMemoResponseDTO.MemoDto createLimjangMemo(Long limjangId, String memo) {
+        limjangRepository.updateMemo(limjangId, memo);
+
+        if(limjangRepository.findById(limjangId).isEmpty()){
+            throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
+        }
+        else{
+            Limjang limjang = limjangRepository.findById(limjangId).get();
+            return LimjangMemoConverter.toDto(limjang);
+        }
     }
 }
