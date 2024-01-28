@@ -20,6 +20,7 @@ import umc.th.juinjang.service.JwtService;
 
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -77,6 +78,8 @@ public class OAuthService {
                     Member.builder()
                             .email(email)
                             .provider(MemberProvider.KAKAO)
+                            .refreshToken("")
+                            .refreshTokenExpiresAt(LocalDateTime.now())
                             .build()
             );
             System.out.println("member id : " + member.getMemberId());
@@ -87,9 +90,17 @@ public class OAuthService {
         String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
         String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
 
+        System.out.println("newAccessToken : " + newAccessToken);
+        System.out.println("newRefreshToken : " + newRefreshToken);
+
         // DB에 refreshToken 저장
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
+
+        System.out.println("========================= ");
+        System.out.println("member id : " + member.getMemberId());
+        System.out.println("member email : " + member.getEmail());
+        System.out.println("member newRefreshToken : " + member.getRefreshToken());
 
         return new LoginResponseDto(newAccessToken, newRefreshToken);
     }
