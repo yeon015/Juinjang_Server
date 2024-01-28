@@ -20,22 +20,22 @@ import java.util.Map;
 @Slf4j
 public class KakaoOauth {
 
-    @Value("${security.oauth2.client.provider.kakao.authorization-uri")
+    @Value("${security.oauth2.client.provider.kakao.authorization-uri}")
     private String KAKAO_LOGIN_URL;
 
-    @Value("${security.oauth2.client.registration.kakao.client-id")
+    @Value("${security.oauth2.client.registration.kakao.client-id}")
     private String KAKAO_SNS_CLIENT_ID;
 
-    @Value("${security.oauth2.client.registration.kakao.client-secret")
+    @Value("${security.oauth2.client.registration.kakao.client-secret}")
     private String KAKAO_SNS_CLIENT_SECRET;
 
-    @Value("${security.oauth2.client.registration.kakao.redirect-uri")
+    @Value("${security.oauth2.client.registration.kakao.redirect-uri}")
     private String KAKAO_SNS_CALLBACK_URL;
 
-    @Value("${security.oauth2.client.provider.kakao.token-uri")
+    @Value("${security.oauth2.client.provider.kakao.token-uri}")
     private String KAKAO_SNS_TOKEN_BASE_URL;
 
-    @Value("${security.oauth2.client.provider.kakao.user-info-uri")
+    @Value("${security.oauth2.client.provider.kakao.user-info-uri}")
     private String KAKAO_SNS_USERINFO_URL;
 
     private final ObjectMapper objectMapper;
