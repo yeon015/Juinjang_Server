@@ -1,6 +1,7 @@
 package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.Report;
+import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
@@ -30,6 +33,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   private final MemberRepository memberRepository;
   private final LimjangPriceRepository limjangPriceRepository;
   private final ScrapRepository scrapRepository;
+  private final ReportRepository reportRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -41,6 +45,11 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
     // 멤버가 가지고있는 모든 글
     List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember);
+
+    findAllLimjangList.forEach(limjang -> {
+      Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+      limjang.saveReport(report);
+    });
 
     return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
   }

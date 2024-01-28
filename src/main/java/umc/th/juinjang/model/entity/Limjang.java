@@ -88,7 +88,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId")
+  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Report report;
 
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
@@ -124,4 +124,9 @@ public class Limjang extends BaseEntity {
   public void saveImages(Image image){
     this.imageList.add(image);
   }
+
+  public void saveReport(Report report){
+    this.report = report;
+  }
+
 }
