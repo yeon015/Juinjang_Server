@@ -9,7 +9,8 @@ import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 
 public interface ImageCommandService {
-//  public void uploadImages(ImageUploadRequestDTO.ImageDto requestImages);
     void uploadImages(Long limjangId, List<MultipartFile> images);
+
+    void deleteImages(List<Long> deleteIds);
 
 }
