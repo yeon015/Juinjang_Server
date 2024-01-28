@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 public class ChecklistAnswerAndReportResponseDTO {
     private List<ChecklistAnswerResponseDTO.AnswerDto> answerDtoList;
-    private ReportResponseDTO.ReportDTO reportDto;
+    private ReportResponseDTO reportDto;
 
 }

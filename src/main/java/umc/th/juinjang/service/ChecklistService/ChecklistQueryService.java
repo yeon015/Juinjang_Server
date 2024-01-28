@@ -11,6 +11,6 @@ public interface ChecklistQueryService {
 
     public List<ChecklistAnswerResponseDTO.AnswerDto> getChecklistAnswerListByLimjang(Long limjangId);
 
-    public ReportResponseDTO.ReportDTO getReportByLimjangId(Long limjangId);
+    public ReportResponseDTO getReportByLimjangId(Long limjangId);
 
 }

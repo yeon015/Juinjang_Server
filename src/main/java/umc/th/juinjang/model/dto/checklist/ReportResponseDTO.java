@@ -1,12 +1,17 @@
 package umc.th.juinjang.model.dto.checklist;
 
 import lombok.*;
+import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
 public class ReportResponseDTO {
+    private ReportDTO reportDTO;
+    private LimjangDetailResponseDTO.DetailDto limjangDto;
+
     @Getter
     @Setter
     @NoArgsConstructor
