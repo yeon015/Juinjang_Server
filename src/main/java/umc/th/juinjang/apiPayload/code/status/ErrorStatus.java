@@ -50,9 +50,14 @@ public enum ErrorStatus implements BaseErrorCode {
     TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다."),
     TOKEN_EMPTY(HttpStatus.BAD_REQUEST, "TOKEN401", "토큰값이 존재하지 않습니다."),
 
+    // Image 에러
+    IMAGE_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE4000", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
+    IMAGE_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "IMAGE4001", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다." ),
 
     //S3 에러
     //FILE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "FILE400", ""),
+    S3_NOT_FOUND(HttpStatus.NOT_FOUND, "S34000", "해당 file이 s3에 존재하지 않습니다. 백엔드 팀에 문의바랍니다."),
+    S3_DELTE_FAILED(HttpStatus.NOT_FOUND, "S34000", "해당 file이 s3에 존재하지 않습니다. 백엔드 팀에 문의바랍니다."),
 
     //record 에러
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다");
