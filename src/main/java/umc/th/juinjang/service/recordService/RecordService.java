@@ -146,8 +146,32 @@ public class RecordService {
             throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
         }
         else{
+//            limjangRepository.updateMemo(limjangId, memo);
+//            여기에 쓰면 select문 먼저 실행됨...
             Limjang limjang = limjangRepository.findById(limjangId).get();
             return LimjangMemoConverter.toDto(limjang);
         }
+    }
+
+    public RecordResponseDTO.RecordDto updateRecordContent(Long recordId, String content) {
+        recordRepository.updateRecordContent(recordId, content);
+
+        if(recordRepository.findById(recordId).isEmpty()){
+            throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
+        }
+
+        Record record = recordRepository.findById(recordId).get();
+        return RecordConverter.toDto(record);
+    }
+
+    public RecordResponseDTO.RecordDto updateRecordTitle(Long recordId, String title) {
+        recordRepository.updateRecordTitle(recordId, title);
+
+        if(recordRepository.findById(recordId).isEmpty()){
+            throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
+        }
+
+        Record record = recordRepository.findById(recordId).get();
+        return RecordConverter.toDto(record);
     }
 }

@@ -73,4 +73,13 @@ public class RecordController {
         return ApiResponse.onSuccess(recordService.createLimjangMemo(limjangId, memo));
     }
 
+    @PatchMapping("/record/content/{recordId}")
+    public ApiResponse<RecordResponseDTO.RecordDto> updateRecordContent(@PathVariable Long recordId, @RequestBody String content){
+        return ApiResponse.onSuccess(recordService.updateRecordContent(recordId, content));
+    }
+
+    @PatchMapping("/record/title/{recordId}")
+    public ApiResponse<RecordResponseDTO.RecordDto> updateRecordTitle(@PathVariable Long recordId, @RequestBody String title){
+        return ApiResponse.onSuccess(recordService.updateRecordTitle(recordId, title));
+    }
 }
