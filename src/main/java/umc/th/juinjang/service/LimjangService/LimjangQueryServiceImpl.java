@@ -45,13 +45,12 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 멤버가 가지고있는 모든 글
-    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember);
-
-    findAllLimjangList.forEach(limjang -> {
-      Report report = reportRepository.findByLimjangId(limjang).orElse(null);
-      limjang.saveReport(report);
-    });
-
+    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
+        limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }
+    ).toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
   }
@@ -75,11 +74,16 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Override
   @Transactional(readOnly = true)
   public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword) {
-    // 멤버 찾기(임시구현)
+
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword);
+    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().peek(
+        limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }
+    ).toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
   }
