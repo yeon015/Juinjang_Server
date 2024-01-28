@@ -56,7 +56,8 @@ public class S3Uploader {
   private ObjectMetadata makeObjectMetadata(Long fileSize, String contentType) {
     ObjectMetadata objMeta = new ObjectMetadata();
     objMeta.setContentLength(fileSize);
-    objMeta.setContentType(contentType); // 해결 방법
+    objMeta.setContentType(contentType);
+    objMeta.setContentDisposition("inline");
     return objMeta;
   }
 
