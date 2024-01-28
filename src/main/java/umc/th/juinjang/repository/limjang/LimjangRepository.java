@@ -33,6 +33,12 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long> {
   @Transactional
   @Query("UPDATE Limjang l SET l.recordCount = l.recordCount + 1 WHERE l.limjangId = :limjangId")
   void incrementRecordCount(@Param("limjangId") Long limjangId);
+
+  @Modifying
+  @Transactional
+  @Query("UPDATE Limjang l SET l.memo = :memo WHERE l.limjangId = :limjangId")
+  void updateMemo(@Param("limjangId") Long limjangId, @Param("memo") String memo);
+
 }
 
 

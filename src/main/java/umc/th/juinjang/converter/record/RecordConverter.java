@@ -39,4 +39,16 @@ public class RecordConverter {
                 .collect(Collectors.toList());
     }
 
+    public static RecordResponseDTO.RecordMemoDto toDto(List<Record> entityList, Limjang limjang){
+        List<RecordResponseDTO.RecordDto> recordMemoDto =  toDtoList(entityList);
+
+        return RecordResponseDTO.RecordMemoDto.builder()
+                .limjangId(limjang.getLimjangId())
+                .memo(limjang.getMemo())
+                .recordDto(recordMemoDto)
+                .createdAt(limjang.getCreatedAt())
+                .updatedAt(limjang.getUpdatedAt())
+                .build();
+    }
+
 }

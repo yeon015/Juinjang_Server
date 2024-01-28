@@ -22,14 +22,12 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
-import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.*;
+import umc.th.juinjang.model.entity.Limjang;
+import umc.th.juinjang.repository.record.RecordRepository;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
+import umc.th.juinjang.service.recordService.RecordService;
 
 @RestController
 @RequestMapping("/api/limjang")
@@ -102,4 +100,6 @@ public class LimjangController {
     limjangCommandService.updateLimjang(updateLimjang);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_UPDATE);
   }
+
+
 }
