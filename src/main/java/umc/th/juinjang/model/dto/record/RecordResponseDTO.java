@@ -18,7 +18,8 @@ public class RecordResponseDTO {
         private LocalDateTime updatedAt;
         private String recordScript;
         private Long recordTime;
-        private MultipartFile recordFile;
+        private String recordUrl;
+        private Long recordId;
         private Long limjangId;
     }
 }

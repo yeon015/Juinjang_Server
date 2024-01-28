@@ -46,15 +46,24 @@ public class RecordController {
         }
     }
 
-    @GetMapping("/all/{limjang_id}")
-    public ApiResponse <List<RecordRequestDTO.RecordDto>> getAllRecord(@PathVariable Long recordId){
+    @GetMapping("/all/{limjangId}")
+    public ApiResponse <List<RecordResponseDTO.RecordDto>> getAllRecord(@PathVariable Long limjangId){
         try{
-            List<RecordRequestDTO.RecordDto> recordList = recordService.getAllRecord(recordId);
+            List<RecordResponseDTO.RecordDto> recordList = recordService.getAllRecord(limjangId);
             return ApiResponse.onSuccess(recordList);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @GetMapping("/{limjangId}")
+    public ApiResponse <List<RecordResponseDTO.RecordDto>> getThreeRecord(@PathVariable Long limjangId){
+        try{
+            List<RecordResponseDTO.RecordDto> recordList = recordService.getThreeRecord(limjangId);
+            return ApiResponse.onSuccess(recordList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }
