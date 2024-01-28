@@ -44,7 +44,7 @@ public class ChecklistController {
     @CrossOrigin
     @Operation(summary = "리포트 조회")
     @GetMapping("/report/{limjangId}")
-    public ApiResponse<ReportResponseDTO.ReportDTO> getReport(@PathVariable Long limjangId){
+    public ApiResponse<ReportResponseDTO> getReport(@PathVariable Long limjangId){
         return ApiResponse.onSuccess(checklistQueryService.getReportByLimjangId(limjangId));
     }
 

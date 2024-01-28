@@ -57,11 +57,11 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                 .collect(Collectors.toList());
     }
 
-    public ReportResponseDTO.ReportDTO getReportByLimjangId(Long limjangId) {
+    public ReportResponseDTO getReportByLimjangId(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
         Report report = reportRepository.findByLimjangId(limjang)
                 .orElseThrow(() -> new ChecklistHandler(ErrorStatus.REPORT_NOTFOUND_ERROR));
-        return ChecklistAnswerAndReportConverter.toReportDto(report);
+        return ChecklistAnswerAndReportConverter.toReportDto(report, limjang);
     }
 }

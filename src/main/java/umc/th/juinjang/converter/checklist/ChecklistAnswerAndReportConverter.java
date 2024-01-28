@@ -1,9 +1,12 @@
 package umc.th.juinjang.converter.checklist;
 
+import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerAndReportResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ReportResponseDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.entity.ChecklistAnswer;
+import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Report;
 
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class ChecklistAnswerAndReportConverter {
 
-    public static ChecklistAnswerAndReportResponseDTO toDto(List<ChecklistAnswer> answerList, Report report) {
+    public static ChecklistAnswerAndReportResponseDTO toDto(List<ChecklistAnswer> answerList, Report report, Limjang limjang) {
         List<ChecklistAnswerResponseDTO.AnswerDto> answerDtoList = answerList.stream()
                 .map(answer -> new ChecklistAnswerResponseDTO.AnswerDto(
                         answer.getAnswerId(),
@@ -30,10 +33,12 @@ public class ChecklistAnswerAndReportConverter {
                 report.getLocationConditionsRate(),
                 report.getTotalRate());
 
-        return new ChecklistAnswerAndReportResponseDTO(answerDtoList, reportDto);
+        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getPriceId());
+
+        return new ChecklistAnswerAndReportResponseDTO(answerDtoList, new ReportResponseDTO(reportDto, detailDto));
     }
-    public static ReportResponseDTO.ReportDTO toReportDto(Report report) {
-        return ReportResponseDTO.ReportDTO.builder()
+    public static ReportResponseDTO toReportDto(Report report, Limjang limjang) {
+        ReportResponseDTO.ReportDTO reportDTO = ReportResponseDTO.ReportDTO.builder()
                 .reportId(report.getReportId())
                 .indoorKeyWord(report.getIndoorKeyword())
                 .publicSpaceKeyWord(report.getPublicSpaceKeyword())
@@ -43,6 +48,8 @@ public class ChecklistAnswerAndReportConverter {
                 .locationConditionsRate(report.getLocationConditionsRate())
                 .totalRate(report.getTotalRate())
                 .build();
+        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getPriceId());
+        return new ReportResponseDTO(reportDTO, detailDto);
     }
 
 }

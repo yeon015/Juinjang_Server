@@ -58,7 +58,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         System.out.println("****" + report.getIndoorRate().toString() + " " + report.getPublicSpaceRate().toString() + " "+ report.getLocationConditionsRate().toString());
         System.out.println(report.getIndoorKeyword() + " " + report.getPublicSpaceKeyword() + " "+ report.getLocationConditionsKeyword());
 
-        return ChecklistAnswerAndReportConverter.toDto(answerList, report);
+        return ChecklistAnswerAndReportConverter.toDto(answerList, report, limjang);
     }
 
     private List<ChecklistAnswer> createAnswerList(Limjang limjang, List<ChecklistAnswerRequestDTO.AnswerDto> answerDtoList) {
