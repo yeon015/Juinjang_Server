@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,5 +46,25 @@ public class ImageCommandServiceImpl implements ImageCommandService {
       }
     });
 
+  }
+
+  @Override
+  @Transactional
+  public void deleteImages(List<Long> deleteIds) { //이미지 id로 삭제한다...!
+
+      try {
+
+        //s3에서 삭제
+        List<Image> imageList = imageRepository.findAllById(deleteIds);
+
+        imageList.forEach(image -> {
+          s3Uploader.deleteFile(image.getImageUrl());
+          imageRepository.deleteById(image.getImageId());
+        });
+      } catch (DataIntegrityViolationException e) {
+        throw new LimjangHandler(ErrorStatus.IMAGE_DELETE_NOT_COMPLETE);
+      } catch (EmptyResultDataAccessException e) {
+        throw new LimjangHandler(ErrorStatus.IMAGE_DELETE_NOT_FOUND);
+      }
   }
 }

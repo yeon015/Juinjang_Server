@@ -1,13 +1,18 @@
 package umc.th.juinjang.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.S3Handler;
 
 @Slf4j
 @RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴
@@ -82,5 +89,22 @@ public class S3Uploader {
     }
     return Optional.empty();
   }
+
+  //파일 삭제
+  public void deleteFile(String filePath) {
+
+    try {
+      URI uri = URI.create(filePath);
+      String keyName = uri.getPath().substring(1);
+      boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, keyName);
+      if (isObjectExist) {
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, keyName));
+      } else {
+        // s3에 해당 이미지 존재하지 않음
+        throw new S3Handler(ErrorStatus.S3_NOT_FOUND);
+      }
+    } catch (Exception e) {
+      throw new S3Handler(ErrorStatus.S3_DELTE_FAILED);
+    }}
 
 }

@@ -25,7 +25,8 @@ public enum SuccessStatus implements BaseCode {
     _SCRAP_ACTION_UNSCRAP(HttpStatus.OK, "SCRAP2001", "스크랩 취소 성공하였습니다."),
 
     // 이미지 관련 응답
-    IMAGE_UPDATE(HttpStatus.OK, "IMAGE2000", "이미지 업로드 성공하였습니다.");
+    IMAGE_UPDATE(HttpStatus.OK, "IMAGE2000", "이미지 업로드 성공하였습니다."),
+    IMAGE_DELETE(HttpStatus.OK, "IMAGE2001", "이미지 삭제 성공하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

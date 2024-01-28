@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,6 @@ import umc.th.juinjang.service.LimjangService.LimjangQueryService;
 public class ImageController {
 
   private final LimjangCommandService limjangCommandService;
-
   private final ImageCommandService imageCommandService;
   private final ImageQueryService imageQueryService;
 
@@ -67,6 +67,16 @@ public class ImageController {
       @PathVariable(name = "limjangId") @Valid  Long limjangId)
   {
     return ApiResponse.onSuccess(imageQueryService.getImageList(limjangId));
+  }
+
+  @CrossOrigin
+  @Operation(summary = "이미지 선택 삭제", description = "이미지 게시글을 여러 개 선택해서 삭제하는 api입니다.")
+  @DeleteMapping("/{imageIds}")
+  public ApiResponse deleteImage(@PathVariable(name = "imageIds") @Valid List<Long> deleteIds
+  ){
+
+    imageCommandService.deleteImages(deleteIds);
+    return ApiResponse.of(SuccessStatus.IMAGE_DELETE, null);
   }
 
 }
