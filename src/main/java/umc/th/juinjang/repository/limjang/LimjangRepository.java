@@ -3,9 +3,11 @@ package umc.th.juinjang.repository.limjang;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 
@@ -27,6 +29,10 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long> {
 
   Optional<Limjang> findLimjangByLimjangIdAndMemberId(Long limjangId, Member member);
 
+  @Modifying
+  @Transactional
+  @Query("UPDATE Limjang l SET l.recordCount = l.recordCount + 1 WHERE l.limjangId = :limjangId")
+  void incrementRecordCount(@Param("limjangId") Long limjangId);
 }
 
 

@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
@@ -99,6 +100,10 @@ public class Limjang extends BaseEntity {
 
   @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Scrap scrap;
+
+  @Column(name = "record_count")
+  @ColumnDefault("0") //default 0
+  private int recordCount;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){
     this.priceId = limjangPrice;

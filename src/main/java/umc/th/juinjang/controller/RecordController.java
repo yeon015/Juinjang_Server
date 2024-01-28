@@ -25,12 +25,12 @@ public class RecordController {
 
     //등록
     @PostMapping()
-    public ApiResponse<String> uploadRecord(
+    public  ApiResponse<RecordResponseDTO.RecordDto> uploadRecord(
             @RequestPart(name = "file", required = true) MultipartFile file,
             @RequestPart RecordRequestDTO.RecordDto recordRequestDTO) {
         try{
-            String fileUrl = recordService.uploadRecord(recordRequestDTO, file);
-            return ApiResponse.onSuccess(fileUrl);
+            RecordResponseDTO.RecordDto result = recordService.uploadRecord(recordRequestDTO, file);
+            return ApiResponse.onSuccess(result);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

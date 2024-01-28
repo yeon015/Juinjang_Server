@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 public class RecordConverter {
 
-    public static Record toEntity(RecordRequestDTO.RecordDto recordDto, String fileUrl, Limjang limjang){
+    public static Record toEntity(RecordRequestDTO.RecordDto recordDto, String fileUrl, Limjang limjang, String recordName){
         return Record.builder()
-                .recordName(recordDto.getRecordName())
+                .recordName(recordName)
                 .recordUrl(fileUrl)
                 .recordScript(recordDto.getRecordScript())
                 .recordTime(recordDto.getRecordTime())
