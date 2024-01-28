@@ -71,8 +71,8 @@ public class ImageController {
 
   @CrossOrigin
   @Operation(summary = "이미지 선택 삭제", description = "이미지 게시글을 여러 개 선택해서 삭제하는 api입니다.")
-  @DeleteMapping("/{deleteIds}")
-  public ApiResponse deleteImage(@PathVariable(name = "deleteIds") @Valid List<Long> deleteIds
+  @DeleteMapping("/{imageIds}")
+  public ApiResponse deleteImage(@PathVariable(name = "imageIds") @Valid List<Long> deleteIds
   ){
 
     imageCommandService.deleteImages(deleteIds);
