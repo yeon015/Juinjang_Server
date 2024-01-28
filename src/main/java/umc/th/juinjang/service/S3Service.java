@@ -1,10 +1,6 @@
 package umc.th.juinjang.service;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -28,7 +24,7 @@ import umc.th.juinjang.apiPayload.exception.handler.S3Handler;
 @RequiredArgsConstructor    // final 멤버변수가 있으면 생성자 항목에 포함시킴
 @Component
 @Service
-public class S3Uploader {
+public class S3Service {
 
   private final AmazonS3Client amazonS3Client;
 
