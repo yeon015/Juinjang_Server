@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoOAuthToken;
@@ -52,21 +53,27 @@ public class KakaoOauth {
 
         // RestTemplate : 스프링에서 제공하는 http 통신에 유용하게 쓸 수 있는 템플릿
         RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.add("Accept", "application/json");
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("code", code);
-        params.put("client_id", KAKAO_SNS_CLIENT_ID);
-        params.put("client_secret", KAKAO_SNS_CLIENT_SECRET);
-        params.put("redirect_uri", KAKAO_SNS_CALLBACK_URL);
-        params.put("grant_type", "authorization_code");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("code", code);
+        params.add("client_id", KAKAO_SNS_CLIENT_ID);
+        params.add("client_secret", KAKAO_SNS_CLIENT_SECRET);
+        params.add("redirect_uri", KAKAO_SNS_CALLBACK_URL);
+        params.add("grant_type", "authorization_code");
 
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
         // RestTemplate 주요 메서드 postForEntity : POST 요청을 보내고 결과로 ResponseEntity 로 반환
         ResponseEntity<String> responseEntity =
-                restTemplate.postForEntity(KAKAO_SNS_TOKEN_BASE_URL, params, String.class);
+                restTemplate.postForEntity(KAKAO_SNS_TOKEN_BASE_URL, request, String.class);
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            System.out.println(responseEntity.getBody());
             return responseEntity;
         }
+        System.out.println("null...");
         return null;
     }
 
@@ -84,6 +91,7 @@ public class KakaoOauth {
         // header 에 accessToken 을 담는다.
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","Bearer "+oAuthToken.getAccess_token());
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // HttpEntity 를 하나 생성해, 헤더를 담아서 restTemplate 으로 카카오와 통신하게 된다.
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
@@ -98,6 +106,8 @@ public class KakaoOauth {
     public KakaoUser getUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
         log.info("response.getBody() = "+userInfoResponse.getBody());
         KakaoUser kakaoUser = objectMapper.readValue(userInfoResponse.getBody(), KakaoUser.class);
+        System.out.println(kakaoUser.getKakaoAccount().getEmail());
+        System.out.println(kakaoUser.getId());
         return kakaoUser;
     }
 }
