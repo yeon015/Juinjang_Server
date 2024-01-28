@@ -2,6 +2,7 @@ package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
       limjang.saveReport(report);
     });
 
+
     return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
   }
 
@@ -61,9 +63,13 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    return limjangRepository.findTop5ByOrderByUpdatedAtDesc().stream()
-        .map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId()))
-        .toList();
+    // 임장 찾는다
+    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
+        .stream()
+        .peek(limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }).map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
   }
 
   @Override
