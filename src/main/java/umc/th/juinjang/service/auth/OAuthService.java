@@ -60,8 +60,8 @@ public class OAuthService {
         // 다시 JSON 형식의 응답 객체를 deserialization 해서 자바 객체에 담음
         KakaoUser kakaoUser = kakaoOauth.getUserInfo(userInfoResponse);
 
-        String email = kakaoUser.getKakaoAccount().getEmail();
-        log.info(kakaoUser.getKakaoAccount().getEmail());
+        String email = kakaoUser.getKakao_account().getEmail();
+        log.info(kakaoUser.getKakao_account().getEmail());
 
         if(email == null)
             throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);  // ErrorStatus 수정해야함.

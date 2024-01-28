@@ -106,8 +106,9 @@ public class KakaoOauth {
     public KakaoUser getUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
         log.info("response.getBody() = "+userInfoResponse.getBody());
         KakaoUser kakaoUser = objectMapper.readValue(userInfoResponse.getBody(), KakaoUser.class);
-        System.out.println(kakaoUser.getKakaoAccount().getEmail());
         System.out.println(kakaoUser.getId());
+        System.out.println("Email: " + kakaoUser.getKakao_account().getEmail());
+        System.out.println("Nickname: " + kakaoUser.getKakao_account().getProfile().getNickname());
         return kakaoUser;
     }
 }
