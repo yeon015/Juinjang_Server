@@ -79,4 +79,5 @@ public class ImageController {
     return ApiResponse.of(SuccessStatus.IMAGE_DELETE, null);
   }
 
+
 }
