@@ -6,6 +6,7 @@ import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
@@ -65,8 +66,10 @@ public class LimjangTotalListConverter {
         .purposeCode(limjang.getPurpose().getValue())
         .priceType(priceType)
         .priceList(priceList)
-        .totalAverage(String.format("%.1f", 4.0f))
-//        .totalAverage(limjang.getReport().getTotalRate())
+        .totalAverage( Optional.ofNullable(limjang.getReport())
+            .flatMap(report -> Optional.ofNullable(report.getTotalRate())
+                .map(Object::toString))
+            .orElse(null))
         .address(limjang.getAddress())
         .createdAt(limjang.getCreatedAt())
         .updatedAt(limjang.getUpdatedAt())

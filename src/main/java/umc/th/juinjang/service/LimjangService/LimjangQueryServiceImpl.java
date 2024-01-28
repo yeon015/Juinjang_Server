@@ -1,6 +1,8 @@
 package umc.th.juinjang.service.LimjangService;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.Report;
+import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
@@ -30,6 +34,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   private final MemberRepository memberRepository;
   private final LimjangPriceRepository limjangPriceRepository;
   private final ScrapRepository scrapRepository;
+  private final ReportRepository reportRepository;
 
   @Override
   @Transactional(readOnly = true)
@@ -40,7 +45,12 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 멤버가 가지고있는 모든 글
-    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember);
+    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
+        limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }
+    ).toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
   }
@@ -52,19 +62,28 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    return limjangRepository.findTop5ByOrderByUpdatedAtDesc().stream()
-        .map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId()))
-        .toList();
+    // 임장 찾는다
+    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
+        .stream()
+        .peek(limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }).map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
   }
 
   @Override
   @Transactional(readOnly = true)
   public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword) {
-    // 멤버 찾기(임시구현)
+
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword);
+    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().peek(
+        limjang -> {
+          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
+          limjang.saveReport(report);
+        }
+    ).toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
   }

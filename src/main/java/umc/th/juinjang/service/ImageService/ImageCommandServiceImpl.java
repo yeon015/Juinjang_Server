@@ -16,7 +16,7 @@ import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.repository.image.ImageRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
-import umc.th.juinjang.service.S3Uploader;
+import umc.th.juinjang.service.S3Service;
 
 @Slf4j
 @Service
@@ -25,7 +25,7 @@ public class ImageCommandServiceImpl implements ImageCommandService {
 
   private final ImageRepository imageRepository;
   private final LimjangRepository limjangRepository;
-  private final S3Uploader s3Uploader;
+  private final S3Service s3Service;
 
   @Override
   @Transactional
@@ -37,7 +37,7 @@ public class ImageCommandServiceImpl implements ImageCommandService {
     images.forEach(it -> {
       try {
         if (!it.isEmpty()) {
-          String storedFileName = s3Uploader.upload(it, "image");
+          String storedFileName = s3Service.upload(it, "image");
           Image image = ImageUploadConverter.toImageDto(storedFileName, limjang);
           limjang.saveImages(image);
         }
@@ -58,7 +58,7 @@ public class ImageCommandServiceImpl implements ImageCommandService {
         List<Image> imageList = imageRepository.findAllById(deleteIds);
 
         imageList.forEach(image -> {
-          s3Uploader.deleteFile(image.getImageUrl());
+          s3Service.deleteFile(image.getImageUrl());
           imageRepository.deleteById(image.getImageId());
         });
       } catch (DataIntegrityViolationException e) {

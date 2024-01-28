@@ -41,8 +41,10 @@ public class LimjangMainListConverter {
         .image(Optional.ofNullable(imageList).map(Image::getImageUrl))
         .nickname(limjang.getNickname())
         .price(price)
-        .totalAverage(String.format("%.1f", 4.0f))
-//        .totalAverage(limjang.getReport().getTotalRate())
+        .totalAverage( Optional.ofNullable(limjang.getReport())
+            .flatMap(report -> Optional.ofNullable(report.getTotalRate())
+                .map(Object::toString))
+            .orElse(null))
         .address(limjang.getAddress())
         .build();
   }
