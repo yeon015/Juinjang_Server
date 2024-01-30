@@ -61,7 +61,6 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     // 멤버 찾기(임시구현)
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
     // 임장 찾는다
     return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
         .stream()

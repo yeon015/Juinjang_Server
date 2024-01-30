@@ -57,8 +57,8 @@ public class ImageController {
    @RequestParam(name = "limjangId") Long limjangId, @RequestPart(name = "images") List<MultipartFile> images)
     {
       imageCommandService.uploadImages(limjangId ,images);
-     return ApiResponse.of(SuccessStatus.IMAGE_UPDATE, null);
-  }
+      return ApiResponse.onSuccess(SuccessStatus.IMAGE_UPDATE);
+    }
 
   @CrossOrigin
   @Operation(summary = "사진 조회 API", description = "사진을 조회하는 api입니다.")
@@ -76,7 +76,7 @@ public class ImageController {
   ){
 
     imageCommandService.deleteImages(deleteIds);
-    return ApiResponse.of(SuccessStatus.IMAGE_DELETE, null);
+    return ApiResponse.onSuccess(SuccessStatus.IMAGE_DELETE);
   }
 
 }
