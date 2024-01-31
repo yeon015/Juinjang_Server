@@ -19,9 +19,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Member Error
 
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "해당하는 사용자를 찾을 수 없습니다."),
     MEMBER_EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자의 이메일이 없습니다."),
     MEMBER_NOT_FOUND_IN_KAKAO(HttpStatus.BAD_REQUEST, "MEMBER4003", "APPLE로 회원가입한 회원입니다."),
+    ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "MEMBER4004", "이미 로그아웃 되었습니다."),
 
     // Limjang Error
     LIMJANG_POST_REQUEST_NULL(HttpStatus.BAD_REQUEST, "LIMJANG4001", "입력 값이 모두 넘어오지 않았습니다. 누락된 값이 있는지 다시 확인해주세요."),
@@ -53,6 +54,7 @@ public enum ErrorStatus implements BaseErrorCode {
     TOKEN_EMPTY(HttpStatus.BAD_REQUEST, "TOKEN401", "토큰값이 존재하지 않습니다."),
     REFRESH_TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN402", "유효하지 않은 Refresh Token입니다. 다시 로그인하세요."),
     ACCESS_TOKEN_AUTHORIZED(HttpStatus.BAD_REQUEST, "TOKEN403", "유효한 Access Token입니다."),
+    REFRESH_TOKEN_AUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN404", "유효한 Refresh Token입니다."),
 
     // Image 에러
     IMAGE_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE4000", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),

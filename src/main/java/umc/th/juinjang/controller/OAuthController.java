@@ -59,4 +59,16 @@ public class OAuthController {
         } else
             throw new ExceptionHandler(TOKEN_EMPTY);
     }
+
+    // 로그아웃 -> 토큰 만료
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            String result = oauthService.logout(token.substring(7));
+            return ApiResponse.onSuccess(result);
+        } else
+            throw new ExceptionHandler(TOKEN_EMPTY);
+    }
 }
