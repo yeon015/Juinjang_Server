@@ -41,6 +41,7 @@ public class RecordService {
     @Value("${cloud.aws.s3.uploadPath}")
     private String defaultUrl;
 
+    @Autowired
     private final AmazonS3Client amazonS3Client;
 
     @Autowired
