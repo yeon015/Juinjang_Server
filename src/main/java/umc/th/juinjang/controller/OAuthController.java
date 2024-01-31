@@ -60,7 +60,7 @@ public class OAuthController {
             throw new ExceptionHandler(TOKEN_EMPTY);
     }
 
-    // 로그아웃 -> 토큰 만료
+    // 로그아웃 -> refresh 토큰 만료
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
