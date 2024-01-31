@@ -30,8 +30,8 @@ public class ScrapController {
 
     ScrapActionType scrapActionType = scrapCommandService.actionScrap(limjangId);
     if(scrapActionType == ScrapActionType.SCRAP){ // 스크랩 동작이 이루어짐
-      return ApiResponse.of(SuccessStatus._SCRAP_ACTION_SCRAP, null);
+      return ApiResponse.onSuccess(SuccessStatus._SCRAP_ACTION_SCRAP);
     }
-    return ApiResponse.of(SuccessStatus._SCRAP_ACTION_UNSCRAP, null);
+    return ApiResponse.onSuccess(SuccessStatus._SCRAP_ACTION_UNSCRAP);
   }
 }

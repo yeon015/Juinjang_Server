@@ -71,7 +71,7 @@ public class LimjangController {
   ){
 
     limjangCommandService.deleteLimjangs(deleteIds);
-    return ApiResponse.of(SuccessStatus.LIMJANG_DELETE, null);
+    return ApiResponse.onSuccess(SuccessStatus.LIMJANG_DELETE);
   }
 
   @CrossOrigin
