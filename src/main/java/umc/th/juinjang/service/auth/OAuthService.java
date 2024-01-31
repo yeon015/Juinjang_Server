@@ -100,11 +100,6 @@ public class OAuthService {
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
 
-        System.out.println("========================= ");
-        System.out.println("member id : " + member.getMemberId());
-        System.out.println("member email : " + member.getEmail());
-        System.out.println("member newRefreshToken : " + member.getRefreshToken());
-
         return new LoginResponseDto(newAccessToken, newRefreshToken);
     }
 
@@ -135,5 +130,22 @@ public class OAuthService {
         memberRepository.save(member);
 
         return new LoginResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    // 로그아웃
+    @Transactional
+    public String logout(String refreshToken) {
+        Optional<Member> getMember = memberRepository.findByRefreshToken(refreshToken);
+        if(getMember.isEmpty())
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+
+        Member member = getMember.get();
+        if(member.getRefreshToken().equals(""))
+            throw new MemberHandler(ALREADY_LOGOUT);
+
+        member.refreshTokenExpires();
+        memberRepository.save(member);
+
+        return "로그아웃 성공";
     }
 }
