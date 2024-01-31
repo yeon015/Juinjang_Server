@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
@@ -14,7 +15,7 @@ import umc.th.juinjang.repository.limjang.MemberRepository;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserDetailServiceImpl {
+public class UserDetailServiceImpl implements UserDetailsService {
     private final MemberRepository memberRepository;
 
 
