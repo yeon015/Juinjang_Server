@@ -49,6 +49,7 @@ jobs:
           mkdir resources
           cd ./resources
           touch ./application-prod.yml
+          ls *
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
         shell: bash
       
