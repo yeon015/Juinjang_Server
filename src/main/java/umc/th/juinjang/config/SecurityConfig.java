@@ -1,6 +1,7 @@
 package umc.th.juinjang.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -25,6 +26,8 @@ import umc.th.juinjang.service.JwtService;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+
+    @Autowired
     private final JwtService jwtService;
 
 //    private final JwtExceptionFilter jwtExceptionFilter;
