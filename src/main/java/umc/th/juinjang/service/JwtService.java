@@ -4,6 +4,8 @@ import ch.qos.logback.core.spi.ErrorCodes;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +35,9 @@ public class JwtService {
     private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
 
     private MemberRepository memberRepository;
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
 
     // access token 생성
     public String encodeJwtToken(TokenDto tokenDto) {
@@ -103,6 +108,22 @@ public class JwtService {
             return !claims.getBody().getExpiration().before(new Date(now.getTime()));
         }catch (Exception e){
             throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);
+        }
+    }
+
+    // 토큰 유효성 + 만료일자 확인 (만료 여부만 확인. 에러 발생 x)
+    public Boolean validateTokenBoolean(String token) {
+        Date now = new Date();
+
+        try{
+            // 주어진 토큰을 파싱하고 검증.
+            Jws<Claims> claims = Jwts.parser()
+                    .setSigningKey(Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(StandardCharsets.UTF_8)))
+                    .parseClaimsJws(token);
+            return !claims.getBody().getExpiration().before(new Date(now.getTime()));
+        }catch (Exception e){
+            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            return false;
         }
     }
 

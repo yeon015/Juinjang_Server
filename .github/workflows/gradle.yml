@@ -49,7 +49,8 @@ jobs:
           mkdir resources
           cd ./resources
           touch ./application.yml
-          echo "${{ secrets.PROPERTIES_PROD }}" > ./application-prod.yml
+          ls *
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
         shell: bash
       
       - name: Build With Gradle
