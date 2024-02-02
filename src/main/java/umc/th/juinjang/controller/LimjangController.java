@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.model.dto.limjang.*;
 import umc.th.juinjang.model.entity.Limjang;
+import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.record.RecordRepository;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
@@ -42,26 +44,29 @@ public class LimjangController {
   @Operation(summary = "임장 생성 API")
   @PostMapping("")
   public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(
-      @RequestBody @Valid LimjangPostRequestDTO.PostDto postDto){
-    return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto)));
+      @RequestBody @Valid LimjangPostRequestDTO.PostDto postDto,
+      @AuthenticationPrincipal Member member
+  ){
+    return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto, member)));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 전체 조회 API")
   @GetMapping("")
   public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> getLimjangTotalList(
-      ){
+      @AuthenticationPrincipal Member member){
 
-    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList());
+    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 메인화면에서 최근 임장 조회 API", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
   @GetMapping("/main")
   public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
+      @AuthenticationPrincipal Member member
   ){
 
-    return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList()));
+    return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList(member)));
   }
 
   @CrossOrigin

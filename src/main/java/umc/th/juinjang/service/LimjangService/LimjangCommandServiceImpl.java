@@ -42,12 +42,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public Limjang postLimjang(PostDto request) {
+  public Limjang postLimjang(PostDto request, Member member) {
 
     Limjang limjang = LimjangPostConverter.toLimjang(request);
-    // 임장에 회원 정보 넣는 로직
-    // 임시로 아무거나 넣게함
-    Member findMember = memberRepository.findById(1L)
+
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 임장 가격 테이블에 가격 저장 후 입장에 member, limjangprice추가

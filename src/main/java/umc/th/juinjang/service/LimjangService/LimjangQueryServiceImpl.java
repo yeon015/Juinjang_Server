@@ -38,10 +38,10 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList() {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member) {
 
     // 멤버 찾기(임시구현)
-    Member findMember = memberRepository.findById(1L)
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 멤버가 가지고있는 모든 글
@@ -57,9 +57,9 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public List<LimjangMainViewListResponsetDTO.ListDto> getLimjangMainList() {
+  public List<LimjangMainViewListResponsetDTO.ListDto> getLimjangMainList(Member member) {
     // 멤버 찾기(임시구현)
-    Member findMember = memberRepository.findById(1L)
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
     // 임장 찾는다
     return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
