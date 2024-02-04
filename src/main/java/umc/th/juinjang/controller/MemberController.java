@@ -2,6 +2,8 @@ package umc.th.juinjang.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
@@ -21,17 +23,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @CrossOrigin
-    @Operation(summary = "닉네임 설정")
-    @PatchMapping("/nickname/{memberId}")
-    public ApiResponse<MemberResponseDto.nicknameDto> patchNickname (@PathVariable(name="memberId") Long memberId, @RequestBody MemberRequestDto memberRequestDto) {
-        // Member 로 수정해야함
-        if(!memberRequestDto.getNickname().isEmpty()) {
-            MemberResponseDto.nicknameDto result = memberService.patchNickname(memberId, memberRequestDto); // member로 수정해야함
-            return ApiResponse.onSuccess(result);
-        } else
-            throw new ExceptionHandler(NICKNAME_EMPTY);
-    }
+//    @CrossOrigin
+//    @Operation(summary = "닉네임 설정")
+//    @PatchMapping("/nickname")
+//    public ApiResponse<MemberResponseDto.nicknameDto> patchNickname (@AuthenticationPrincipal UserDetails member, @RequestBody MemberRequestDto memberRequestDto) {
+//        // Member 로 수정해야함
+//        if(!memberRequestDto.getNickname().isEmpty()) {
+//            MemberResponseDto.nicknameDto result = memberService.patchNickname(member, memberRequestDto); // member로 수정해야함
+//            return ApiResponse.onSuccess(result);
+//        } else
+//            throw new ExceptionHandler(NICKNAME_EMPTY);
+//    }
 
     @CrossOrigin
     @Operation(summary = "프로필 조회")
