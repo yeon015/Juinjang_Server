@@ -28,4 +28,5 @@ public class MemberService {
 
         return new MemberResponseDto.nicknameDto(member.getNickname());
     }
+
 }

@@ -14,4 +14,15 @@ public class MemberResponseDto {
     public static class nicknameDto {
         private String nickname;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class profileDto {
+        private String nickname;
+        private String email;
+        private String provider;
+    }
+
 }

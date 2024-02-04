@@ -33,4 +33,10 @@ public class MemberController {
             throw new ExceptionHandler(NICKNAME_EMPTY);
     }
 
+    @CrossOrigin
+    @Operation(summary = "프로필 조회")
+    @GetMapping("/profile")
+    public ApiResponse<MemberResponseDto.profileDto> getProfile (@PathVariable(name="memberId") Long memberId) { // Member 로 수정해야함
+        return null;
+    }
 }
