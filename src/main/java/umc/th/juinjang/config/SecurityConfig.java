@@ -39,8 +39,8 @@ public class SecurityConfig {
         return web -> web.ignoring()
                 // 로그인 개발 끝나면 삭제 **
                 .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html",
-                        "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/auth/regenerate-token",
-                        "api/auth/kakao");
+                        "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
+                        "/api/auth/kakao/**");
     }
 
     //선언 방식이 3.x에서 바뀜
@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/auth/**")
+                                        AntPathRequestMatcher.antMatcher("/api/auth/**")
                                 ).authenticated()
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/h2-console/**")
