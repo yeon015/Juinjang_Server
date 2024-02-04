@@ -69,7 +69,7 @@ public class Member extends BaseEntity implements UserDetails {
 
   @Override
   public String getUsername() {
-    return null;
+    return this.email;
   }
 
   @Override
@@ -84,11 +84,11 @@ public class Member extends BaseEntity implements UserDetails {
 
   @Override
   public boolean isCredentialsNonExpired() {
-    return false;
+    return true;
   }
 
   @Override
   public boolean isEnabled() {
-    return false;
+    return true;
   }
 }

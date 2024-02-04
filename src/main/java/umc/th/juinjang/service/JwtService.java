@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,8 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String JWT_SECRET;
+
+    @Autowired
     private final UserDetailServiceImpl userDetailService;
     private Long tokenValidTime = 1000L * 60 * 60; // 1h
     private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
@@ -92,8 +95,10 @@ public class JwtService {
 
         if(bearerToken == null)
             throw new ExceptionHandler(ErrorStatus.TOKEN_EMPTY);
-        else if(StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith("Bearer "));
+        else if(StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
+        }
+        return null;
     }
 
     // 토큰 유효성 + 만료일자 확인
@@ -129,11 +134,10 @@ public class JwtService {
 
     // JWT 토큰 인증 정보 조회 (토큰 복호화)
     public Authentication getAuthentication(String token) {
-       // UserDetails userDetails = .loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
-        //memberRepository에서
+        System.out.println(this.getMemberIdFromJwtToken(token));
+
         UserDetails userDetails = userDetailService.loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
-//        UserDetails userDetails =ngull;
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
     // 토큰 유효 시간 확인

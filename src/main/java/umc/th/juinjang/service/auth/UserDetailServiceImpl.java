@@ -23,8 +23,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         System.out.println("로그인한 memberId : " + memberId);
         UserDetails result = (UserDetails) memberRepository.findById(Long.parseLong(memberId))
                 .orElseThrow(() -> new ExceptionHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-        log.info("UserDetails: " + result.getUsername());
+        log.info("UserDetails: 여기ㅣㅣㅣㅣㅣㅣㅣㅣㅣㅣ");
+        //로그인할 때  result.getUsername() 여기서 에러남
+//        log.info("UserDetails: " + result.getUsername());
         log.info("UserDetails: " + result.toString());
 
         return result;
