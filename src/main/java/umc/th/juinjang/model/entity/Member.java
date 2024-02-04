@@ -91,4 +91,8 @@ public class Member extends BaseEntity implements UserDetails {
   public boolean isEnabled() {
     return false;
   }
+
+  public void updateNickname(String nickname) {
+    this.nickname = nickname;
+  }
 }
