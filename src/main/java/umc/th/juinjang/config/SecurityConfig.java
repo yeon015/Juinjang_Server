@@ -30,16 +30,17 @@ public class SecurityConfig {
     @Autowired
     private final JwtService jwtService;
 
-//    private final JwtExceptionFilter jwtExceptionFilter;
+    @Autowired
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     @Order(0)
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
                 // 로그인 개발 끝나면 삭제 **
-                .requestMatchers("/**", "/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html",
+                .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html",
                         "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/auth/regenerate-token",
-                        "/auth/google");
+                        "api/auth/kakao");
     }
 
     //선언 방식이 3.x에서 바뀜
@@ -48,7 +49,6 @@ public class SecurityConfig {
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -78,7 +78,7 @@ public class SecurityConfig {
                                                 HeadersConfigurer.FrameOptionsConfig::sameOrigin
                                         )
                 )
-                .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

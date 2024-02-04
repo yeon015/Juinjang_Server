@@ -24,6 +24,7 @@ import java.rmi.server.ExportException;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
     public static final String AUTHORIZATION_HEADER = "Authorization";
+
     private JwtService jwtService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
@@ -38,19 +39,17 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
         //헤더에서 토큰 가져오기
         String token = jwtService.resolveToken(request);
         String requestURI = request.getRequestURI();
-//
+
         // 토큰이 존재 여부 + 토큰 검증
         if (StringUtils.isNotEmpty(token) && jwtService.validateToken(token)) {
-            // 권한
             Authentication authentication = jwtService.getAuthentication(token);
             // security 세션에 등록
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}");
+            logger.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}");
         } else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
+            logger.info("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
             throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);
         }
-
         chain.doFilter(request, response);
 
     }
