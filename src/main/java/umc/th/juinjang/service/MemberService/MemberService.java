@@ -15,19 +15,21 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.MEMBER_NOT_FOUN
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
 
-//    @Transactional
-//    public MemberResponseDto.nicknameDto patchNickname(Member member, MemberRequestDto memberRequestDto) {
-//        // Member 받아오면 해당 member의 nickname 변경
-//        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberHandler(MEMBER_NOT_FOUND));
-//
-//        member.updateNickname(memberRequestDto.getNickname());
-//
-//        return new MemberResponseDto.nicknameDto(member.getNickname());
-//    }
+    public MemberResponseDto.nicknameDto patchNickname(Member member, MemberRequestDto memberRequestDto) {
+        // Member 받아오면 해당 member의 nickname 변경
+        member.updateNickname(memberRequestDto.getNickname());
+        memberRepository.save(member);  // 변수 없이 member 그대로 저장
 
+        return new MemberResponseDto.nicknameDto(member.getNickname());
+    }
+
+    public MemberResponseDto.profileDto getProfile(Member member) {
+        String provider = member.getProvider().toString();
+        return new MemberResponseDto.profileDto(member.getNickname(), member.getEmail(), provider);
+    }
 }
