@@ -18,6 +18,7 @@ import umc.th.juinjang.model.dto.limjang.LimjangMemoResponseDTO;
 import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
+import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.Record;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.record.RecordRepository;
@@ -51,10 +52,9 @@ public class RecordService {
     private LimjangRepository limjangRepository;
 
 
-    public RecordResponseDTO.RecordDto uploadRecord(RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
-        System.out.println(recordRequestDTO.getRecordScript());
-        System.out.println(recordRequestDTO.getLimjangId());
-        if(limjangRepository.findById(recordRequestDTO.getLimjangId()).isEmpty()){
+    public RecordResponseDTO.RecordDto uploadRecord(Member member, RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
+
+        if(limjangRepository.findLimjangByLimjangIdAndMemberId(recordRequestDTO.getLimjangId(), member).isEmpty()){
             throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
         }
         Limjang limjang = limjangRepository.findById(recordRequestDTO.getLimjangId()).get();
@@ -87,12 +87,20 @@ public class RecordService {
     }
 
 
-    public String deleteRecord(Long recordId) {
+    public String deleteRecord(Member member, Long recordId) {
         //db에서 id 찾기
-        if (recordRepository.findById(recordId).isEmpty()){
+
+
+
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));
+
+        Limjang limjang = limjangRepository.findById(record.getLimjangId().getLimjangId()).orElseThrow(()
+                -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+        if(limjang.getMemberId().getMemberId() != member.getMemberId()){
             throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
         }
-        Record record =recordRepository.findById(recordId).get();
 
         try{
             String keyName = record.getRecordUrl().replace(defaultUrl+"/", "");
@@ -121,8 +129,8 @@ public class RecordService {
         return "삭제 성공했습니다.";
     }
 
-    public List<RecordResponseDTO.RecordDto> getAllRecord(Long limjangId) {
-        Limjang limjang = limjangRepository.findById(limjangId)
+    public List<RecordResponseDTO.RecordDto> getAllRecord(Member member, Long limjangId) {
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
         List<Record> records = recordRepository.findAllByLimjangIdOrderByRecordIdDesc(limjang);
@@ -131,8 +139,8 @@ public class RecordService {
 
     }
 
-    public RecordResponseDTO.RecordMemoDto getThreeRecord(Long limjangId) {
-        Limjang limjang = limjangRepository.findById(limjangId)
+    public RecordResponseDTO.RecordMemoDto getThreeRecord(Member member, Long limjangId) {
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
         List<Record> records = recordRepository.findTop3ByLimjangIdOrderByRecordIdDesc(limjang);
 
@@ -140,39 +148,55 @@ public class RecordService {
 
     }
 
-    public LimjangMemoResponseDTO.MemoDto createLimjangMemo(Long limjangId, String memo) {
-        limjangRepository.updateMemo(limjangId, memo);
+    public LimjangMemoResponseDTO.MemoDto createLimjangMemo(Member member, Long limjangId, String memo) {
 
-        if(limjangRepository.findById(limjangId).isEmpty()){
-            throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
-        }
-        else{
-//            limjangRepository.updateMemo(limjangId, memo);
-//            여기에 쓰면 select문 먼저 실행됨...
-            Limjang limjang = limjangRepository.findById(limjangId).get();
-            return LimjangMemoConverter.toDto(limjang);
-        }
+
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
+                .orElseThrow(() -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+        limjang.updateMemo(memo);
+
+        Limjang updatedLimjang = limjangRepository.save(limjang);
+
+//
+        return LimjangMemoConverter.toDto(updatedLimjang);
     }
 
-    public RecordResponseDTO.RecordDto updateRecordContent(Long recordId, String content) {
-        recordRepository.updateRecordContent(recordId, content);
+    public RecordResponseDTO.RecordDto updateRecordContent(Member member, Long recordId, String content) {
 
-        if(recordRepository.findById(recordId).isEmpty()){
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));
+
+        Limjang limjang = limjangRepository.findById(record.getLimjangId().getLimjangId()).orElseThrow(()
+                -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+        if(limjang.getMemberId().getMemberId() != member.getMemberId()){
             throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
         }
 
-        Record record = recordRepository.findById(recordId).get();
-        return RecordConverter.toDto(record);
+        record.updateRecordContent(content);
+
+        Record updatedRecord = recordRepository.save(record);
+
+        return RecordConverter.toDto(updatedRecord);
     }
 
-    public RecordResponseDTO.RecordDto updateRecordTitle(Long recordId, String title) {
-        recordRepository.updateRecordTitle(recordId, title);
+    public RecordResponseDTO.RecordDto updateRecordTitle(Member member, Long recordId, String title) {
 
-        if(recordRepository.findById(recordId).isEmpty()){
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));
+
+        Limjang limjang = limjangRepository.findById(record.getLimjangId().getLimjangId()).orElseThrow(()
+                -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+        if(limjang.getMemberId().getMemberId() != member.getMemberId()){
             throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
         }
 
-        Record record = recordRepository.findById(recordId).get();
-        return RecordConverter.toDto(record);
+        record.updateRecordTitle(title);
+
+        Record updatedRecord = recordRepository.save(record);
+
+        return RecordConverter.toDto(updatedRecord);
     }
 }

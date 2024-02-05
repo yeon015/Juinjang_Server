@@ -32,4 +32,9 @@ public class LimjangUpdateRequestDTO {
     private List<String> priceList;
 
   }
+
+  @Getter
+  public static class LimjangMemoDto{
+    private String memo;
+  }
 }

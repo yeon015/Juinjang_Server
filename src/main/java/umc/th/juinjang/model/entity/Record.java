@@ -46,5 +46,10 @@ public class Record extends BaseEntity {
   @Column(nullable = false)
   private Long recordTime;
 
-
+  public void updateRecordContent(String content){
+    this.recordScript = content;
+  }
+  public void updateRecordTitle(String title){
+    this.recordName = title;
+  }
 }
