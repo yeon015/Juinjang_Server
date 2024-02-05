@@ -92,7 +92,6 @@ public class JwtService {
     // Autorization : Bearer에서 token 추출 (refreshToken, accessToken 포함)
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER);
-
         if(bearerToken == null)
             throw new ExceptionHandler(ErrorStatus.TOKEN_EMPTY);
         else if(StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -104,12 +103,13 @@ public class JwtService {
     // 토큰 유효성 + 만료일자 확인
     public Boolean validateToken(String token) {
         Date now = new Date();
-
         try{
-            // 주어진 토큰을 파싱하고 검증.
+//             주어진 토큰을 파싱하고 검증.
             Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(StandardCharsets.UTF_8)))
+                    .setSigningKey(JWT_SECRET.getBytes())
                     .parseClaimsJws(token);
+            log.info("====");
+//            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date(now.getTime()));
         }catch (Exception e){
             throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);

@@ -35,4 +35,5 @@ public class RecordResponseDTO {
         private LocalDateTime updatedAt;
         private List<RecordDto> recordDto;
     }
+
 }
