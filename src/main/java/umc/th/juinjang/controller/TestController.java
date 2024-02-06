@@ -13,10 +13,7 @@ import umc.th.juinjang.model.entity.Member;
 public class TestController {
 
     @GetMapping("/test")
-    public String test(@AuthenticationPrincipal UserDetails member) {
-//        System.out.println("authentication test" + member.getUsername());
-        log.info("============="+member.getPassword());
-
+    public String test() {
         return "Hello, World!";
     }
 }
