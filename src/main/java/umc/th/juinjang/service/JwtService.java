@@ -3,6 +3,7 @@ package umc.th.juinjang.service;
 import ch.qos.logback.core.spi.ErrorCodes;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.model.dto.auth.TokenDto;
@@ -84,7 +84,7 @@ public class JwtService {
                     .getBody();
             return Long.parseLong(claims.getSubject());
         } catch(Exception e) {
-            throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);
+            throw new JwtException(e.getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ public class JwtService {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(JwtAuthenticationFilter.AUTHORIZATION_HEADER);
         if(bearerToken == null)
-            throw new ExceptionHandler(ErrorStatus.TOKEN_EMPTY);
+            throw new NullPointerException();
         else if(StringUtils.isNotEmpty(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
@@ -112,7 +112,7 @@ public class JwtService {
 //            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date(now.getTime()));
         }catch (Exception e){
-            throw new ExceptionHandler(ErrorStatus.TOKEN_UNAUTHORIZED);
+            throw new JwtException(e.getMessage());
         }
     }
 
@@ -126,7 +126,8 @@ public class JwtService {
                     .setSigningKey(Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(StandardCharsets.UTF_8)))
                     .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date(now.getTime()));
-        }catch (Exception e){
+        }catch (JwtException e){
+
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
