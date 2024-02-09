@@ -23,6 +23,7 @@ import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -38,11 +39,23 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     private final ReportRepository reportRepository;
 
     @Override
-    public List<ChecklistQuestionDTO.QuestionDto> getChecklistQuestionListByVersion(int version) {
+    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistQuestionListByVersion(int version) {
         System.out.println("int version : " + version);
         System.out.println("enum version : " + ChecklistQuestionVersion.find(version));
-        return ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByVersion(ChecklistQuestionVersion.find(version)));
+        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
+        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
+            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
+            questionListDtos.add(questionListDto.builder()
+                    .category(category.getValue())
+                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByVersionAndCategory(ChecklistQuestionVersion.find(version), category)))
+                    .build());
+        }
+        return questionListDtos;
     }
+
+
+
+    @Override
     public List<ChecklistAnswerResponseDTO.AnswerDto> getChecklistAnswerListByLimjang(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
@@ -57,6 +70,7 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public ReportResponseDTO getReportByLimjangId(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));

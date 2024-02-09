@@ -23,7 +23,7 @@ public class ChecklistController {
     @CrossOrigin
     @Operation(summary = "버전별 체크리스트 질문 조회")
     @GetMapping("/checklist")
-    public ApiResponse<List<ChecklistQuestionDTO.QuestionDto>> getChecklistQuestion(@RequestParam Integer version){
+    public ApiResponse<List<ChecklistQuestionDTO.QuestionListDto>> getChecklistQuestion(@RequestParam Integer version){
         return ApiResponse.onSuccess(checklistQueryService.getChecklistQuestionListByVersion(version));
     }
 

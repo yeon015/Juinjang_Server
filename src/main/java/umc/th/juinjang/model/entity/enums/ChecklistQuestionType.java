@@ -7,11 +7,14 @@ import java.util.Arrays;
 
 public enum ChecklistQuestionType {
 
-  // 점수식 체크리스트
-  INT(0),
-  // 점수를 제외한 나머지 체크리스트
-  STR(1),
-  DATE(2);
+  // 점수
+  SCORE(0),
+  // 드롭다운
+  DROPDOWN(1),
+  //텍스트필드
+  TEXT_FIELD(2),
+  //캘린더
+  CALENDER(3);
   private final int value;
 
   ChecklistQuestionType(int value) {

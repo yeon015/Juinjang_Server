@@ -5,8 +5,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 public class ChecklistQuestionDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuestionListDto {
+        private Integer category;
+        private List<QuestionDto> questionDtos;
+    }
 
     @Builder
     @Getter
