@@ -97,12 +97,17 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Override
   @Transactional(readOnly = true)
   public DetailDto getLimjangDetail(Long limjangId) {
-    // 멤버 찾기(임시구현)
-    Member findMember = memberRepository.findById(1L)
-        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    Limjang findLimjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, findMember)
+//    // 멤버 찾기(임시구현)
+//    Member findMember = memberRepository.findById()
+//        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+
+    Limjang findLimjang = limjangRepository.findById(limjangId)
         .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
+//    Limjang findLimjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId)
+//        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
     return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getPriceId());
   }

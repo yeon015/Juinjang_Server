@@ -72,7 +72,8 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 선택 삭제", description = "임장 게시글을 여러 개 선택해서 삭제하는 api입니다.")
   @DeleteMapping("/{limjangIds}")
-  public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
+  public ApiResponse deleteLimjang(@RequestBody @Valid   LimjangDeleteRequestDTO.DeleteDto deleteIds
+//  public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
   ){
     System.out.println("임장 선택 삭제 controller 입니다");
     limjangCommandService.deleteLimjangs(deleteIds);
