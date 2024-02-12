@@ -55,7 +55,7 @@ public class LimjangController {
   @GetMapping("")
   public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> getLimjangTotalList(
       @AuthenticationPrincipal Member member){
-
+    System.out.println("임장 전체 조회 API Controller");
     return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member));
   }
 

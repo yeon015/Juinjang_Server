@@ -40,14 +40,19 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Transactional(readOnly = true)
   public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member) {
 
+    System.out.println("임장 전체 조회 API Service");
     // 멤버 찾기(임시구현)
-    Member findMember = memberRepository.findById(member.getMemberId())
-        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+    Optional<Member> findMember = memberRepository.findById(member.getMemberId());
+    log.info("임장 멤버");
+    if (findMember.isEmpty()){
+      throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
+    }
+//        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    System.out.println("찾은 멤버의 id: "+findMember.getMemberId());
+    System.out.println("찾은 멤버의 id: ");
 
     // 멤버가 가지고있는 모든 글
-    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
+    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember.get()).stream().peek(
         limjang -> {
           Report report = reportRepository.findByLimjangId(limjang).orElse(null);
           limjang.saveReport(report);
