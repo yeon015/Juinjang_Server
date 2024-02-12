@@ -42,12 +42,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public Limjang postLimjang(PostDto request) {
+  public Limjang postLimjang(PostDto request, Member member) {
 
     Limjang limjang = LimjangPostConverter.toLimjang(request);
-    // 임장에 회원 정보 넣는 로직
-    // 임시로 아무거나 넣게함
-    Member findMember = memberRepository.findById(1L)
+
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 임장 가격 테이블에 가격 저장 후 입장에 member, limjangprice추가
@@ -72,6 +71,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Override
   @Transactional
   public void deleteLimjangs(List<Long> ids) {
+    for (Long id : ids){
+      System.out.println("삭제할 임장 id : : "+id);
+    }
+    System.out.println("임장 선택 삭제 service 입니다");
+
     // 게시글 여러개 삭제 가능
     try {
       limjangRepository.deleteAllById(ids);
