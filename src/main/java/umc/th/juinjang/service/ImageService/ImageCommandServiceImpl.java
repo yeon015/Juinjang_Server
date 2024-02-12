@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.converter.image.ImageUploadConverter;
+import umc.th.juinjang.model.dto.image.ImageDeleteRequestDTO;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.repository.image.ImageRepository;
@@ -50,7 +51,9 @@ public class ImageCommandServiceImpl implements ImageCommandService {
 
   @Override
   @Transactional
-  public void deleteImages(List<Long> deleteIds) { //이미지 id로 삭제한다...!
+  public void deleteImages(ImageDeleteRequestDTO.DeleteDto ids
+      ) { //이미지 id로 삭제한다...!
+    List<Long> deleteIds = ids.getImageIdList();
 
       try {
 

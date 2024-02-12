@@ -2,13 +2,9 @@ package umc.th.juinjang.service.LimjangService;
 
 import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -16,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
-import umc.th.juinjang.converter.limjang.LimjangDeleteConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
@@ -29,8 +23,6 @@ import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
-import umc.th.juinjang.utils.LimjangUtil;
-import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 @Slf4j
 @Service

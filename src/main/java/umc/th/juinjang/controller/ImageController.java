@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.model.dto.image.ImageDeleteRequestDTO;
 import umc.th.juinjang.model.dto.image.ImageListResponseDTO;
 import umc.th.juinjang.model.dto.image.ImageUploadRequestDTO;
 import umc.th.juinjang.model.dto.image.ImageUploadRequestDTO.ImageDto;
@@ -71,8 +72,8 @@ public class ImageController {
 
   @CrossOrigin
   @Operation(summary = "이미지 선택 삭제", description = "이미지 게시글을 여러 개 선택해서 삭제하는 api입니다.")
-  @DeleteMapping("/{imageIds}")
-  public ApiResponse deleteImage(@PathVariable(name = "imageIds") @Valid List<Long> deleteIds
+  @PostMapping("/delete")
+  public ApiResponse deleteImage(@RequestBody @Valid ImageDeleteRequestDTO.DeleteDto deleteIds
   ){
 
     imageCommandService.deleteImages(deleteIds);
