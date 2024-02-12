@@ -71,7 +71,7 @@ public class LimjangController {
 
   @CrossOrigin
   @Operation(summary = "임장 선택 삭제", description = "임장 게시글을 여러 개 선택해서 삭제하는 api입니다.")
-  @DeleteMapping("/{limjangIds}")
+  @PostMapping("/delete")
   public ApiResponse deleteLimjang(@RequestBody @Valid   LimjangDeleteRequestDTO.DeleteDto deleteIds
 //  public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
   ){
