@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
+import umc.th.juinjang.converter.limjang.LimjangDeleteConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
@@ -70,7 +71,10 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public void deleteLimjangs(List<Long> ids) {
+  public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
+
+    List<Long> ids = deleteIds.getLimjangIdList();
+
     for (Long id : ids){
       System.out.println("삭제할 임장 id : : "+id);
     }

@@ -11,7 +11,7 @@ public interface LimjangCommandService {
 
   Limjang postLimjang(LimjangPostRequestDTO.PostDto request, Member member);
 
-  void deleteLimjangs(List<Long> ids
+  void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds
       );
 
   void updateLimjang(LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo);
