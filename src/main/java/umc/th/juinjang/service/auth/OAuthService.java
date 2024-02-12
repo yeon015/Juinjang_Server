@@ -100,7 +100,9 @@ public class OAuthService {
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
 
-        return new LoginResponseDto(newAccessToken, newRefreshToken);
+        System.out.println("member nickname : " + member.getNickname());
+
+        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getNickname());
     }
 
     // refreshToken으로 accessToken 발급하기
@@ -129,7 +131,9 @@ public class OAuthService {
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
 
-        return new LoginResponseDto(newAccessToken, newRefreshToken);
+        System.out.println("member nickname : " + member.getNickname());
+
+        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getNickname());
     }
 
     // 로그아웃
