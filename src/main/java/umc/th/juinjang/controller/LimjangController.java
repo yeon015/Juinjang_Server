@@ -74,7 +74,7 @@ public class LimjangController {
   @DeleteMapping("/{limjangIds}")
   public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
   ){
-
+    System.out.println("임장 선택 삭제 controller 입니다");
     limjangCommandService.deleteLimjangs(deleteIds);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_DELETE);
   }

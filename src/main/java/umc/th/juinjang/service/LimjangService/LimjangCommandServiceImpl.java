@@ -71,6 +71,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Override
   @Transactional
   public void deleteLimjangs(List<Long> ids) {
+    for (Long id : ids){
+      System.out.println("삭제할 임장 id : : "+id);
+    }
+    System.out.println("임장 선택 삭제 service 입니다");
+
     // 게시글 여러개 삭제 가능
     try {
       limjangRepository.deleteAllById(ids);

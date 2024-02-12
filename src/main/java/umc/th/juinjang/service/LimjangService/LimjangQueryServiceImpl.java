@@ -44,6 +44,8 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
+    System.out.println("찾은 멤버의 id: "+findMember.getMemberId());
+
     // 멤버가 가지고있는 모든 글
     List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
         limjang -> {
