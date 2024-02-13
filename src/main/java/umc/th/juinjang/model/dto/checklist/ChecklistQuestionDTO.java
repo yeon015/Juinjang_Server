@@ -30,5 +30,16 @@ public class ChecklistQuestionDTO {
         private String question;
         private Integer version;
         private Integer answerType;
+        private List<OptionDto> options;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OptionDto {
+        private Integer indexNum;
+        private Long questionId;
+        private String optionValue;
     }
 }

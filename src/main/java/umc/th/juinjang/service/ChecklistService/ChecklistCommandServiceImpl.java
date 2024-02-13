@@ -49,7 +49,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         answerList = checklistAnswerRepository.saveAll(answerList);
 
         //ChecklistQuestion의 Category로 그룹을 지어줌
-        //ategorizedAnswers는 ChecklistQuestionCategory를 키로, 해당 카테고리에 해당하는 ChecklistAnswer 리스트를 값으로 가지는 Map
+        //categorizedAnswers는 ChecklistQuestionCategory를 키로, 해당 카테고리에 해당하는 ChecklistAnswer 리스트를 값으로 가지는 Map
         Map<ChecklistQuestionCategory, List<ChecklistAnswer>> categorizedAnswers = answerList.stream()
                 .collect(Collectors.groupingBy(answer -> answer.getQuestionId().getCategory()));
 
@@ -127,7 +127,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         int count = 0;
         if (answers != null) {
             for (ChecklistAnswer answer : answers) {
-                if (answer.getQuestionId().getAnswerType() == ChecklistQuestionType.INT) {
+                if (answer.getQuestionId().getAnswerType() == ChecklistQuestionType.SCORE) {
                     total += Float.parseFloat(answer.getAnswer());
                     count++;
                 }
