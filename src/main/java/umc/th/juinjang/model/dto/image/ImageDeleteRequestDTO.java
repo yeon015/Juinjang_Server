@@ -8,6 +8,6 @@ public class ImageDeleteRequestDTO {
   @Getter
   public static class DeleteDto {
 
-    @NotEmpty List<Long> LimIdList;
+    @NotEmpty List<Long> imageIdList;
   }
 }
