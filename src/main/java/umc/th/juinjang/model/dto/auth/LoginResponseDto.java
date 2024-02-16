@@ -11,10 +11,12 @@ public class LoginResponseDto {
 
     private String accessToken;
     private String refreshToken;
+    private String nickname;
 
     @Builder
-    public LoginResponseDto(String accessToken, String refreshToken) {
+    public LoginResponseDto(String accessToken, String refreshToken, String nickname) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.nickname = nickname;
     }
 }

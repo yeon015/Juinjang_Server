@@ -5,12 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.member.MemberRequestDto;
 import umc.th.juinjang.model.dto.member.MemberResponseDto;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 
+import java.util.Optional;
+
+import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.ALREADY_NICKNAME;
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.MEMBER_NOT_FOUND;
 
 @Slf4j
@@ -21,6 +25,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberResponseDto.nicknameDto patchNickname(Member member, MemberRequestDto memberRequestDto) {
+        // 받아온 닉네임 중복 확인
+        Member findMember = memberRepository.findByNickname(memberRequestDto.getNickname());
+        if(findMember != null)
+            throw new MemberHandler(ALREADY_NICKNAME);
+
         // Member 받아오면 해당 member의 nickname 변경
         member.updateNickname(memberRequestDto.getNickname());
         memberRepository.save(member);  // 변수 없이 member 그대로 저장

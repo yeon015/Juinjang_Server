@@ -2,13 +2,9 @@ package umc.th.juinjang.service.LimjangService;
 
 import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -19,7 +15,6 @@ import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
@@ -28,8 +23,6 @@ import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
-import umc.th.juinjang.utils.LimjangUtil;
-import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 @Slf4j
 @Service
@@ -42,12 +35,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public Limjang postLimjang(PostDto request) {
+  public Limjang postLimjang(PostDto request, Member member) {
 
     Limjang limjang = LimjangPostConverter.toLimjang(request);
-    // 임장에 회원 정보 넣는 로직
-    // 임시로 아무거나 넣게함
-    Member findMember = memberRepository.findById(1L)
+
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 임장 가격 테이블에 가격 저장 후 입장에 member, limjangprice추가
@@ -71,7 +63,15 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public void deleteLimjangs(List<Long> ids) {
+  public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
+
+    List<Long> ids = deleteIds.getLimjangIdList();
+
+    for (Long id : ids){
+      System.out.println("삭제할 임장 id : : "+id);
+    }
+    System.out.println("임장 선택 삭제 service 입니다");
+
     // 게시글 여러개 삭제 가능
     try {
       limjangRepository.deleteAllById(ids);

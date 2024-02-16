@@ -25,6 +25,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // nickname 에러
     NICKNAME_EMPTY(HttpStatus.BAD_REQUEST, "NICKNAME4001", "닉네임이 존재하지 않습니다. 닉네임을 입력해주세요."),
+    ALREADY_NICKNAME(HttpStatus.BAD_REQUEST, "NICKNAME4002", "이미 존재하는 닉네임입니다."),
 
 
     // Limjang Error

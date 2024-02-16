@@ -37,10 +37,13 @@ public class SecurityConfig {
     @Order(0)
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                // 로그인 개발 끝나면 삭제 **
                 .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html",
+
                         "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
                         "/api/auth/kakao/**", "/api/checklist/**", "/api/report/**");
+
+
+
     }
 
     //선언 방식이 3.x에서 바뀜
