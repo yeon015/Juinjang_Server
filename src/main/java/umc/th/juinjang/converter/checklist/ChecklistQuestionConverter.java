@@ -33,7 +33,7 @@ public class ChecklistQuestionConverter {
                 .category(checklistQuestion.getCategory().getValue())
                 .subCategory(checklistQuestion.getSubCategory())
                 .question(checklistQuestion.getQuestion())
-                .version(checklistQuestion.getVersion().getValue())
+                .version(checklistQuestion.getPurpose().getValue())
                 .answerType(checklistQuestion.getAnswerType().getValue())
                 .options(ChecklistQuestionConverter.toChecklistAnswerOptionDTO(checklistQuestion.getAnswerOptions()))
                 .build();
