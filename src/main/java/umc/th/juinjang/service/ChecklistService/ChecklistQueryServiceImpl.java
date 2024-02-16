@@ -17,14 +17,17 @@ import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Report;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionCategory;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionVersion;
+import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 import umc.th.juinjang.repository.checklist.ChecklistAnswerRepository;
 import umc.th.juinjang.repository.checklist.ChecklistQuestionRepository;
 import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -38,14 +41,27 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     private final ReportRepository reportRepository;
 
     @Override
-    public List<ChecklistQuestionDTO.QuestionDto> getChecklistQuestionListByVersion(int version) {
+    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistQuestionListByVersion(int version) {
         System.out.println("int version : " + version);
         System.out.println("enum version : " + ChecklistQuestionVersion.find(version));
-        return ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByVersion(ChecklistQuestionVersion.find(version)));
+        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
+        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
+            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
+            questionListDtos.add(questionListDto.builder()
+                    .category(category.getValue())
+                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(LimjangPurpose.find(version), category)))
+                    .build());
+        }
+        return questionListDtos;
     }
+
+
+
+    @Override
     public List<ChecklistAnswerResponseDTO.AnswerDto> getChecklistAnswerListByLimjang(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+
         List<ChecklistAnswer> answerList = checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang);
         return answerList.stream()
                 .map(entity -> ChecklistAnswerResponseDTO.AnswerDto.builder()
@@ -57,6 +73,33 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                 .collect(Collectors.toList());
     }
 
+    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistByLimjang(Long limjangId) {
+        Limjang limjang = limjangRepository.findById(limjangId)
+                .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
+        List<ChecklistAnswer> answerList = checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang);
+        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
+            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
+            questionListDtos.add(questionListDto.builder()
+                    .category(category.getValue())
+                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(limjang.getPurpose(), category)))
+                    .build());
+        }
+        for (ChecklistQuestionDTO.QuestionListDto dto : questionListDtos) {
+            List<ChecklistQuestionDTO.QuestionDto> questionDtos = dto.getQuestionDtos();
+            for (ChecklistQuestionDTO.QuestionDto questionDto : questionDtos) {
+                for (ChecklistAnswer answer : answerList) {
+                    if (Objects.equals(questionDto.getQuestionId(), answer.getQuestionId().getQuestionId()))
+                        questionDto.setAnswer(answer.getAnswer());
+                }
+            }
+
+        }
+
+        return questionListDtos;
+    }
+
+    @Override
     public ReportResponseDTO getReportByLimjangId(Long limjangId) {
         Limjang limjang = limjangRepository.findById(limjangId)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));

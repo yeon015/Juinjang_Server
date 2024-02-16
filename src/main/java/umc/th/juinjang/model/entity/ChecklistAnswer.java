@@ -31,6 +31,7 @@ public class ChecklistAnswer extends BaseEntity {
   @JoinColumn(name = "question_id")
   private ChecklistQuestion questionId;
 
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "limjang_id")
   private Limjang limjangId;

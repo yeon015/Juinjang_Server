@@ -1,15 +1,25 @@
 package umc.th.juinjang.model.dto.checklist;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 
 public class ChecklistQuestionDTO {
 
     @Builder
     @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuestionListDto {
+        private Integer category;
+        private List<QuestionDto> questionDtos;
+    }
+
+    @Builder
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class QuestionDto {
@@ -19,5 +29,19 @@ public class ChecklistQuestionDTO {
         private String question;
         private Integer version;
         private Integer answerType;
+        private List<OptionDto> options;
+        private String answer;
+    }
+
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OptionDto {
+        private Integer indexNum;
+        private Long questionId;
+        private String optionValue;
     }
 }

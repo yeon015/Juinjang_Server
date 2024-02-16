@@ -13,6 +13,7 @@ import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionCategory;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionType;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionVersion;
+import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 
 @Entity
 @Getter
@@ -37,7 +38,7 @@ public class ChecklistQuestion extends BaseEntity {
 
   @Column(nullable = false)
   @Enumerated(EnumType.ORDINAL)
-  private ChecklistQuestionVersion version;
+  private LimjangPurpose purpose;
 
   @Column(nullable = false)
   @Enumerated(EnumType.ORDINAL)
@@ -45,5 +46,8 @@ public class ChecklistQuestion extends BaseEntity {
 
   @OneToMany(mappedBy = "questionId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "questionId", cascade = CascadeType.ALL)
+  private List<ChecklistAnswerOption> answerOptions = new ArrayList<>();
 
 }
