@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
@@ -54,9 +55,11 @@ public class LimjangController {
   @Operation(summary = "임장 전체 조회 API")
   @GetMapping("")
   public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> getLimjangTotalList(
-      @AuthenticationPrincipal Member member){
+      @AuthenticationPrincipal Member member,
+    @RequestParam String sort
+  ){
     System.out.println("임장 전체 조회 API Controller");
-    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member));
+    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member, sort));
   }
 
   @CrossOrigin

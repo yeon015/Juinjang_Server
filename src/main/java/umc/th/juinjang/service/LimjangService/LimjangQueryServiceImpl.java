@@ -1,5 +1,6 @@
 package umc.th.juinjang.service.LimjangService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,34 +33,36 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   private final LimjangRepository limjangRepository;
   private final MemberRepository memberRepository;
-  private final LimjangPriceRepository limjangPriceRepository;
-  private final ScrapRepository scrapRepository;
   private final ReportRepository reportRepository;
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member) {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member, String sort) {
 
     System.out.println("임장 전체 조회 API Service");
-    // 멤버 찾기(임시구현)
-    Optional<Member> findMember = memberRepository.findById(member.getMemberId());
-    log.info("임장 멤버");
-    if (findMember.isEmpty()){
-      throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND);
-    }
-//        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+    // 멤버 찾기
+    Member findMember = memberRepository.findById(member.getMemberId()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     System.out.println("찾은 멤버의 id: ");
 
     // 멤버가 가지고있는 모든 글
-    List<Limjang> findAllLimjangList = limjangRepository.findLimjangByMemberId(findMember.get()).stream().peek(
+    List<Limjang> findLimjangList = new ArrayList<>();
+
+
+    // 업데이트순
+
+    // 별점순
+
+    // 등록순
+
+    findLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
         limjang -> {
           Report report = reportRepository.findByLimjangId(limjang).orElse(null);
           limjang.saveReport(report);
         }
     ).toList();
 
-    return LimjangTotalListConverter.toLimjangTotalList(findAllLimjangList);
+    return LimjangTotalListConverter.toLimjangTotalList(findLimjangList);
   }
 
   @Override
