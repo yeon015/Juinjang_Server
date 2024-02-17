@@ -89,7 +89,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     // 임장 찾는다
-    System.out.println("임장 메인화면 조회 API Service, 멤버 찾음");
+    System.out.println("임장 메인화면 조회 API Service, 멤버 찾음" +findMember.getMemberId());
     return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
         .stream()
         .peek(limjang -> {
