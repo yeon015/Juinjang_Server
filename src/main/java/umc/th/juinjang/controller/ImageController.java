@@ -49,7 +49,6 @@ public class ImageController {
   private final ImageCommandService imageCommandService;
   private final ImageQueryService imageQueryService;
 
-  // Long 타입을 리턴하고 싶은 경우 붙여야 함 (Long - 객체)
    @CrossOrigin
    @Operation(summary = "사진 생성 API", description = "사진 업로드 api입니다.")
    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
