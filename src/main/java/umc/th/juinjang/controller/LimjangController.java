@@ -68,7 +68,7 @@ public class LimjangController {
   public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
       @AuthenticationPrincipal Member member
   ){
-
+    System.out.println("임장 메인화면 조회 API Controller");
     return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList(member)));
   }
 

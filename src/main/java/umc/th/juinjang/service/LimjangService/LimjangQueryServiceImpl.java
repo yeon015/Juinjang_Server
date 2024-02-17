@@ -83,10 +83,13 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Override
   @Transactional(readOnly = true)
   public List<LimjangMainViewListResponsetDTO.ListDto> getLimjangMainList(Member member) {
+    System.out.println("임장 메인화면 조회 API Service, 첫번째 줄");
     // 멤버 찾기
     Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
     // 임장 찾는다
+    System.out.println("임장 메인화면 조회 API Service, 멤버 찾음");
     return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
         .stream()
         .peek(limjang -> {
