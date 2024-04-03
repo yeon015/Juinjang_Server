@@ -28,7 +28,8 @@ public class OAuthService {
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
-    // 카카오 로그인 accessToken, refreshToken 발급
+    // 카카오 로그인
+    // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
     @Transactional
     public LoginResponseDto kakaoLogin(KakaoLoginRequestDto kakaoReqDto) {
         String email = kakaoReqDto.getEmail();

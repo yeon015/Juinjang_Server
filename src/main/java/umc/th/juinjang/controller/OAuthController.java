@@ -23,29 +23,11 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 @RequiredArgsConstructor
 @Validated
 public class OAuthController {
-    private final OAuthService oauthService;
-    private final JwtService jwtService;
 
-//    // 카카오 로그인
-//    // 사용자 로그인 페이지 제공 단계 - url
-//    @GetMapping(value="/{socialLoginType}")
-//    public void socialLoginType(@PathVariable(name="socialLoginType") String socialLoginType) throws IOException {
-//        oauthService.request(socialLoginType);
-//    }
-//
-//    // code -> accessToken 받아오기
-//    // accessToken -> 사용자 정보 받아오기
-//    @GetMapping(value="/{socialLoginType}/callback")
-//    public ApiResponse<LoginResponseDto> callback(
-//            @PathVariable(name="socialLoginType") String socialLoginType,
-//            @RequestParam(name="code") String code) throws JsonProcessingException {
-//
-//        LoginResponseDto result = oauthService.oauthLogin(socialLoginType, code);
-//        return ApiResponse.onSuccess(result);
-//    }
+    private final OAuthService oauthService;
 
     // 카카오 로그인
-    // 프론트 측에서 사용자 정보 전달
+    // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
     @PostMapping("/{socialLoginType}")
     public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody KakaoLoginRequestDto kakaoReqDto) {
         return ApiResponse.onSuccess(oauthService.kakaoLogin(kakaoReqDto));
