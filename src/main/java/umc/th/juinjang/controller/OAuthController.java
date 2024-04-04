@@ -28,7 +28,7 @@ public class OAuthController {
 
     // 카카오 로그인
     // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
-    @PostMapping("/{socialLoginType}")
+    @PostMapping("/kakao")
     public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody KakaoLoginRequestDto kakaoReqDto) {
         return ApiResponse.onSuccess(oauthService.kakaoLogin(kakaoReqDto));
     }
