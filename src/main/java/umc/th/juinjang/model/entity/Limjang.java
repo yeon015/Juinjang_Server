@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -40,9 +41,8 @@ import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE limjang SET deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE limjang SET deleted = true  WHERE limjang_id = ?")
 @Where(clause = "deleted = false")
-
 public class Limjang extends BaseEntity {
 
   @Id
@@ -110,7 +110,8 @@ public class Limjang extends BaseEntity {
   @ColumnDefault("0") //default 0
   private int recordCount;
 
-  private Boolean deleted = Boolean.FALSE;
+  @Column(nullable = false, name = "deleted")
+  private boolean deleted = Boolean.FALSE;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){
     this.priceId = limjangPrice;

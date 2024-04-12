@@ -79,7 +79,6 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
         System.out.println("삭제할 임장 id : : "+id);
       }
 
-      limjangRepository.deleteAllById(ids);
     } catch (DataIntegrityViolationException e) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
     } catch (EmptyResultDataAccessException e) {

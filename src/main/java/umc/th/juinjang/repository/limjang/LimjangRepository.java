@@ -13,7 +13,7 @@ import umc.th.juinjang.model.entity.Member;
 
 @Repository
 public interface LimjangRepository extends JpaRepository<Limjang, Long> {
-
+  
   List<Limjang> findLimjangByMemberId(Member member);
 
   // 가장 최근에 update된 5개 순서대로
