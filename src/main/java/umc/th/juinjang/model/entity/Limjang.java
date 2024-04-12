@@ -41,7 +41,6 @@ import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE limjang SET deleted = true  WHERE limjang_id = ?")
 @Where(clause = "deleted = false")
 public class Limjang extends BaseEntity {
 
