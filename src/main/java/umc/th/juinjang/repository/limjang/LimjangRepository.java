@@ -22,7 +22,6 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long> {
   @Query("UPDATE Limjang l SET l.deleted = true, l.updatedAt = CURRENT_TIMESTAMP WHERE l.limjangId = :limjangId")
   void softDeleteById(@Param("limjangId") Long limjangId);
 
-  // soft delete
   @Modifying
   @Query(value ="DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
   void hardDelete(@Param("dateTime") LocalDateTime dateTime);
