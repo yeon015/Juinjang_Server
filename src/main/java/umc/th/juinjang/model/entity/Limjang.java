@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -25,6 +26,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
@@ -38,6 +41,7 @@ import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Where(clause = "deleted = false")
 public class Limjang extends BaseEntity {
 
   @Id
@@ -104,6 +108,9 @@ public class Limjang extends BaseEntity {
   @Column(name = "record_count")
   @ColumnDefault("0") //default 0
   private int recordCount;
+
+  @Column(nullable = false, name = "deleted")
+  private boolean deleted = Boolean.FALSE;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){
     this.priceId = limjangPrice;
