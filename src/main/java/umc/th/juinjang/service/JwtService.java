@@ -108,7 +108,6 @@ public class JwtService {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(JWT_SECRET.getBytes())
                     .parseClaimsJws(token);
-            log.info("====");
 //            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date(now.getTime()));
         }catch (Exception e){
