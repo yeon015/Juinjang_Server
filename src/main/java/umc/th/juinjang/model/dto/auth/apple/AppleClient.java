@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth", configuration = FeignClient.class)
 public interface AppleClient {
-    @GetMapping(value = "/keys")
+    @GetMapping(value = "/api/auth/apple-keys")
     ApplePublicKeyResponse getAppleAuthPublicKey();
 
 

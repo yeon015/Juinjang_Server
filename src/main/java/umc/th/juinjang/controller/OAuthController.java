@@ -25,8 +25,7 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 public class OAuthController {
 
     private final OAuthService oauthService;
-
-    //애플 로그인
+    
 
     // 카카오 로그인
     // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
@@ -63,4 +62,11 @@ public class OAuthController {
         } else
             throw new ExceptionHandler(TOKEN_EMPTY);
     }
+
+    //애플 로그인 컨트롤러
+    // publicKey 클라이언트로부터 받아야함
+
+//    @PostMapping
+//    public ApiResponse<String>
+
 }
