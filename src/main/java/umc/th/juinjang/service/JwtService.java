@@ -1,6 +1,8 @@
 package umc.th.juinjang.service;
 
 import ch.qos.logback.core.spi.ErrorCodes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Null;
@@ -18,12 +20,19 @@ import org.springframework.stereotype.Service;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.model.dto.auth.TokenDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleClient;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.auth.UserDetailServiceImpl;
+import umc.th.juinjang.utils.ApplePublicKeyGenerator;
 
+import javax.naming.AuthenticationException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +46,12 @@ public class JwtService {
     private Long tokenValidTime = 1000L * 60 * 60; // 1h
     private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
 
+    private final AppleClient appleAuthClient;
     private MemberRepository memberRepository;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
+    private final ApplePublicKeyGenerator applePublicKeyGenerator;
 
     // access token 생성
     public String encodeJwtToken(TokenDto tokenDto) {
@@ -146,5 +157,31 @@ public class JwtService {
         Long now = new Date().getTime();
 
         return (expiration.getTime() - now);
+    }
+    
+    // 에플 토큰으로부터 id 추춯하기
+    //리팩토링 필요 겹치는 부분 많음
+    public String getAppleAccountId(String identityToken) throws JsonProcessingException, AuthenticationException, NoSuchAlgorithmException, InvalidKeySpecException {
+        Map<String, String> headers = parseIdentityToken(identityToken);
+        PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, appleAuthClient.getAppleAuthPublicKey());
+
+        return getTokenClaims(identityToken, publicKey).getSubject();
+    }
+
+    public Map<String, String> parseIdentityToken(String token) throws JsonProcessingException {
+        String header = token.split("\\.")[0];
+        return new ObjectMapper().readValue(decodeHeader(header), Map.class);
+    }
+
+    public String decodeHeader(String token) {
+        return new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
+    }
+
+    public Claims getTokenClaims(String token, PublicKey publicKey) {
+        return Jwts.parserBuilder()
+                .setSigningKey(publicKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

@@ -31,6 +31,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try{
             log.info("exception filter");
             doFilter(request,response,filterChain);
+            log.info("jwt success");
         } catch (JwtException e) {
             final Map<String, Object> body = new HashMap<>();
             final ObjectMapper mapper = new ObjectMapper();

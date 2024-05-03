@@ -58,10 +58,17 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
                 logger.info("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
                 throw new NullPointerException("유효한 JWT 토큰이 없습니다");
             }
-        } catch (JwtException e) {
+        }
+
+        //굳이 exception 세분화 해야하나.....
+        catch(IllegalArgumentException e){
+            throw new JwtException(e.getMessage());
+        }
+        catch (JwtException e) {
             // JwtException 발생 시 예외 처리
             throw new JwtException(e.getMessage());
             // 예외 처리 로직 작성
+
         }
         chain.doFilter(request, response);
 

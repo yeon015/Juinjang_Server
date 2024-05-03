@@ -1,4 +1,5 @@
 package umc.th.juinjang.service.auth;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,12 +10,17 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleClient;
+import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.enums.MemberProvider;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.JwtService;
 
+import javax.naming.AuthenticationException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -122,4 +128,27 @@ public class OAuthService {
 
         return "로그아웃 성공";
     }
+    
+    //애플 로그인
+    public LoginResponseDto appleLogin(AppleLoginRequestDto appleLoginRequest) throws AuthenticationException, NoSuchAlgorithmException, InvalidKeySpecException, JsonProcessingException {
+        //필드추가필요
+        String accountId = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken());
+//        Member member = memberRepository.findByAccountId(accountId);
+
+//        if(member != null){ // 이미 회원가입한 회원인 경우
+
+//        }else{
+//            member = memberRepository.save(
+//                    Member.builder()
+//                            .email()
+//                            .provider(MemberProvider.APPLE)
+//                            .nickname()
+//                            .refreshToken("")
+//                            .refreshTokenExpiresAt(LocalDateTime.now())
+//                            .build()
+//            );
+
+        return null;
+    }
+
 }
