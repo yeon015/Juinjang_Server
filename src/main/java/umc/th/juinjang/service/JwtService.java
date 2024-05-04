@@ -41,11 +41,13 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String JWT_SECRET;
 
-    @Autowired
+
     private final UserDetailServiceImpl userDetailService;
     private Long tokenValidTime = 1000L * 60 * 60; // 1h
     private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
 
+
+    @Autowired
     private final AppleClient appleAuthClient;
     private MemberRepository memberRepository;
 
