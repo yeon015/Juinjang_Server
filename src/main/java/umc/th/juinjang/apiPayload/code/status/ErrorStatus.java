@@ -22,6 +22,8 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자의 이메일이 없습니다."),
     MEMBER_NOT_FOUND_IN_KAKAO(HttpStatus.BAD_REQUEST, "MEMBER4003", "APPLE로 회원가입한 회원입니다."),
     ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "MEMBER4004", "이미 로그아웃 되었습니다."),
+    UNCORRECTED_INFO(HttpStatus.BAD_REQUEST, "MEMBER4005", "올바르지 않은 정보입니다."),
+    MEMBER_NOT_FOUND_IN_APPLE(HttpStatus.BAD_REQUEST, "MEMBER4003", "KAKAO로 회원가입한 회원입니다."),
 
     // nickname 에러
     NICKNAME_EMPTY(HttpStatus.BAD_REQUEST, "NICKNAME4001", "닉네임이 존재하지 않습니다. 닉네임을 입력해주세요."),
@@ -61,6 +63,10 @@ public enum ErrorStatus implements BaseErrorCode {
     REFRESH_TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN402", "유효하지 않은 Refresh Token입니다. 다시 로그인하세요."),
     ACCESS_TOKEN_AUTHORIZED(HttpStatus.BAD_REQUEST, "TOKEN403", "유효한 Access Token입니다."),
     REFRESH_TOKEN_AUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN404", "유효한 Refresh Token입니다."),
+    APPLE_ID_TOKEN_EMPTY(HttpStatus.BAD_REQUEST,"TOKEN405", "ID TOKEN값이 존재하지 않습니다."),
+    INVALID_APPLE_ID_TOKEN(HttpStatus.UNAUTHORIZED,"TOKEN406", "Apple OAuth Identity Token 값이 올바르지 않습니다."),
+    PUBLICKEY_ERROR_IN_APPLE_LOGIN(HttpStatus.UNAUTHORIZED,"TOKEN407", "Apple OAuth 로그인 중 public key 생성에 문제가 발생했습니다."),
+    INVALID_APPLE_ID_TOKEN_INFO(HttpStatus.UNAUTHORIZED,"TOKEN407", "Apple id_token 값의 alg, kid 정보가 올바르지 않습니다."),
 
     // Image 에러
     IMAGE_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE4000", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),

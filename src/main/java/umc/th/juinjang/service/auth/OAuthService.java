@@ -10,6 +10,7 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.entity.Member;
@@ -41,14 +42,14 @@ public class OAuthService {
         log.info(kakaoReqDto.getEmail());
 
         if(email == null)
-            throw new MemberHandler(ErrorStatus.MEMBER_EMAIL_NOT_FOUND);
+            throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
 
         Optional<Member> getMember = memberRepository.findByEmail(email);
         Member member;
         if(getMember.isPresent()){  // 이미 회원가입한 회원인 경우
             member = getMember.get();
             if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
-                throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND_IN_KAKAO);
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
         } else {    // 아직 회원가입 하지 않은 회원인 경우
             member = memberRepository.save(
                     Member.builder()
@@ -64,20 +65,8 @@ public class OAuthService {
             System.out.println("member nickname : " + member.getNickname());
         }
 
-        // accessToken, refreshToken 발급
-        String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
-        String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
-
-        System.out.println("newAccessToken : " + newAccessToken);
-        System.out.println("newRefreshToken : " + newRefreshToken);
-
-        // DB에 refreshToken 저장
-        member.updateRefreshToken(newRefreshToken);
-        memberRepository.save(member);
-
-        System.out.println("member nickname : " + member.getNickname());
-
-        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getEmail());
+        // accessToken, refreshToken 발급 후 반환
+        return createToken(member);
     }
 
     // refreshToken으로 accessToken 발급하기
@@ -128,26 +117,69 @@ public class OAuthService {
         return "로그아웃 성공";
     }
     
-    //애플 로그인
-    public LoginResponseDto appleLogin(AppleLoginRequestDto appleLoginRequest) throws AuthenticationException, NoSuchAlgorithmException, InvalidKeySpecException, JsonProcessingException {
-        //필드추가필요
-        String accountId = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken());
-//        Member member = memberRepository.findByAccountId(accountId);
+    // 애플 로그인
+    @Transactional
+    public LoginResponseDto appleLogin(AppleLoginRequestDto appleLoginRequest) {
+        // email, sub값 추출 후 db에서 해당 email값 그리고 sub값을 가진 유저가 있는지 find
+        // 1. 추출한 email, sub 값이 null이면 -> 잘못된 apple token
+        // 2. db에서 각각 find한 회원 id가 다르면 에러 (올바르지 않은 정보)
+        // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
+        // 4. db에 email, sub값 둘 다 없으면 회원가입
+        // 탈퇴 처리는 추후에
 
-//        if(member != null){ // 이미 회원가입한 회원인 경우
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken());
+        String email = appleInfo.getEmail();
+        String sub = appleInfo.getSub();
 
-//        }else{
-//            member = memberRepository.save(
-//                    Member.builder()
-//                            .email()
-//                            .provider(MemberProvider.APPLE)
-//                            .nickname()
-//                            .refreshToken("")
-//                            .refreshTokenExpiresAt(LocalDateTime.now())
-//                            .build()
-//            );
+        if(email == null || sub == null)
+            throw new ExceptionHandler(INVALID_APPLE_ID_TOKEN);
 
-        return null;
+
+        Optional<Member> findSub = memberRepository.findByAppleSub(sub);
+        Optional<Member> findEmail = memberRepository.findByEmail(email);
+
+        if(!findSub.equals(findEmail))
+            throw new MemberHandler(UNCORRECTED_INFO);
+
+        Member member = null;
+        if(findSub.isPresent() && findEmail.isPresent()) {  // 재로그인
+            member = findEmail.get();
+            if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        } else if(!findSub.isPresent() && !findEmail.isPresent()) {
+            member = memberRepository.save(
+                    Member.builder()
+                            .email(email)
+                            .provider(MemberProvider.APPLE)
+                            .appleSub(sub)
+                            .refreshToken("")
+                            .refreshTokenExpiresAt(LocalDateTime.now())
+                            .build()
+            );
+            System.out.println("member id : " + member.getMemberId());
+            System.out.println("member email : " + member.getEmail());
+        }
+
+        // accessToken, refreshToken 발급
+        if(member == null)
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        return createToken(member);
     }
 
+    // accessToken, refreshToken 발급
+    public LoginResponseDto createToken(Member member) {
+        String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
+        String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
+
+        System.out.println("newAccessToken : " + newAccessToken);
+        System.out.println("newRefreshToken : " + newRefreshToken);
+
+        // DB에 refreshToken 저장
+        member.updateRefreshToken(newRefreshToken);
+        memberRepository.save(member);
+
+        System.out.println("member nickname : " + member.getNickname());
+
+        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getEmail());
+    }
 }
