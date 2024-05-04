@@ -20,7 +20,7 @@ public class ChecklistAnswerAndReportConverter {
                         answer.getAnswerId(),
                         answer.getQuestionId().getQuestionId(),
                         answer.getQuestionId().getCategory(),
-             p           answer.getLimjangId().getLimjangId(),
+                        answer.getLimjangId().getLimjangId(),
                         answer.getAnswer(),
                         answer.getQuestionId().getAnswerType()))
                 .collect(Collectors.toList());
