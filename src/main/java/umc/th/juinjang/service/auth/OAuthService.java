@@ -10,7 +10,6 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
-import umc.th.juinjang.model.dto.auth.apple.AppleClient;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.entity.Member;
