@@ -17,10 +17,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleClient;
+import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.auth.UserDetailServiceImpl;
 import umc.th.juinjang.utils.ApplePublicKeyGenerator;
@@ -163,16 +165,30 @@ public class JwtService {
     
     // 에플 토큰으로부터 id 추춯하기
     //리팩토링 필요 겹치는 부분 많음
-    public String getAppleAccountId(String identityToken) throws JsonProcessingException, AuthenticationException, NoSuchAlgorithmException, InvalidKeySpecException {
+    public AppleInfo getAppleAccountId(String identityToken){
         Map<String, String> headers = parseIdentityToken(identityToken);
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, appleAuthClient.getAppleAuthPublicKey());
 
-        return getTokenClaims(identityToken, publicKey).getSubject();
+        Claims claims = getTokenClaims(identityToken, publicKey);
+        log.info("claims : " + claims.toString());
+
+        // claims 에러 처리
+//        if(!claims.is)
+
+        String email = claims.get("email", String.class);
+        String sub = claims.get("sub", String.class);
+        log.info("email : " + email + "\nsub : " + sub);
+
+        return new AppleInfo(email, sub);
     }
 
-    public Map<String, String> parseIdentityToken(String token) throws JsonProcessingException {
-        String header = token.split("\\.")[0];
-        return new ObjectMapper().readValue(decodeHeader(header), Map.class);
+    public Map<String, String> parseIdentityToken(String token) {
+        try {
+            String header = token.split("\\.")[0];
+            return new ObjectMapper().readValue(decodeHeader(header), Map.class);
+        } catch (JsonProcessingException e) {
+            throw new ExceptionHandler(ErrorStatus.INVALID_APPLE_ID_TOKEN);
+        }
     }
 
     public String decodeHeader(String token) {

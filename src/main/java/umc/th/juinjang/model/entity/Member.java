@@ -36,6 +36,10 @@ public class Member extends BaseEntity implements UserDetails {
   @Column(nullable = false)
   private MemberProvider provider;
 
+  // apple client id값을 의미
+  @Column(name = "apple_sub")
+  private String appleSub;
+
   @Column(nullable = false)
   private String refreshToken;
 
