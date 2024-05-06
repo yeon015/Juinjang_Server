@@ -40,6 +40,9 @@ public class Member extends BaseEntity implements UserDetails {
   @Column(name = "apple_sub")
   private String appleSub;
 
+  @Lob
+  private String imageUrl;
+
   @Column(nullable = false)
   private String refreshToken;
 
@@ -98,5 +101,9 @@ public class Member extends BaseEntity implements UserDetails {
 
   public void updateNickname(String nickname) {
     this.nickname = nickname;
+  }
+
+  public void updateImage(String imageUrl) {
+    this.imageUrl = imageUrl;
   }
 }
