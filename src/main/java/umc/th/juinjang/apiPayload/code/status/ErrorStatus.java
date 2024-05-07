@@ -71,6 +71,8 @@ public enum ErrorStatus implements BaseErrorCode {
     // Image 에러
     IMAGE_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE4000", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
     IMAGE_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "IMAGE4001", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다." ),
+    IMAGE_EMPTY(HttpStatus.BAD_REQUEST, "IMAGE4002", "이미지가 첨부되지 않았습니다." ),
+    IMAGE_NOT_SAVE(HttpStatus.BAD_REQUEST, "IMAGE4003", "이미지 저장에 실패했습니다." ),
 
     //S3 에러
     //FILE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "FILE400", ""),
