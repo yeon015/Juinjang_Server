@@ -13,7 +13,9 @@ import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.service.JwtService;
 import umc.th.juinjang.service.auth.OAuthService;
 
@@ -32,9 +34,15 @@ public class OAuthController {
 
     // 카카오 로그인
     // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
-    @PostMapping("/kakao")
-    public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody KakaoLoginRequestDto kakaoReqDto) {
+    @PostMapping("/kakao/login")
+    public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
         return ApiResponse.onSuccess(oauthService.kakaoLogin(kakaoReqDto));
+    }
+
+    // 카카오 로그인 (회원가입)
+    @PostMapping("/kakao/signup")
+    public ApiResponse<LoginResponseDto> kakaoSignUp(@RequestBody @Validated KakaoSignUpRequestDto kakaoSignUpReqDto) {
+        return ApiResponse.onSuccess(oauthService.kakaoSignUp(kakaoSignUpReqDto));
     }
 
     // refreshToken으로 accessToken 재발급
@@ -71,11 +79,18 @@ public class OAuthController {
     // 사용자가 입력한 정보를 바탕으로 Apple ID servers 에게 Identity Token 발급 요청 (프론트가) -> 이를 우리 서버가 가져오는 것
     // Identity Token 값을 바탕으로 사용자 식별 & refresh, access Token 발급해주고 DB 저장 (로그인하기)
 
-    @PostMapping("/apple")
-    public ApiResponse<LoginResponseDto> appleLogin(@RequestBody AppleLoginRequestDto appleReqDto) {
+    // 로그인
+    @PostMapping("/apple/login")
+    public ApiResponse<LoginResponseDto> appleLogin(@RequestBody @Validated AppleLoginRequestDto appleReqDto) {
         if (appleReqDto.getIdentityToken() == null)
             throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
         return ApiResponse.onSuccess(oauthService.appleLogin(appleReqDto));
     }
 
+    @PostMapping("/apple/signup")
+    public ApiResponse<LoginResponseDto> appleSignUp(@RequestBody @Validated AppleSignUpRequestDto appleSignUpReqDto) {
+        if (appleSignUpReqDto.getIdentityToken() == null)
+            throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
+        return ApiResponse.onSuccess(oauthService.appleSignUp(appleSignUpReqDto));
+    }
 }
