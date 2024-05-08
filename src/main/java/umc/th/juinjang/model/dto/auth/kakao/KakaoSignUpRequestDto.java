@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KakaoLoginRequestDto {
+public class KakaoSignUpRequestDto {
 
     @NotEmpty
     private String email;
     private String kakaoNickname;
+    @NotEmpty
+    private String nickname;
 }

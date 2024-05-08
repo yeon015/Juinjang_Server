@@ -1,4 +1,4 @@
-package umc.th.juinjang.model.dto.auth.kakao;
+package umc.th.juinjang.model.dto.auth.apple;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KakaoLoginRequestDto {
+public class AppleSignUpRequestDto {
 
     @NotEmpty
-    private String email;
-    private String kakaoNickname;
+    private String identityToken;
+    @NotEmpty
+    private String nickname;
 }
