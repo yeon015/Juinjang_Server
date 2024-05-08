@@ -87,7 +87,7 @@ public class OAuthController {
         return ApiResponse.onSuccess(oauthService.appleLogin(appleReqDto));
     }
 
-    @PostMapping("/apple/login")
+    @PostMapping("/apple/signup")
     public ApiResponse<LoginResponseDto> appleSignUp(@RequestBody @Validated AppleSignUpRequestDto appleSignUpReqDto) {
         if (appleSignUpReqDto.getIdentityToken() == null)
             throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
