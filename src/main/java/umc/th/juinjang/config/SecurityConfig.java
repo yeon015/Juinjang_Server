@@ -42,8 +42,6 @@ public class SecurityConfig {
                         "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
                         "/api/auth/kakao/**", "/api/auth/apple/**", "/api/checklist/**", "/api/report/**");
 
-
-
     }
 
     //선언 방식이 3.x에서 바뀜
