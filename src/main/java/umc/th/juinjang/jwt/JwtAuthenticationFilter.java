@@ -1,5 +1,6 @@
 package umc.th.juinjang.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,6 +8,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,31 +47,25 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
         String requestURI = request.getRequestURI();
 
         // 토큰이 존재 여부 + 토큰 검증
-        try {
-            if (StringUtils.isNotEmpty(token) && jwtService.validateToken(token)) {
+
+
+            if (StringUtils.isNotEmpty(token) && jwtService.validateTokenBoolean(token)) {
                 logger.info("토큰 검증");
                 Authentication authentication = jwtService.getAuthentication(token);
-                //여기서 아예 deleteAt이 null인지 확인해주기
 
                 // security 세션에 등록
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 logger.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}");
-            } else {
-                logger.info("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
-                throw new NullPointerException("유효한 JWT 토큰이 없습니다");
             }
-        }
+            else if (StringUtils.isEmpty(token)){ // 널일때
+                throw new NullPointerException();
+            }
+            else if(!jwtService.validateTokenBoolean(token)){
+                logger.info("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
+                throw new ExpiredJwtException(null, null, "유효한 JWT 토큰이 없습니다");
+            }
 
-        //굳이 exception 세분화 해야하나.....
-        catch(IllegalArgumentException e){
-            throw new JwtException(e.getMessage());
-        }
-        catch (JwtException e) {
-            // JwtException 발생 시 예외 처리
-            throw new JwtException(e.getMessage());
-            // 예외 처리 로직 작성
 
-        }
         chain.doFilter(request, response);
 
     }

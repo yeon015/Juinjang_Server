@@ -115,21 +115,6 @@ public class JwtService {
         return null;
     }
 
-    // 토큰 유효성 + 만료일자 확인
-    public Boolean validateToken(String token) {
-        Date now = new Date();
-        try{
-//             주어진 토큰을 파싱하고 검증.
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET.getBytes())
-                    .parseClaimsJws(token);
-//            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date(now.getTime()));
-        }catch (Exception e){
-            throw new JwtException(e.getMessage());
-        }
-    }
-
     // 토큰 유효성 + 만료일자 확인 (만료 여부만 확인. 에러 발생 x)
     public Boolean validateTokenBoolean(String token) {
         Date now = new Date();

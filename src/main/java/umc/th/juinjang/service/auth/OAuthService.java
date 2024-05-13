@@ -114,9 +114,10 @@ public class OAuthService {
     @Transactional
     public LoginResponseDto regenerateAccessToken(String accessToken, String refreshToken) {
         if(jwtService.validateTokenBoolean(accessToken))  // access token 유효성 검사
+            //승연언니 이부분 원래 validateToken에서 validateTokenBoolean로 바꿨는데 괜찮을까여..(원래validateToken과 겹쳐서 그 함수는 걍 지웠어요)
             throw new ExceptionHandler(ACCESS_TOKEN_AUTHORIZED);
 
-        if(!jwtService.validateToken(refreshToken))  // refresh token 유효성 검사
+        if(!jwtService.validateTokenBoolean(refreshToken))  // refresh token 유효성 검사
             throw new ExceptionHandler(REFRESH_TOKEN_UNAUTHORIZED);
 
         Long memberId = jwtService.getMemberIdFromJwtToken(refreshToken);
