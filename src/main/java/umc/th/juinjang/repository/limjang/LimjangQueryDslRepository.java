@@ -6,6 +6,6 @@ import umc.th.juinjang.model.entity.Member;
 
 public interface LimjangQueryDslRepository {
 
-  List<Limjang> searchLimjangs(Member member, String keyword)
+  List<Limjang> searchLimjangs(Member member, String keyword);
 
 }
