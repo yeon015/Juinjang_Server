@@ -47,13 +47,17 @@ public class LimjangTotalListConverter {
 
   public static LimjangListDto toLimjangList(
       Limjang limjang, LimjangPrice limjangPrice, int limitImageListSize) {
-    
+
+    System.out.println("---------------");
+    System.out.println("toLimjangList입니다. 이미지를 찾습니다... ");
     List<String> urlList = limjang.getImageList().stream()
         .sorted(Comparator.comparing(Image::getCreatedAt)) // image를 createdAt 기준으로 정렬
         .map(Image::getImageUrl)
         .limit(limitImageListSize)
         .toList();
 
+    System.out.println("---------------");
+    System.out.println("toLimjangList입니다. Limjangprice 찾습니다... ");
     Integer purposeType = limjang.getPurpose().getValue();
     Integer priceType = limjang.getPriceType().getValue();
     List<String> priceList = makePriceList(priceType, purposeType,limjangPrice);
