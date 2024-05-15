@@ -105,12 +105,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     Member findMember = memberRepository.findById(1L)
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().peek(
-        limjang -> {
-          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
-          limjang.saveReport(report);
-        }
-    ).toList();
+    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().toList();
 
     return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
   }

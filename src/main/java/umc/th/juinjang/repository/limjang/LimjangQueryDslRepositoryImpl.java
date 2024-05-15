@@ -1,7 +1,10 @@
 package umc.th.juinjang.repository.limjang;
 
-import static umc.th.juinjang.model.entity.QLimjang.*;
-
+import static umc.th.juinjang.model.entity.QImage.image;
+import static umc.th.juinjang.model.entity.QLimjang.limjang;
+import static umc.th.juinjang.model.entity.QLimjangPrice.limjangPrice;
+import static umc.th.juinjang.model.entity.QReport.report;
+import static umc.th.juinjang.model.entity.QScrap.scrap;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
@@ -20,15 +23,19 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
 
   @Override
   public List<Limjang> searchLimjangs(Member member, String keyword) {
-    String pKeyword = "%" + keyword.toLowerCase().replaceAll(" ", "") + "%";
+    String rKeyword = keyword.replaceAll(" ", "");
 
     return queryFactory
         .selectFrom(limjang)
+        .leftJoin(limjang.report, report).fetchJoin()
+        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .leftJoin(limjang.priceId, limjangPrice).fetchJoin()
+        .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.memberId.eq(member),
             keywordOf(
-                removeBlank(limjang.nickname).like(pKeyword),
-                removeBlank(limjang.address).like(pKeyword),
-                removeBlank(limjang.addressDetail).like(pKeyword)
+                removeBlank(limjang.nickname).containsIgnoreCase(rKeyword),
+                removeBlank(limjang.address).containsIgnoreCase(rKeyword),
+                removeBlank(limjang.addressDetail).containsIgnoreCase(rKeyword)
             ))
         .fetch();
   }
@@ -42,6 +49,6 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
   }
 
   private StringExpression removeBlank(StringExpression origin) {
-      return Expressions.stringTemplate("function('replace', function('lower', {0}), ' ', '')", origin);
+    return Expressions.stringTemplate("function('replace', {0}, ' ', '')", origin);
   }
 }
