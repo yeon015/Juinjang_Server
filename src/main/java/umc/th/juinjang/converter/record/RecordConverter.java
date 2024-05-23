@@ -20,8 +20,8 @@ public class RecordConverter {
                 .build();
     }
 
-    public static RecordResponseDTO.RecordDto toDto(Record record){
-        return RecordResponseDTO.RecordDto.builder()
+    public static RecordResponseDTO.RecordDTO toDto(Record record){
+        return RecordResponseDTO.RecordDTO.builder()
                 .recordId(record.getRecordId())
                 .recordName(record.getRecordName())
                 .recordScript(record.getRecordScript())
@@ -33,14 +33,14 @@ public class RecordConverter {
                 .build();
     }
 
-    public static List<RecordResponseDTO.RecordDto> toDtoList(List<Record> entityList) {
+    public static List<RecordResponseDTO.RecordDTO> toDtoList(List<Record> entityList) {
         return entityList.stream()
                 .map(RecordConverter::toDto)
                 .collect(Collectors.toList());
     }
 
     public static RecordResponseDTO.RecordMemoDto toDto(List<Record> entityList, Limjang limjang){
-        List<RecordResponseDTO.RecordDto> recordMemoDto =  toDtoList(entityList);
+        List<RecordResponseDTO.RecordDTO> recordMemoDto =  toDtoList(entityList);
 
         return RecordResponseDTO.RecordMemoDto.builder()
                 .limjangId(limjang.getLimjangId())
