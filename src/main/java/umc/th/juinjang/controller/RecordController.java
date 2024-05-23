@@ -3,6 +3,7 @@ package umc.th.juinjang.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class RecordController {
 
     @Autowired
@@ -31,11 +33,11 @@ public class RecordController {
     //등록
     @Operation(summary = " 녹음 등록 API")
     @PostMapping("/record")
-    public  ApiResponse<RecordResponseDTO.RecordDto> uploadRecord( @AuthenticationPrincipal Member member,
-            @RequestPart(name = "file", required = true) MultipartFile file,
+    public  ApiResponse<RecordResponseDTO.RecordDTO> uploadRecord( @AuthenticationPrincipal Member member,
+            @RequestPart(value = "file") MultipartFile file,
             @RequestPart RecordRequestDTO.RecordDto recordRequestDTO) {
         try{
-            RecordResponseDTO.RecordDto result = recordService.uploadRecord(member, recordRequestDTO, file);
+            RecordResponseDTO.RecordDTO result = recordService.uploadRecord(member, recordRequestDTO, file);
             return ApiResponse.onSuccess(result);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -54,9 +56,9 @@ public class RecordController {
     }
     @Operation(summary = " 녹음 전체 조회 API")
     @GetMapping("/record/all/{limjangId}")
-    public ApiResponse <List<RecordResponseDTO.RecordDto>> getAllRecord(@AuthenticationPrincipal Member member, @PathVariable(name="limjangId") Long limjangId){
+    public ApiResponse <List<RecordResponseDTO.RecordDTO>> getAllRecord(@AuthenticationPrincipal Member member, @PathVariable(name="limjangId") Long limjangId){
         try{
-            List<RecordResponseDTO.RecordDto> recordList = recordService.getAllRecord(member, limjangId);
+            List<RecordResponseDTO.RecordDTO> recordList = recordService.getAllRecord(member, limjangId);
             return ApiResponse.onSuccess(recordList);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -83,13 +85,13 @@ public class RecordController {
 
     @Operation(summary = " 녹음 스크립트 내용 수정 API")
     @PatchMapping("/record/content/{recordId}")
-    public ApiResponse<RecordResponseDTO.RecordDto> updateRecordContent(@AuthenticationPrincipal Member member, @PathVariable(name="recordId") Long recordId, @RequestBody RecordRequestDTO.RecordContentDto contentDto ){
+    public ApiResponse<RecordResponseDTO.RecordDTO> updateRecordContent(@AuthenticationPrincipal Member member, @PathVariable(name="recordId") Long recordId, @RequestBody RecordRequestDTO.RecordContentDto contentDto ){
         return ApiResponse.onSuccess(recordService.updateRecordContent(member, recordId, contentDto.getRecordScript()));
     }
 
     @Operation(summary = " 녹음 스크립트 제목 수정 API")
     @PatchMapping("/record/title/{recordId}")
-    public ApiResponse<RecordResponseDTO.RecordDto> updateRecordTitle(@AuthenticationPrincipal Member member, @PathVariable(name="recordId") Long recordId, @RequestBody RecordRequestDTO.RecordTitleDto titleDto){
+    public ApiResponse<RecordResponseDTO.RecordDTO> updateRecordTitle(@AuthenticationPrincipal Member member, @PathVariable(name="recordId") Long recordId, @RequestBody RecordRequestDTO.RecordTitleDto titleDto){
         return ApiResponse.onSuccess(recordService.updateRecordTitle(member, recordId, titleDto.getRecordName()));
     }
 }
