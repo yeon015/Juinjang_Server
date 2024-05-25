@@ -8,4 +8,7 @@ public interface LimjangQueryDslRepository {
 
   List<Limjang> searchLimjangs(Member member, String keyword);
 
+  // List<Limjang> findTop5ByMemberIdOrderByUpdatedAtDesc(Member member);
+
+  List<Limjang> findMainScreenContentsLimjang(Member member);
 }

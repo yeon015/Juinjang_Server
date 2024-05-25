@@ -5,6 +5,8 @@ import static umc.th.juinjang.model.entity.QLimjang.limjang;
 import static umc.th.juinjang.model.entity.QLimjangPrice.limjangPrice;
 import static umc.th.juinjang.model.entity.QReport.report;
 import static umc.th.juinjang.model.entity.QScrap.scrap;
+
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
@@ -13,6 +15,8 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.QLimjang;
+import umc.th.juinjang.repository.limjang.dto.LimjangMainListDBResponsetDto;
 
 public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository {
   private final JPAQueryFactory queryFactory;
@@ -50,5 +54,20 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
 
   private StringExpression removeBlank(StringExpression origin) {
     return Expressions.stringTemplate("function('replace', {0}, ' ', '')", origin);
+  }
+
+  @Override
+  public List<Limjang> findMainScreenContentsLimjang(Member member) {
+
+    return queryFactory
+        .selectFrom(limjang)
+        .leftJoin(limjang.report, report).fetchJoin()
+        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .leftJoin(limjang.priceId, limjangPrice).fetchJoin()
+        .leftJoin(limjang.imageList, image).fetchJoin()
+        .where(limjang.memberId.eq(member))
+        .orderBy(limjang.updatedAt.desc())
+        .limit(5)
+        .fetch();
   }
 }

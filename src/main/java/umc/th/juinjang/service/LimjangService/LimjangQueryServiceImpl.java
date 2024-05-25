@@ -90,12 +90,11 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
     // 임장 찾는다
     System.out.println("임장 메인화면 조회 API Service, 멤버 찾음" +findMember.getMemberId());
-    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
-        .stream()
-        .peek(limjang -> {
-          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
-          limjang.saveReport(report);
-        }).map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
+//    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
+//        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
+
+    return limjangRepository.findMainScreenContentsLimjang(findMember)
+        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
   }
 
   @Override
