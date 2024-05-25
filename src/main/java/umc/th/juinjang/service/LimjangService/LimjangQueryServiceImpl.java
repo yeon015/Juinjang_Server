@@ -35,7 +35,8 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member, String sort) {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(
+      Member member, String sort) {
 
     System.out.println("임장 전체 조회 API Service");
 
@@ -99,9 +100,9 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword) {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(Member member, String keyword) {
 
-    Member findMember = memberRepository.findById(1L)
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().toList();
