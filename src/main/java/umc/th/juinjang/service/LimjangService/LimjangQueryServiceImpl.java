@@ -35,7 +35,8 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(Member member, String sort) {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(
+      Member member, String sort) {
 
     System.out.println("임장 전체 조회 API Service");
 
@@ -90,19 +91,18 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
     // 임장 찾는다
     System.out.println("임장 메인화면 조회 API Service, 멤버 찾음" +findMember.getMemberId());
-    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
-        .stream()
-        .peek(limjang -> {
-          Report report = reportRepository.findByLimjangId(limjang).orElse(null);
-          limjang.saveReport(report);
-        }).map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
+//    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
+//        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
+
+    return limjangRepository.findMainScreenContentsLimjang(findMember)
+        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
   }
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword) {
+  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(Member member, String keyword) {
 
-    Member findMember = memberRepository.findById(1L)
+    Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().toList();

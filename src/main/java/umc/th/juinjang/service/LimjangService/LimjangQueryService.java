@@ -13,7 +13,7 @@ public interface LimjangQueryService {
 
   List<LimjangMainViewListResponsetDTO.ListDto> getLimjangMainList(Member member);
 
-  LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(String keyword);
+  LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(Member member, String keyword);
 
   LimjangDetailResponseDTO.DetailDto getLimjangDetail(Long limjangId);
 }
