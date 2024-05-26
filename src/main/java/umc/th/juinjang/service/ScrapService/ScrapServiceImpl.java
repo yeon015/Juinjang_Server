@@ -1,20 +1,12 @@
 package umc.th.juinjang.service.ScrapService;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.apiPayload.exception.handler.ScrapHandler;
-import umc.th.juinjang.converter.limjang.LimjangPostConverter;
-import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.Limjang;
-import umc.th.juinjang.model.entity.LimjangPrice;
-import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.Scrap;
 import umc.th.juinjang.model.entity.enums.ScrapActionType;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
@@ -24,7 +16,7 @@ import umc.th.juinjang.service.LimjangService.LimjangRetriever;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ScrapCommandServiceImpl implements ScrapCommandService {
+public class ScrapServiceImpl implements ScrapService {
 
   private final ScrapRepository scrapRepository;
   private final LimjangRepository limjangRepository;
@@ -65,7 +57,7 @@ public class ScrapCommandServiceImpl implements ScrapCommandService {
 
   @Transactional
   @Override
-  public ScrapActionType createScrap(long limjangId) {
+  public void createScrap(long limjangId) {
 
     Limjang limjang = limjangRetriever.findById(limjangId); // 임장 ID 찾기
 
@@ -74,7 +66,6 @@ public class ScrapCommandServiceImpl implements ScrapCommandService {
     try {
       scrapRepository.save(newScrap);
       System.out.println("--스크랩 완료 in service---");
-      return ScrapActionType.SCRAP;
     } catch (IllegalArgumentException e) {
       log.warn("IllegalArgumentException");
       throw new ScrapHandler(ErrorStatus._SCRAP_SCRAP_FAILD);
