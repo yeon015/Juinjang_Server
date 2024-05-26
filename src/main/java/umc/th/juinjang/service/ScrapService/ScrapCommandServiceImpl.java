@@ -19,6 +19,7 @@ import umc.th.juinjang.model.entity.Scrap;
 import umc.th.juinjang.model.entity.enums.ScrapActionType;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.ScrapRepository;
+import umc.th.juinjang.service.LimjangService.LimjangRetriever;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class ScrapCommandServiceImpl implements ScrapCommandService {
 
   private final ScrapRepository scrapRepository;
   private final LimjangRepository limjangRepository;
+  private final LimjangRetriever limjangRetriever;
 
   @Override
   @Transactional
@@ -61,4 +63,21 @@ public class ScrapCommandServiceImpl implements ScrapCommandService {
     }
   }
 
+  @Transactional
+  @Override
+  public ScrapActionType createScrap(long limjangId) {
+
+    Limjang limjang = limjangRetriever.findById(limjangId); // 임장 ID 찾기
+
+    Scrap newScrap = Scrap.builder().limjangId(limjang).build();
+
+    try {
+      scrapRepository.save(newScrap);
+      System.out.println("--스크랩 완료 in service---");
+      return ScrapActionType.SCRAP;
+    } catch (IllegalArgumentException e) {
+      log.warn("IllegalArgumentException");
+      throw new ScrapHandler(ErrorStatus._SCRAP_SCRAP_FAILD);
+    }
+  }
 }

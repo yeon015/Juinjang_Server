@@ -5,4 +5,6 @@ import umc.th.juinjang.model.entity.enums.ScrapActionType;
 public interface ScrapCommandService {
 
   ScrapActionType actionScrap(Long limjangId);
+
+  ScrapActionType createScrap(long limjangId);
 }
