@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import umc.th.juinjang.JuinjangApplication;
 
-@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth") // configuration 속성 제거
+@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth/keys") // configuration 속성 제거
 
 public interface AppleClient {
     @GetMapping(value = "/api/auth/apple-keys")
