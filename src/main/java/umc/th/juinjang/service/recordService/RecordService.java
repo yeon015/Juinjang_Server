@@ -52,7 +52,7 @@ public class RecordService {
     private LimjangRepository limjangRepository;
 
 
-    public RecordResponseDTO.RecordDto uploadRecord(Member member, RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
+    public RecordResponseDTO.RecordDTO uploadRecord(Member member, RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
 
         if(limjangRepository.findLimjangByLimjangIdAndMemberId(recordRequestDTO.getLimjangId(), member).isEmpty()){
             throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
@@ -129,7 +129,7 @@ public class RecordService {
         return "삭제 성공했습니다.";
     }
 
-    public List<RecordResponseDTO.RecordDto> getAllRecord(Member member, Long limjangId) {
+    public List<RecordResponseDTO.RecordDTO> getAllRecord(Member member, Long limjangId) {
         Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
@@ -162,7 +162,7 @@ public class RecordService {
         return LimjangMemoConverter.toDto(updatedLimjang);
     }
 
-    public RecordResponseDTO.RecordDto updateRecordContent(Member member, Long recordId, String content) {
+    public RecordResponseDTO.RecordDTO updateRecordContent(Member member, Long recordId, String content) {
 
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));
@@ -181,7 +181,7 @@ public class RecordService {
         return RecordConverter.toDto(updatedRecord);
     }
 
-    public RecordResponseDTO.RecordDto updateRecordTitle(Member member, Long recordId, String title) {
+    public RecordResponseDTO.RecordDTO updateRecordTitle(Member member, Long recordId, String title) {
 
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));

@@ -1,5 +1,6 @@
 package umc.th.juinjang.service.ScrapService;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;

@@ -4,12 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.service.JwtService;
 import umc.th.juinjang.service.auth.OAuthService;
 
@@ -22,25 +28,21 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 @RequiredArgsConstructor
 @Validated
 public class OAuthController {
+
     private final OAuthService oauthService;
-    private final JwtService jwtService;
+    
 
     // 카카오 로그인
-    // 사용자 로그인 페이지 제공 단계 - url
-    @GetMapping(value="/{socialLoginType}")
-    public void socialLoginType(@PathVariable(name="socialLoginType") String socialLoginType) throws IOException {
-        oauthService.request(socialLoginType);
+    // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
+    @PostMapping("/kakao/login")
+    public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
+        return ApiResponse.onSuccess(oauthService.kakaoLogin(kakaoReqDto));
     }
 
-    // code -> accessToken 받아오기
-    // accessToken -> 사용자 정보 받아오기
-    @GetMapping(value="/{socialLoginType}/callback")
-    public ApiResponse<LoginResponseDto> callback(
-            @PathVariable(name="socialLoginType") String socialLoginType,
-            @RequestParam(name="code") String code) throws JsonProcessingException {
-
-        LoginResponseDto result = oauthService.oauthLogin(socialLoginType, code);
-        return ApiResponse.onSuccess(result);
+    // 카카오 로그인 (회원가입)
+    @PostMapping("/kakao/signup")
+    public ApiResponse<LoginResponseDto> kakaoSignUp(@RequestBody @Validated KakaoSignUpRequestDto kakaoSignUpReqDto) {
+        return ApiResponse.onSuccess(oauthService.kakaoSignUp(kakaoSignUpReqDto));
     }
 
     // refreshToken으로 accessToken 재발급
@@ -70,5 +72,25 @@ public class OAuthController {
             return ApiResponse.onSuccess(result);
         } else
             throw new ExceptionHandler(TOKEN_EMPTY);
+    }
+
+    // 애플 로그인
+    // 클라이언트에서 identity token 값 받아오기
+    // 사용자가 입력한 정보를 바탕으로 Apple ID servers 에게 Identity Token 발급 요청 (프론트가) -> 이를 우리 서버가 가져오는 것
+    // Identity Token 값을 바탕으로 사용자 식별 & refresh, access Token 발급해주고 DB 저장 (로그인하기)
+
+    // 로그인
+    @PostMapping("/apple/login")
+    public ApiResponse<LoginResponseDto> appleLogin(@RequestBody @Validated AppleLoginRequestDto appleReqDto) {
+        if (appleReqDto.getIdentityToken() == null)
+            throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
+        return ApiResponse.onSuccess(oauthService.appleLogin(appleReqDto));
+    }
+
+    @PostMapping("/apple/signup")
+    public ApiResponse<LoginResponseDto> appleSignUp(@RequestBody @Validated AppleSignUpRequestDto appleSignUpReqDto) {
+        if (appleSignUpReqDto.getIdentityToken() == null)
+            throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
+        return ApiResponse.onSuccess(oauthService.appleSignUp(appleSignUpReqDto));
     }
 }

@@ -23,6 +23,7 @@ public class MemberResponseDto {
         private String nickname;
         private String email;
         private String provider;
+        private String image;
     }
 
 }

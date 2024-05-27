@@ -13,7 +13,7 @@ public class RecordResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class RecordDto{
+    public static class RecordDTO{
         private String recordName;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -33,7 +33,7 @@ public class RecordResponseDTO {
         private String memo;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
-        private List<RecordDto> recordDto;
+        private List<RecordDTO> recordDto;
     }
 
 }

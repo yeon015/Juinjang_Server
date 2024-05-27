@@ -1,6 +1,8 @@
 package umc.th.juinjang.service;
 
 import ch.qos.logback.core.spi.ErrorCodes;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Null;
@@ -15,15 +17,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.model.dto.auth.TokenDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleClient;
+import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.auth.UserDetailServiceImpl;
+import umc.th.juinjang.utils.ApplePublicKeyGenerator;
 
+import javax.naming.AuthenticationException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -32,15 +43,19 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String JWT_SECRET;
 
-    @Autowired
+
     private final UserDetailServiceImpl userDetailService;
     private Long tokenValidTime = 1000L * 60 * 60; // 1h
     private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
 
+
+    @Autowired
+    private final AppleClient appleAuthClient;
     private MemberRepository memberRepository;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
+    private final ApplePublicKeyGenerator applePublicKeyGenerator;
 
     // access token 생성
     public String encodeJwtToken(TokenDto tokenDto) {
@@ -100,22 +115,6 @@ public class JwtService {
         return null;
     }
 
-    // 토큰 유효성 + 만료일자 확인
-    public Boolean validateToken(String token) {
-        Date now = new Date();
-        try{
-//             주어진 토큰을 파싱하고 검증.
-            Jws<Claims> claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET.getBytes())
-                    .parseClaimsJws(token);
-            log.info("====");
-//            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date(now.getTime()));
-        }catch (Exception e){
-            throw new JwtException(e.getMessage());
-        }
-    }
-
     // 토큰 유효성 + 만료일자 확인 (만료 여부만 확인. 에러 발생 x)
     public Boolean validateTokenBoolean(String token) {
         Date now = new Date();
@@ -147,5 +146,45 @@ public class JwtService {
         Long now = new Date().getTime();
 
         return (expiration.getTime() - now);
+    }
+    
+    // 에플 토큰으로부터 id 추춯하기
+    //리팩토링 필요 겹치는 부분 많음
+    public AppleInfo getAppleAccountId(String identityToken){
+        Map<String, String> headers = parseIdentityToken(identityToken);
+        PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, appleAuthClient.getAppleAuthPublicKey());
+
+        Claims claims = getTokenClaims(identityToken, publicKey);
+        log.info("claims : " + claims.toString());
+
+        // claims 에러 처리
+//        if(!claims.is)
+
+        String email = claims.get("email", String.class);
+        String sub = claims.get("sub", String.class);
+        log.info("email : " + email + "\nsub : " + sub);
+
+        return new AppleInfo(email, sub);
+    }
+
+    public Map<String, String> parseIdentityToken(String token) {
+        try {
+            String header = token.split("\\.")[0];
+            return new ObjectMapper().readValue(decodeHeader(header), Map.class);
+        } catch (JsonProcessingException e) {
+            throw new ExceptionHandler(ErrorStatus.INVALID_APPLE_ID_TOKEN);
+        }
+    }
+
+    public String decodeHeader(String token) {
+        return new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
+    }
+
+    public Claims getTokenClaims(String token, PublicKey publicKey) {
+        return Jwts.parserBuilder()
+                .setSigningKey(publicKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

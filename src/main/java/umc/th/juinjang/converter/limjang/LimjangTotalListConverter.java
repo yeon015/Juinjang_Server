@@ -1,18 +1,16 @@
 package umc.th.juinjang.converter.limjang;
 
-import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
 import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
 
-import java.text.DecimalFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO.LimjangListDto;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
-import umc.th.juinjang.model.entity.Report;
-import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 
 
 public class LimjangTotalListConverter {
@@ -21,33 +19,45 @@ public class LimjangTotalListConverter {
       List<Limjang> limjangList
       ) {
 
-    List<LimjangTotalListResponseDTO.ListDto> scrapedList = limjangList.stream()
-        .filter(limjang -> limjang.getScrap() != null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
-        .toList();
+//    List<LimjangListDto> scrapedList = limjangList.stream()
+//        .filter(limjang -> limjang.getScrap() != null)
+//        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(),3))
+//        .toList();
+//
+//    // 스크랩 안 된 리스트
+//    List<LimjangListDto> unScrapedList = limjangList.stream()
+//        .filter(limjang -> limjang.getScrap() == null)
+//        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
+//        .toList();
 
-    // 스크랩 안 된 리스트
-    List<LimjangTotalListResponseDTO.ListDto> unScrapedList = limjangList.stream()
-        .filter(limjang -> limjang.getScrap() == null)
-        .map(limjang -> LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1))
+    List<LimjangListDto> limjangListDto = limjangList.stream()
+        .map(limjang -> {
+          if (limjang.getScrap() == null ) {
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1);
+          } else {
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 3);
+          }
+        })
         .toList();
-
 
     return LimjangTotalListResponseDTO.TotalListDto.builder()
-        .scrapedList(scrapedList)
-        .notScrapedList(unScrapedList)
+        .limjangList(limjangListDto)
         .build();
   }
 
-  public static LimjangTotalListResponseDTO.ListDto toLimjangList(
+  public static LimjangListDto toLimjangList(
       Limjang limjang, LimjangPrice limjangPrice, int limitImageListSize) {
-    
+
+    System.out.println("---------------");
+    System.out.println("toLimjangList입니다. 이미지를 찾습니다... ");
     List<String> urlList = limjang.getImageList().stream()
-        .sorted(Comparator.comparing(Image::getCreatedAt)) // createdAt 기준으로 정렬
+        .sorted(Comparator.comparing(Image::getCreatedAt)) // image를 createdAt 기준으로 정렬
         .map(Image::getImageUrl)
         .limit(limitImageListSize)
         .toList();
 
+    System.out.println("---------------");
+    System.out.println("toLimjangList입니다. Limjangprice 찾습니다... ");
     Integer purposeType = limjang.getPurpose().getValue();
     Integer priceType = limjang.getPriceType().getValue();
     List<String> priceList = makePriceList(priceType, purposeType,limjangPrice);
@@ -58,7 +68,7 @@ public class LimjangTotalListConverter {
       isScraped = false;
     }
 
-    return LimjangTotalListResponseDTO.ListDto.builder()
+    return LimjangListDto.builder()
         .limjangId(limjang.getLimjangId())
         .images(urlList)
         .nickname(limjang.getNickname())
@@ -71,8 +81,8 @@ public class LimjangTotalListConverter {
                 .map(Object::toString))
             .orElse(null))
         .address(limjang.getAddress())
-        .createdAt(limjang.getCreatedAt())
-        .updatedAt(limjang.getUpdatedAt())
+//        .createdAt(limjang.getCreatedAt())
+//        .updatedAt(limjang.getUpdatedAt())
         .build();
   }
 }

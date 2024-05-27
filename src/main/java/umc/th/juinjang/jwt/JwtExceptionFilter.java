@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 
 import java.io.IOException;
@@ -31,21 +32,8 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try{
             log.info("exception filter");
             doFilter(request,response,filterChain);
-        } catch (JwtException e) {
-            final Map<String, Object> body = new HashMap<>();
-            final ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            body.put("timestamp", LocalDateTime.now());
-            body.put("code", ErrorStatus.TOKEN_UNAUTHORIZED.getCode());
-            body.put("error", "Unauthorized");
-            body.put("message", ErrorStatus.TOKEN_UNAUTHORIZED.getMessage());
-            body.put("path", request.getRequestURI());
-
-            mapper.writeValue(response.getOutputStream(), body);
-        }catch (NullPointerException e) {
+            log.info("jwt success");
+        } catch (NullPointerException e) {
             final Map<String, Object> body = new HashMap<>();
             final ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
@@ -59,10 +47,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             body.put("path", request.getRequestURI());
 
             mapper.writeValue(response.getOutputStream(), body);
+            logger.info("jwt exception nullpointer");
+            throw new ExceptionHandler(ErrorStatus.TOKEN_EMPTY);
         }
-        catch (RuntimeException | IOException e){
-            // Bearer 토큰 없이 요청하는 경우 에러 처리
-            logger.error("JwtExceptionFilter: {}");
+        catch (ExpiredJwtException e) {
             final Map<String, Object> body = new HashMap<>();
             final ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
@@ -70,9 +58,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             body.put("timestamp", LocalDateTime.now());
-            body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+            body.put("code", ErrorStatus.TOKEN_UNAUTHORIZED.getCode());
             body.put("error", "Unauthorized");
-            body.put("message", e.getMessage());
+            body.put("message", ErrorStatus.TOKEN_UNAUTHORIZED.getMessage());
             body.put("path", request.getRequestURI());
 
             mapper.writeValue(response.getOutputStream(), body);

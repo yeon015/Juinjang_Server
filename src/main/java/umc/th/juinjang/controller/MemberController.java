@@ -6,8 +6,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
+import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.member.MemberRequestDto;
 import umc.th.juinjang.model.dto.member.MemberResponseDto;
@@ -29,7 +31,7 @@ public class MemberController {
     @PatchMapping("/nickname")
     public ApiResponse<MemberResponseDto.nicknameDto> patchNickname (@AuthenticationPrincipal Member member, @RequestBody MemberRequestDto memberRequestDto) {
         if(!memberRequestDto.getNickname().isEmpty()) {
-            MemberResponseDto.nicknameDto result = memberService.patchNickname(member, memberRequestDto); // member로 수정해야함
+            MemberResponseDto.nicknameDto result = memberService.patchNickname(member, memberRequestDto);
             return ApiResponse.onSuccess(result);
         } else
             throw new ExceptionHandler(NICKNAME_EMPTY);
@@ -38,8 +40,18 @@ public class MemberController {
     @CrossOrigin
     @Operation(summary = "프로필 조회")
     @GetMapping("/profile")
-    public ApiResponse<MemberResponseDto.profileDto> getProfile (@AuthenticationPrincipal Member member) { // Member 로 수정해야함
+    public ApiResponse<MemberResponseDto.profileDto> getProfile (@AuthenticationPrincipal Member member) {
         MemberResponseDto.profileDto result = memberService.getProfile(member);
+        return ApiResponse.onSuccess(result);
+    }
+
+    @CrossOrigin
+    @Operation(summary = "프로필 이미지 수정")
+    @PatchMapping("/profile/image")
+    public ApiResponse<MemberResponseDto.profileDto> getProfile (@AuthenticationPrincipal Member member, @RequestPart MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.isEmpty())
+            throw new ExceptionHandler(ErrorStatus.IMAGE_EMPTY);
+        MemberResponseDto.profileDto result = memberService.updateProfileImage(member, multipartFile);
         return ApiResponse.onSuccess(result);
     }
 }

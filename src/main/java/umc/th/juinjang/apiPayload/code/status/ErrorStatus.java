@@ -19,9 +19,12 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Member Error
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "해당하는 사용자를 찾을 수 없습니다."),
-    MEMBER_EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4002", "사용자의 이메일이 없습니다."),
+    MEMBER_EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4002", "전달받은 사용자의 이메일이 없습니다."),
     MEMBER_NOT_FOUND_IN_KAKAO(HttpStatus.BAD_REQUEST, "MEMBER4003", "APPLE로 회원가입한 회원입니다."),
     ALREADY_LOGOUT(HttpStatus.BAD_REQUEST, "MEMBER4004", "이미 로그아웃 되었습니다."),
+    UNCORRECTED_INFO(HttpStatus.BAD_REQUEST, "MEMBER4005", "올바르지 않은 정보입니다."),
+    MEMBER_NOT_FOUND_IN_APPLE(HttpStatus.BAD_REQUEST, "MEMBER4006", "KAKAO로 회원가입한 회원입니다."),
+    ALREADY_MEMBER(HttpStatus.BAD_REQUEST, "MEMBER4007", "이미 가입된 회원입니다."),
 
     // nickname 에러
     NICKNAME_EMPTY(HttpStatus.BAD_REQUEST, "NICKNAME4001", "닉네임이 존재하지 않습니다. 닉네임을 입력해주세요."),
@@ -37,6 +40,8 @@ public enum ErrorStatus implements BaseErrorCode {
     LIMJANG_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "LIMJANG4005", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
     LIMJANG_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "LIMJANG4006", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다. 다시 시도하거나 백엔드 팀에 문의바랍니다."),
     LIMJANG_UPDATE_PRICETYPE_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG4007", "가격유형 입력값이 잘못되었습니다. 다시 확인해주세요."),
+    LIMJANG_REQUEST_SORT_ERROR(HttpStatus.BAD_REQUEST, "LIMJANG4008", "요청한 정렬 방식이 지정되지 않은 값입니다. 다시 확인해주세요."),
+
 
     // LimjangPrice Error
     LIMJANGPRICE_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "LIMJANGPRICE4000", "해당 임장가격 레코드가 존재하지 않습니다."),
@@ -59,10 +64,16 @@ public enum ErrorStatus implements BaseErrorCode {
     REFRESH_TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN402", "유효하지 않은 Refresh Token입니다. 다시 로그인하세요."),
     ACCESS_TOKEN_AUTHORIZED(HttpStatus.BAD_REQUEST, "TOKEN403", "유효한 Access Token입니다."),
     REFRESH_TOKEN_AUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN404", "유효한 Refresh Token입니다."),
+    APPLE_ID_TOKEN_EMPTY(HttpStatus.BAD_REQUEST,"TOKEN405", "ID TOKEN값이 존재하지 않습니다."),
+    INVALID_APPLE_ID_TOKEN(HttpStatus.UNAUTHORIZED,"TOKEN406", "Apple OAuth Identity Token 값이 올바르지 않습니다."),
+    PUBLICKEY_ERROR_IN_APPLE_LOGIN(HttpStatus.UNAUTHORIZED,"TOKEN407", "Apple OAuth 로그인 중 public key 생성에 문제가 발생했습니다."),
+    INVALID_APPLE_ID_TOKEN_INFO(HttpStatus.UNAUTHORIZED,"TOKEN407", "Apple id_token 값의 alg, kid 정보가 올바르지 않습니다."),
 
     // Image 에러
     IMAGE_DELETE_NOT_FOUND(HttpStatus.BAD_REQUEST, "IMAGE4000", "전달된 ID의 값이 DB에 존재하지 않습니다. 전달 값을 다시 확인해주세요."),
     IMAGE_DELETE_NOT_COMPLETE(HttpStatus.BAD_REQUEST, "IMAGE4001", "요청한 임장 게시글이 모두 삭제되지 않아 삭제가 취소되었습니다." ),
+    IMAGE_EMPTY(HttpStatus.BAD_REQUEST, "IMAGE4002", "이미지가 첨부되지 않았습니다." ),
+    IMAGE_NOT_SAVE(HttpStatus.BAD_REQUEST, "IMAGE4003", "이미지 저장에 실패했습니다." ),
 
     //S3 에러
     //FILE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "FILE400", ""),

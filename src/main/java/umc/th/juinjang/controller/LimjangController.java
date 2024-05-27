@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
@@ -54,9 +55,11 @@ public class LimjangController {
   @Operation(summary = "임장 전체 조회 API")
   @GetMapping("")
   public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> getLimjangTotalList(
-      @AuthenticationPrincipal Member member){
+      @AuthenticationPrincipal Member member,
+    @RequestParam("sort") String sort
+  ){
     System.out.println("임장 전체 조회 API Controller");
-    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member));
+    return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member, sort));
   }
 
   @CrossOrigin
@@ -65,14 +68,15 @@ public class LimjangController {
   public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
       @AuthenticationPrincipal Member member
   ){
-
+    System.out.println("임장 메인화면 조회 API Controller");
     return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList(member)));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 선택 삭제", description = "임장 게시글을 여러 개 선택해서 삭제하는 api입니다.")
-  @PostMapping("/delete")
-  public ApiResponse deleteLimjang(@RequestBody @Valid   LimjangDeleteRequestDTO.DeleteDto deleteIds
+  @DeleteMapping("")
+  public ApiResponse deleteLimjang(@RequestBody @Valid   LimjangDeleteRequestDTO.DeleteDto deleteIds,
+      @AuthenticationPrincipal Member member
 //  public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
   ){
     System.out.println("임장 선택 삭제 controller 입니다");
@@ -83,16 +87,20 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 검색", description = "임장 게시글을 검색하는 api입니다. 집별명, 일반주소, 상세주소로 검색이 가능합니다.")
   @GetMapping("/{keyword}")
-  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> searchLimjangs(@PathVariable(name = "keyword") @Valid String keyword
+  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> searchLimjangs(
+      @AuthenticationPrincipal Member member,
+      @PathVariable(name = "keyword") @Valid String keyword
   ) {
 
-      return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(keyword));
+      return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(member, keyword));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 상세보기", description = "임장 상세보기 api입니다. 임장 id를 전달해주세요.")
   @GetMapping("/detail/{limjangId}")
-  public ApiResponse<LimjangDetailResponseDTO.DetailDto> getDetailLimjang(@PathVariable(name = "limjangId") @Valid Long limjangId
+  public ApiResponse<LimjangDetailResponseDTO.DetailDto> getDetailLimjang(
+      @PathVariable(name = "limjangId") @Valid Long limjangId,
+      @AuthenticationPrincipal Member member
   ) {
     return ApiResponse.onSuccess(limjangQueryService.getLimjangDetail(limjangId));
   }
@@ -101,7 +109,8 @@ public class LimjangController {
   @Operation(summary = "임장 기본정보 수정", description = "임장 기본정보수정 api입니다. 수정할 정보를 전달해주세요.")
   @PatchMapping("")
   public ApiResponse updateLimjang(@RequestBody @Valid
-      LimjangUpdateRequestDTO.UpdateDto updateLimjang
+      LimjangUpdateRequestDTO.UpdateDto updateLimjang,
+      @AuthenticationPrincipal Member member
   ) {
     limjangCommandService.updateLimjang(updateLimjang);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_UPDATE);

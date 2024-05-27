@@ -1,9 +1,7 @@
 package umc.th.juinjang.service.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +10,19 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
-import umc.th.juinjang.model.dto.auth.kakao.KakaoOAuthToken;
-import umc.th.juinjang.model.dto.auth.kakao.KakaoUser;
+import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
+import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.enums.MemberProvider;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.JwtService;
 
-import java.io.IOException;
-
+import javax.naming.AuthenticationException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -34,62 +36,65 @@ public class OAuthService {
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
-    // 카카오 로그인
-    private final KakaoOauth kakaoOauth;
-    private final HttpServletResponse response;
-
-    // 카카오 로그인
-    // 사용자 로그인 페이지 제공 단계 - url 반환
-    public void request(String socialLoginType) throws IOException {
-        String redirectURL = kakaoOauth.getOauthRedirectURL();
-
-        response.sendRedirect(redirectURL);
-    }
-
-    // code -> accessToken 받아오기
-    // accessToken -> 사용자 정보 받아오기
+    // 카카오 로그인 (회원가입된 경우)
+    // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
     @Transactional
-    public LoginResponseDto oauthLogin(String socialLoginType, String code) throws JsonProcessingException {
-        // 카카오로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
-        ResponseEntity<String> accessTokenResponse = kakaoOauth.requestAccessToken(code);
-
-        log.info("response.getBody() = " + accessTokenResponse.getBody());
-
-        // 응답 객체가 JSON 형식으로 되어 있으므로, 이를 deserialization 해서 자바 객체에 담음 (+ 로그 출력됨)
-        KakaoOAuthToken oAuthToken = kakaoOauth.getAccessToken(accessTokenResponse);
-
-        // 액세스 토큰을 다시 카카오로 보내 카카오에 저장된 사용자 정보가 담긴 응답 객체를 받아옴
-        ResponseEntity<String> userInfoResponse = kakaoOauth.requestUserInfo(oAuthToken);
-
-        // 다시 JSON 형식의 응답 객체를 deserialization 해서 자바 객체에 담음
-        KakaoUser kakaoUser = kakaoOauth.getUserInfo(userInfoResponse);
-
-        String email = kakaoUser.getKakao_account().getEmail();
-        log.info(kakaoUser.getKakao_account().getEmail());
+    public LoginResponseDto kakaoLogin(KakaoLoginRequestDto kakaoReqDto) {
+        String email = kakaoReqDto.getEmail();
+        log.info(kakaoReqDto.getEmail());
 
         if(email == null)
-            throw new MemberHandler(ErrorStatus.MEMBER_EMAIL_NOT_FOUND);
+            throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
 
         Optional<Member> getMember = memberRepository.findByEmail(email);
         Member member;
         if(getMember.isPresent()){  // 이미 회원가입한 회원인 경우
             member = getMember.get();
             if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
-                throw new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND_IN_KAKAO);
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+        } else {    // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        }
+
+        // accessToken, refreshToken 발급 후 반환
+        return createToken(member);
+    }
+
+    // 카카오 로그인 (회원가입 해야하는 경우)
+    @Transactional
+    public LoginResponseDto kakaoSignUp (KakaoSignUpRequestDto kakaoSignUpReqDto) {
+        String email = kakaoSignUpReqDto.getEmail();
+        log.info(kakaoSignUpReqDto.getEmail());
+
+        if(email == null)
+            throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
+
+        Optional<Member> getMember = memberRepository.findByEmail(email);
+        Member member;
+        if(getMember.isPresent()){  // 이미 회원가입한 회원인 경우 -> 에러 발생
+            throw new MemberHandler(ALREADY_MEMBER);
         } else {    // 아직 회원가입 하지 않은 회원인 경우
             member = memberRepository.save(
                     Member.builder()
                             .email(email)
                             .provider(MemberProvider.KAKAO)
+                            .nickname(kakaoSignUpReqDto.getNickname())
                             .refreshToken("")
                             .refreshTokenExpiresAt(LocalDateTime.now())
                             .build()
             );
             System.out.println("member id : " + member.getMemberId());
             System.out.println("member email : " + member.getEmail());
+            System.out.println("member nickname : " + member.getNickname());
         }
 
-        // accessToken, refreshToken 발급
+        // accessToken, refreshToken 발급 후 반환
+        return createToken(member);
+    }
+
+    // accessToken, refreshToken 발급
+    @Transactional
+    public LoginResponseDto createToken(Member member) {
         String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
         String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
 
@@ -102,16 +107,17 @@ public class OAuthService {
 
         System.out.println("member nickname : " + member.getNickname());
 
-        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getNickname());
+        return new LoginResponseDto(newAccessToken, newRefreshToken, member.getEmail());
     }
 
     // refreshToken으로 accessToken 발급하기
     @Transactional
     public LoginResponseDto regenerateAccessToken(String accessToken, String refreshToken) {
         if(jwtService.validateTokenBoolean(accessToken))  // access token 유효성 검사
+            //승연언니 이부분 원래 validateToken에서 validateTokenBoolean로 바꿨는데 괜찮을까여..(원래validateToken과 겹쳐서 그 함수는 걍 지웠어요)
             throw new ExceptionHandler(ACCESS_TOKEN_AUTHORIZED);
 
-        if(!jwtService.validateToken(refreshToken))  // refresh token 유효성 검사
+        if(!jwtService.validateTokenBoolean(refreshToken))  // refresh token 유효성 검사
             throw new ExceptionHandler(REFRESH_TOKEN_UNAUTHORIZED);
 
         Long memberId = jwtService.getMemberIdFromJwtToken(refreshToken);
@@ -152,4 +158,91 @@ public class OAuthService {
 
         return "로그아웃 성공";
     }
+    
+    // 애플 로그인 (회원가입된 경우)
+    @Transactional
+    public LoginResponseDto appleLogin(AppleLoginRequestDto appleLoginRequest) {
+        // email, sub값 추출 후 db에서 해당 email값 그리고 sub값을 가진 유저가 있는지 find
+        // 1. 추출한 email, sub 값이 null이면 -> 잘못된 apple token
+        // 2. db에서 각각 find한 회원 id가 다르면 에러 (올바르지 않은 정보)
+        // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
+        // 4. db에 email, sub값 둘 다 없으면 회원가입
+        // 탈퇴 처리는 추후에
+
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken());
+        String email = appleInfo.getEmail();
+        String sub = appleInfo.getSub();
+
+        if(email == null || sub == null)
+            throw new ExceptionHandler(INVALID_APPLE_ID_TOKEN);
+
+
+        Optional<Member> findSub = memberRepository.findByAppleSub(sub);
+        Optional<Member> findEmail = memberRepository.findByEmail(email);
+
+        if(!findSub.equals(findEmail))
+            throw new MemberHandler(UNCORRECTED_INFO);
+
+        Member member = null;
+        if(findSub.isPresent() && findEmail.isPresent()) {  // 재로그인
+            member = findEmail.get();
+            if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        } else if(!findSub.isPresent() && !findEmail.isPresent()) {  // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        }
+
+        // accessToken, refreshToken 발급
+        if(member == null)
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        return createToken(member);
+    }
+
+    // 애플 로그인 (회원가입 해야하는 경우)
+    @Transactional
+    public LoginResponseDto appleSignUp(AppleSignUpRequestDto appleSignUpRequestDto) {
+        // email, sub값 추출 후 db에서 해당 email값 그리고 sub값을 가진 유저가 있는지 find
+        // 1. 추출한 email, sub 값이 null이면 -> 잘못된 apple token
+        // 2. db에서 각각 find한 회원 id가 다르면 에러 (올바르지 않은 정보)
+        // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
+        // 4. db에 email, sub값 둘 다 없으면 회원가입
+        // 탈퇴 처리는 추후에
+
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleSignUpRequestDto.getIdentityToken());
+        String email = appleInfo.getEmail();
+        String sub = appleInfo.getSub();
+
+        if(email == null || sub == null)
+            throw new ExceptionHandler(INVALID_APPLE_ID_TOKEN);
+
+
+        Optional<Member> findSub = memberRepository.findByAppleSub(sub);
+        Optional<Member> findEmail = memberRepository.findByEmail(email);
+
+        if(!findSub.equals(findEmail))
+            throw new MemberHandler(UNCORRECTED_INFO);
+
+        Member member = null;
+        if(findSub.isPresent() && findEmail.isPresent()) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
+            throw new MemberHandler(ALREADY_MEMBER);
+        } else if(!findSub.isPresent() && !findEmail.isPresent()) {
+            member = memberRepository.save(
+                    Member.builder()
+                            .email(email)
+                            .provider(MemberProvider.APPLE)
+                            .appleSub(sub)
+                            .refreshToken("")
+                            .refreshTokenExpiresAt(LocalDateTime.now())
+                            .build()
+            );
+            System.out.println("member id : " + member.getMemberId());
+            System.out.println("member email : " + member.getEmail());
+        }
+
+        // accessToken, refreshToken 발급
+        if(member == null)
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        return createToken(member);
+    }
+
 }
