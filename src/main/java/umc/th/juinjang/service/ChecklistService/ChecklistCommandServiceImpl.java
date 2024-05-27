@@ -8,12 +8,10 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.ChecklistHandler;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.converter.checklist.ChecklistAnswerAndReportConverter;
-import umc.th.juinjang.converter.checklist.ChecklistAnswerConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerAndReportResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerRequestDTO;
-import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
 import umc.th.juinjang.model.entity.ChecklistAnswer;
-import umc.th.juinjang.model.entity.ChecklistQuestion;
+import umc.th.juinjang.model.entity.ChecklistQuestionShort;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Report;
 import umc.th.juinjang.model.entity.enums.ChecklistQuestionCategory;
@@ -64,7 +62,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
     private List<ChecklistAnswer> createAnswerList(Limjang limjang, List<ChecklistAnswerRequestDTO.AnswerDto> answerDtoList) {
         return answerDtoList.stream()
                 .map(dto -> {
-                    ChecklistQuestion question = checklistQuestionRepository.findById(dto.getQuestionId())
+                    ChecklistQuestionShort question = checklistQuestionRepository.findById(dto.getQuestionId())
                             .orElseThrow(() -> new ChecklistHandler(ErrorStatus.CHECKLIST_NOTFOUND_ERROR));
 
                     return ChecklistAnswer.builder()

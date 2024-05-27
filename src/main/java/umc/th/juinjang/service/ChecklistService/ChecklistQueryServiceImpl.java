@@ -40,20 +40,20 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
     private final LimjangRepository limjangRepository;
     private final ReportRepository reportRepository;
 
-    @Override
-    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistQuestionListByVersion(int version) {
-        System.out.println("int version : " + version);
-        System.out.println("enum version : " + ChecklistQuestionVersion.find(version));
-        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
-        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
-            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
-            questionListDtos.add(questionListDto.builder()
-                    .category(category.getValue())
-                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(LimjangPurpose.find(version), category)))
-                    .build());
-        }
-        return questionListDtos;
-    }
+//    @Override
+//    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistQuestionListByVersion(int version) {
+//        System.out.println("int version : " + version);
+//        System.out.println("enum version : " + ChecklistQuestionVersion.find(version));
+//        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
+//        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
+//            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
+//            questionListDtos.add(questionListDto.builder()
+//                    .category(category.getValue())
+//                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(LimjangPurpose.find(version), category)))
+//                    .build());
+//        }
+//        return questionListDtos;
+//    }
 
 
 
@@ -73,31 +73,31 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                 .collect(Collectors.toList());
     }
 
-    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistByLimjang(Long limjangId) {
-        Limjang limjang = limjangRepository.findById(limjangId)
-                .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
-        List<ChecklistAnswer> answerList = checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang);
-        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
-            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
-            questionListDtos.add(questionListDto.builder()
-                    .category(category.getValue())
-                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(limjang.getPurpose(), category)))
-                    .build());
-        }
-        for (ChecklistQuestionDTO.QuestionListDto dto : questionListDtos) {
-            List<ChecklistQuestionDTO.QuestionDto> questionDtos = dto.getQuestionDtos();
-            for (ChecklistQuestionDTO.QuestionDto questionDto : questionDtos) {
-                for (ChecklistAnswer answer : answerList) {
-                    if (Objects.equals(questionDto.getQuestionId(), answer.getQuestionId().getQuestionId()))
-                        questionDto.setAnswer(answer.getAnswer());
-                }
-            }
-
-        }
-
-        return questionListDtos;
-    }
+//    public List<ChecklistQuestionDTO.QuestionListDto> getChecklistByLimjang(Long limjangId) {
+//        Limjang limjang = limjangRepository.findById(limjangId)
+//                .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+//        List<ChecklistQuestionDTO.QuestionListDto> questionListDtos = new ArrayList<>();
+//        List<ChecklistAnswer> answerList = checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang);
+//        for (ChecklistQuestionCategory category : ChecklistQuestionCategory.values()) {
+//            ChecklistQuestionDTO.QuestionListDto questionListDto = new ChecklistQuestionDTO.QuestionListDto();
+//            questionListDtos.add(questionListDto.builder()
+//                    .category(category.getValue())
+//                    .questionDtos(ChecklistQuestionConverter.toChecklistQuestionListDTO(checklistQuestionRepository.findChecklistQuestionsByPurposeAndCategory(limjang.getPurpose(), category)))
+//                    .build());
+//        }
+//        for (ChecklistQuestionDTO.QuestionListDto dto : questionListDtos) {
+//            List<ChecklistQuestionDTO.QuestionDto> questionDtos = dto.getQuestionDtos();
+//            for (ChecklistQuestionDTO.QuestionDto questionDto : questionDtos) {
+//                for (ChecklistAnswer answer : answerList) {
+//                    if (Objects.equals(questionDto.getQuestionId(), answer.getQuestionId().getQuestionId()))
+//                        questionDto.setAnswer(answer.getAnswer());
+//                }
+//            }
+//
+//        }
+//
+//        return questionListDtos;
+//    }
 
     @Override
     public ReportResponseDTO getReportByLimjangId(Long limjangId) {
