@@ -48,8 +48,8 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
 
         //ChecklistQuestion의 Category로 그룹을 지어줌
         //categorizedAnswers는 ChecklistQuestionCategory를 키로, 해당 카테고리에 해당하는 ChecklistAnswer 리스트를 값으로 가지는 Map
-        Map<ChecklistQuestionCategory, List<ChecklistAnswer>> categorizedAnswers = answerList.stream()
-                .collect(Collectors.groupingBy(answer -> answer.getQuestionId().getCategory()));
+                Map<ChecklistQuestionCategory, List<ChecklistAnswer>> categorizedAnswers = answerList.stream()
+                        .collect(Collectors.groupingBy(answer -> answer.getQuestionId().getCategory()));
 
         Report report = findOrCreateReport(limjang);
         reportRepository.save(calculateAndSetCategoryRates(report, categorizedAnswers));
