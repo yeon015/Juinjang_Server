@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.GetMapping;
 import umc.th.juinjang.JuinjangApplication;
 
-@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth") // configuration 속성 제거
+@FeignClient(name = "appleClient", url = "https://appleid.apple.com/auth") // configuration 속성 제거함
 
 public interface AppleClient {
-    @GetMapping(value = "/api/auth/apple-keys")
+    @GetMapping(value = "/keys")
     ApplePublicKeyResponse getAppleAuthPublicKey();
 
 
