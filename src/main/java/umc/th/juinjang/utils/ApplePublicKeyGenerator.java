@@ -39,9 +39,12 @@ public class ApplePublicKeyGenerator {
         RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(new BigInteger(1, nBytes),
                 new BigInteger(1, eBytes));
 
+        log.info("get public Key!!!!!! publicKeySpec이후"+publicKeySpec);
         try {
             KeyFactory keyFactory = KeyFactory.getInstance(publicKey.getKty());
+            log.info("get public Key!!!!!! return문 앞"+publicKeySpec);
             return keyFactory.generatePublic(publicKeySpec);
+
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new ExceptionHandler(ErrorStatus.PUBLICKEY_ERROR_IN_APPLE_LOGIN);
         }
