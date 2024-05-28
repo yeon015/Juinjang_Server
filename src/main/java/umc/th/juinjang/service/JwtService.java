@@ -184,6 +184,7 @@ public class JwtService {
 
     public Claims getTokenClaims(String token, PublicKey publicKey) {
         log.info("getTokenClaims --------");
+        //여기서 에러남
         return Jwts.parserBuilder()
                 .setSigningKey(publicKey)
                 .build()
