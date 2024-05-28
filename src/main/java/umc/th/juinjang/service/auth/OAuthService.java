@@ -168,8 +168,8 @@ public class OAuthService {
         // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
         // 4. db에 email, sub값 둘 다 없으면 회원가입
         // 탈퇴 처리는 추후에
-
-        AppleInfo appleInfo = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken());
+        log.info("Oauth service 까지 들어옴"+ appleLoginRequest.getIdentityToken());
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken().replaceAll("\\n", ""));
         String email = appleInfo.getEmail();
         String sub = appleInfo.getSub();
 
