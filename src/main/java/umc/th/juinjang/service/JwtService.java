@@ -155,6 +155,7 @@ public class JwtService {
         Map<String, String> headers = parseIdentityToken(identityToken);
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, appleAuthClient.getAppleAuthPublicKey());
 
+        log.info("다시 돌아옴");
         Claims claims = getTokenClaims(identityToken, publicKey);
         log.info("claims : " + claims.toString());
 
@@ -182,6 +183,7 @@ public class JwtService {
     }
 
     public Claims getTokenClaims(String token, PublicKey publicKey) {
+        log.info("getTokenClaims --------");
         return Jwts.parserBuilder()
                 .setSigningKey(publicKey)
                 .build()
