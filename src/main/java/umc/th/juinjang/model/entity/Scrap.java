@@ -37,5 +37,4 @@ public class Scrap extends BaseEntity {
   public void saveLimjang(Limjang limjang){
     this.limjangId = limjang;
   }
-
 }
