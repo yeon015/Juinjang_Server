@@ -51,6 +51,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _SCRAP_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4000", "해당 게시글이 DB에 존재하지 않습니다. 관리자에게 문의 바랍니다."),
     _SCRAP_SCRAP_FAILD(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4001", "스크랩 등록 실패. 재시도하거나 관리자에게 문의 바랍니다."),
     _SCRAP_UNSCRAP_FAILD(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4002", "스크랩 취소 실패. 재시도하거나 관리자에게 문의 바랍니다."),
+    _SCRAP_ALREADY_SCRAPED(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4003", "이미 스크랩된 게시글입니다."),
+    _SCRAP_ALREADY_UNSCRAPED(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4004", "이미 스크랩 취소된 게시글입니다."),
 
     CHECKLIST_TYPE_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST400", "정해지지 않은 요청값입니다. 다시 확인해주세요."),
     CHECKLIST_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "CHECKLIST404", "해당 체크리스트 질문 또는 답변이 존재하지 않습니다."),
