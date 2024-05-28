@@ -15,7 +15,7 @@ public class ChecklistAnswerResponseDTO {
     public static class AnswerDto {
         private Long answerId;
         private Long questionId;
-        private ChecklistQuestionCategory category;
+//        private ChecklistQuestionCategory category;
         private Long limjangId;
         private String answer;
         private ChecklistQuestionType answerType;
