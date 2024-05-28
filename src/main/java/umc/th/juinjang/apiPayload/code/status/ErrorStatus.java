@@ -61,10 +61,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
       
     //JWT 토큰 에러
-    TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN400", "유효하지 않거나 만료된 토큰입니다."),
+    TOKEN_UNAUTHORIZED(HttpStatus.INSUFFICIENT_SPACE_ON_RESOURCE, "TOKEN400", "유효하지 않거나 만료된 토큰입니다."),
     TOKEN_EMPTY(HttpStatus.BAD_REQUEST, "TOKEN401", "토큰값이 존재하지 않습니다."),
-    REFRESH_TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN402", "유효하지 않은 Refresh Token입니다. 다시 로그인하세요."),
-    ACCESS_TOKEN_AUTHORIZED(HttpStatus.BAD_REQUEST, "TOKEN403", "유효한 Access Token입니다."),
+    REFRESH_TOKEN_UNAUTHORIZED(HttpStatus.I_AM_A_TEAPOT, "TOKEN402", "유효하지 않은 Refresh Token입니다. 다시 로그인하세요."),
+    ACCESS_TOKEN_AUTHORIZED(HttpStatus.INSUFFICIENT_SPACE_ON_RESOURCE, "TOKEN403", "유효하지 않은 Access Token입니다."),
     REFRESH_TOKEN_AUTHORIZED(HttpStatus.UNAUTHORIZED, "TOKEN404", "유효한 Refresh Token입니다."),
     APPLE_ID_TOKEN_EMPTY(HttpStatus.BAD_REQUEST,"TOKEN405", "ID TOKEN값이 존재하지 않습니다."),
     INVALID_APPLE_ID_TOKEN(HttpStatus.UNAUTHORIZED,"TOKEN406", "Apple OAuth Identity Token 값이 올바르지 않습니다."),

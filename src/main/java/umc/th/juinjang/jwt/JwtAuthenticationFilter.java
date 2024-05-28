@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
             }
             else if(!jwtService.validateTokenBoolean(token)){
                 logger.info("유효한 JWT 토큰이 없습니다, uri: {} "+ requestURI);
-                throw new ExpiredJwtException(null, null, "유효한 JWT 토큰이 없습니다");
+                throw new ExpiredJwtException(null, null, "유효하지 않은 Access Token입니다.");
             }
 
 
