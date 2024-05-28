@@ -1,6 +1,7 @@
 package umc.th.juinjang.utils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
@@ -19,15 +20,19 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
+
 public class ApplePublicKeyGenerator {
 
     public PublicKey generatePublicKey(Map<String,String> tokenHeaders, ApplePublicKeyResponse applePublicKeys) {
+        log.info("generate public Key");
         ApplePublicKeyResponse.Key publicKey = applePublicKeys.getMatchedKeyBy(tokenHeaders.get("kid"),tokenHeaders.get("alg"));
         return getPublicKey(publicKey);
     }
 
     private PublicKey getPublicKey(ApplePublicKeyResponse.Key publicKey) {
 
+        log.info("get public Key!!!!!!");
         byte[] nBytes = Base64.getUrlDecoder().decode(publicKey.getN());
         byte[] eBytes = Base64.getUrlDecoder().decode(publicKey.getE());
 

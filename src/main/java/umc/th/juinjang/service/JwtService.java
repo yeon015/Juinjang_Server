@@ -151,6 +151,7 @@ public class JwtService {
     // 에플 토큰으로부터 id 추춯하기
     //리팩토링 필요 겹치는 부분 많음
     public AppleInfo getAppleAccountId(String identityToken){
+        log.info("getAppleid");
         Map<String, String> headers = parseIdentityToken(identityToken);
         PublicKey publicKey = applePublicKeyGenerator.generatePublicKey(headers, appleAuthClient.getAppleAuthPublicKey());
 
