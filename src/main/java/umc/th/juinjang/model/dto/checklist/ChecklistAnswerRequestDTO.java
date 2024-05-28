@@ -1,8 +1,6 @@
 package umc.th.juinjang.model.dto.checklist;
 
 import lombok.*;
-import umc.th.juinjang.model.entity.ChecklistQuestion;
-import umc.th.juinjang.model.entity.Limjang;
 
 
 public class ChecklistAnswerRequestDTO {
