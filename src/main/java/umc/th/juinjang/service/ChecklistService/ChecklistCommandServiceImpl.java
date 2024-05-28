@@ -87,8 +87,17 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
 
         ChecklistQuestionCategory[] categories = ChecklistQuestionCategory.values();
         for (ChecklistQuestionCategory category : categories) {
+            if (category == ChecklistQuestionCategory.DEADLINE) {
+                categoryCount -= 1;
+                continue;
+            }
             List<ChecklistAnswer> answers = categorizedAnswers.get(category);
+            System.out.println("############" + answers);
             Float categoryRate = calculateAverage(answers);
+
+            if (categoryRate == null) {
+                categoryRate = 0F;
+            }
             String keyword = setRandomKeyword(categoryRate);
 
             System.out.println(categoryRate);
@@ -110,17 +119,19 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
                     report.setLocationConditionsKeyword(keyword);
                     System.out.println("location condition");
                     break;
+
             }
 
             totalRate += categoryRate;
         }
-        System.out.println("####" + report.getIndoorRate().toString() + " " + report.getPublicSpaceRate().toString() + " "+ report.getLocationConditionsRate().toString());
-        System.out.println(report.getIndoorKeyword() + " " + report.getPublicSpaceKeyword() + " "+ report.getLocationConditionsKeyword());
+        //System.out.println("####" + report.getIndoorRate().toString() + " " + report.getPublicSpaceRate().toString() + " "+ report.getLocationConditionsRate().toString());
+        //System.out.println(report.getIndoorKeyword() + " " + report.getPublicSpaceKeyword() + " "+ report.getLocationConditionsKeyword());
         report.setTotalRate(totalRate / categoryCount);
         return report;
     }
 
     private Float calculateAverage(List<ChecklistAnswer> answers) {
+
         Float total = 0f;
         int count = 0;
         if (answers != null) {
