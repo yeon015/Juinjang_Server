@@ -69,6 +69,7 @@ public class ChecklistQueryServiceImpl implements ChecklistQueryService {
                         .questionId(entity.getQuestionId().getQuestionId())
                         .limjangId(entity.getLimjangId().getLimjangId())
                         .answer(entity.getAnswer())
+                        .answerType(entity.getQuestionId().getAnswerType())
                         .build())
                 .collect(Collectors.toList());
     }

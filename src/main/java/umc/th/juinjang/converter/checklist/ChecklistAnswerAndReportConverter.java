@@ -19,7 +19,7 @@ public class ChecklistAnswerAndReportConverter {
                 .map(answer -> new ChecklistAnswerResponseDTO.AnswerDto(
                         answer.getAnswerId(),
                         answer.getQuestionId().getQuestionId(),
-                        answer.getQuestionId().getCategory(),
+                        //answer.getQuestionId().getCategory(),
                         answer.getLimjangId().getLimjangId(),
                         answer.getAnswer(),
                         answer.getQuestionId().getAnswerType()))
