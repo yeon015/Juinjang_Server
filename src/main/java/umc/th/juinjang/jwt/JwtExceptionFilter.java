@@ -55,7 +55,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             final ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(419);
             response.setContentType("application/json");
             body.put("timestamp", LocalDateTime.now());
             body.put("code", ErrorStatus.TOKEN_UNAUTHORIZED.getCode());
