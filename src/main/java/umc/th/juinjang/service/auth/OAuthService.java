@@ -71,9 +71,11 @@ public class OAuthService {
 
         Optional<Member> getMember = memberRepository.findByEmail(email);
         Member member;
-        if(getMember.isPresent()){  // 이미 회원가입한 회원인 경우 -> 에러 발생
+        if(getMember.isPresent() && getMember.get().getProvider().equals(MemberProvider.KAKAO)){  // 이미 회원가입한 회원인 경우 -> 에러 발생
             throw new MemberHandler(ALREADY_MEMBER);
-        } else {    // 아직 회원가입 하지 않은 회원인 경우
+        } else if(getMember.isPresent() && getMember.get().getProvider().equals(MemberProvider.APPLE)){
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+        }else {    // 아직 회원가입 하지 않은 회원인 경우
             member = memberRepository.save(
                     Member.builder()
                             .email(email)
@@ -226,7 +228,9 @@ public class OAuthService {
         Member member = null;
         if(findSub.isPresent() && findEmail.isPresent()) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
             throw new MemberHandler(ALREADY_MEMBER);
-        } else if(!findSub.isPresent() && !findEmail.isPresent()) {
+        } else if(!findSub.isPresent() && findEmail.isPresent() && member.getProvider().equals(MemberProvider.KAKAO)){
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        }else if(!findSub.isPresent() && !findEmail.isPresent()) {
             member = memberRepository.save(
                     Member.builder()
                             .email(email)
