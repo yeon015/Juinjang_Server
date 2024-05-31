@@ -180,7 +180,7 @@ public class OAuthService {
         Optional<Member> findSub = memberRepository.findByAppleSub(sub);
         Optional<Member> findEmail = memberRepository.findByEmail(email);
 
-        if(!findSub.equals(findEmail))
+        if(!findSub.equals(findEmail)) //sub email
             throw new MemberHandler(UNCORRECTED_INFO);
 
         Member member = null;
@@ -219,8 +219,9 @@ public class OAuthService {
         Optional<Member> findSub = memberRepository.findByAppleSub(sub);
         Optional<Member> findEmail = memberRepository.findByEmail(email);
 
-        if(!findSub.equals(findEmail))
-            throw new MemberHandler(UNCORRECTED_INFO);
+        //
+//        if(!findSub.equals(findEmail))
+//            throw new MemberHandler(UNCORRECTED_INFO);
 
         Member member = null;
         if(findSub.isPresent() && findEmail.isPresent()) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
