@@ -186,7 +186,7 @@ public class OAuthService {
         Member member = null;
         if(findSub.isPresent() && findEmail.isPresent()) {  // 재로그인
             member = findEmail.get();
-            if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
+            if(!member.getProvider().equals(MemberProvider.APPLE))   // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
                 throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
         } else if(!findSub.isPresent() && !findEmail.isPresent()) {  // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
             throw new MemberHandler(MEMBER_NOT_FOUND);
@@ -230,6 +230,7 @@ public class OAuthService {
             member = memberRepository.save(
                     Member.builder()
                             .email(email)
+                            .nickname(appleSignUpRequestDto.getNickname())
                             .provider(MemberProvider.APPLE)
                             .appleSub(sub)
                             .refreshToken("")
