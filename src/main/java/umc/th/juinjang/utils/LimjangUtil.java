@@ -7,6 +7,7 @@ import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
+import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 
 public class LimjangUtil {
   public static LimjangPrice determineLimjangPrice(
@@ -51,6 +52,35 @@ public class LimjangUtil {
           priceList.add(limjangPrice.getMonthlyRent());
           break;
         case 3 :
+          priceList.add(limjangPrice.getMarketPrice());
+          break;
+      }
+    }
+    return priceList;
+  }
+
+  public static List<String> makePriceListVersion2(
+      LimjangPriceType priceType,
+      LimjangPurpose purpose,
+      LimjangPrice limjangPrice
+  ){
+    List<String> priceList = new ArrayList<>();
+
+    if (purpose == LimjangPurpose.INVESTMENT){ // 부동산 투자 목적 -> 실거래가
+      priceList.add(limjangPrice.getMarketPrice());
+    } else if (purpose == LimjangPurpose.RESIDENTIAL_PURPOSE){ // 직접 거래 목적
+      switch (priceType){
+        case SALE: // 매매
+          priceList.add(limjangPrice.getSellingPrice());
+          break;
+        case PULL_RENT :// 전세
+          priceList.add(limjangPrice.getPullRent());
+          break;
+        case MONTHLY_RENT:
+          priceList.add(limjangPrice.getDepositPrice());
+          priceList.add(limjangPrice.getMonthlyRent());
+          break;
+        case MARKET_PRICE:
           priceList.add(limjangPrice.getMarketPrice());
           break;
       }
