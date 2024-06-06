@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import umc.th.juinjang.model.dto.limjang.enums.LimjangCheckListVersionEnum;
 
 public class LimjangDetailResponseDTO {
 
@@ -15,6 +16,7 @@ public class LimjangDetailResponseDTO {
   @AllArgsConstructor
   public static class DetailDto {
     private Long limjangId;
+    private LimjangCheckListVersionEnum checkListVersion;
     private List<String> images;
     private Integer purposeCode;
     private String nickname;
