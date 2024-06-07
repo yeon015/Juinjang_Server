@@ -41,6 +41,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
         if (!checklistAnswerRepository.findChecklistAnswerByLimjangId(limjang).isEmpty()) {
             checklistAnswerRepository.deleteAllByLimjangId(limjang);
+            checklistAnswerRepository.flush();
         }
 
         List<ChecklistAnswer> answerList = createAnswerList(limjang, answerDtoList);
