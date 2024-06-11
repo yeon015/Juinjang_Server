@@ -1,15 +1,14 @@
-package umc.th.juinjang.utils;
+package umc.th.juinjang.service.LimjangService;
 
 import java.util.ArrayList;
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
-import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO.PostDto;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 
-public class LimjangUtil {
+public class LimjangPriceBridge {
   public static LimjangPrice determineLimjangPrice(
       List<String> priceList, Integer purpose, Integer priceType
       ){

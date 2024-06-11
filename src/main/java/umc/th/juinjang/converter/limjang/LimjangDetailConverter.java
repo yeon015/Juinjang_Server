@@ -1,13 +1,10 @@
 package umc.th.juinjang.converter.limjang;
 
-import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
-import static umc.th.juinjang.utils.LimjangUtil.makePriceListVersion2;
+import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePriceListVersion2;
 
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangCheckListVersionEnum;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;

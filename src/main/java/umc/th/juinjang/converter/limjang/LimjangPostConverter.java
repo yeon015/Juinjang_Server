@@ -1,10 +1,9 @@
 package umc.th.juinjang.converter.limjang;
 
-import static umc.th.juinjang.utils.LimjangUtil.checkExpectedSize;
+import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.checkExpectedSize;
 
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.model.dto.limjang.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangPostResponseDTO.PostDTO;
