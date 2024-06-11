@@ -42,18 +42,14 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-    // 임장 가격 테이블에 가격 저장 후 입장에 member, limjangprice추가
-    // 임장 테이블에 저장.
     try {
       List<String> priceList = request.getPrice();
       Integer purpose = request.getPurposeType();
       Integer priceType = request.getPriceType();
 
       LimjangPrice limjangPrice = determineLimjangPrice(priceList, purpose, priceType);
-      limjangPriceRepository.save(limjangPrice);
 
       limjang.postLimjang(findMember, limjangPrice);
-
       return limjangRepository.save(limjang);
     } catch (IllegalArgumentException e) {
       log.warn("IllegalArgumentException");
