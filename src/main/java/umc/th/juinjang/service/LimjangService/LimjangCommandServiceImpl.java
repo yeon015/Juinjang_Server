@@ -2,6 +2,7 @@ package umc.th.juinjang.service.LimjangService;
 
 import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.determineLimjangPrice;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   private final LimjangRepository limjangRepository;
   private final MemberRepository memberRepository;
   private final LimjangPriceRepository limjangPriceRepository;
+  private final LimjangRetriever limjangRetriever;
 
   @Override
   @Transactional
@@ -55,26 +57,24 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Transactional
   public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
 
-    List<Long> ids = deleteIds.getLimjangIdList();
+    System.out.println("임장 선택 삭제 service 입니다");
+    List<Long> findIdList = new ArrayList<>();
 
-    for (Long id : ids){
+    for (Long id : deleteIds.getLimjangIdList()){
+      findIdList.add(limjangRetriever.findById(id).getLimjangId());
       System.out.println("삭제할 임장 id : : "+id);
     }
-    System.out.println("임장 선택 삭제 service 입니다");
 
-    // 게시글 여러개 삭제 가능
     try {
-      for (Long id : ids){
+      for (Long id : findIdList){
+        System.out.println("try문 안 -- 삭제할 임장 id : : "+id);
         limjangRepository.softDeleteById(id);
-        System.out.println("삭제할 임장 id : : "+id);
       }
-
     } catch (DataIntegrityViolationException e) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
     } catch (EmptyResultDataAccessException e) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_FOUND);
     }
-
   }
 
   @Override
