@@ -33,7 +33,7 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
         .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.priceId, limjangPrice).fetchJoin()
+        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.memberId.eq(member),
             keywordOf(
@@ -42,6 +42,18 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
                 removeBlank(limjang.addressDetail).containsIgnoreCase(rKeyword)
             ))
         .fetch();
+  }
+
+  @Override
+  public Limjang findByIdWithLimjangPrice(long memberId, long limjangId) {
+    return queryFactory
+        .selectFrom(limjang)
+        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
+        .leftJoin(limjang.report, report).fetchJoin()
+        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .where(limjang.memberId.memberId.eq(memberId))
+        .where(limjang.limjangId.eq(limjangId))
+        .fetchOne();
   }
 
   private BooleanExpression keywordOf(BooleanExpression... conditions) {
@@ -63,7 +75,7 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
         .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.priceId, limjangPrice).fetchJoin()
+        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.memberId.eq(member))
         .orderBy(limjang.updatedAt.desc())
