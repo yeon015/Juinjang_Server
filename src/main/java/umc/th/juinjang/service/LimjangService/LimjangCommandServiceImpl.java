@@ -1,6 +1,6 @@
 package umc.th.juinjang.service.LimjangService;
 
-import static umc.th.juinjang.utils.LimjangUtil.determineLimjangPrice;
+import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.determineLimjangPrice;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,21 +35,15 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public Limjang postLimjang(PostDto request, Member member) {
+  public Limjang postLimjang(PostDto postDto, Member member) {
 
-    Limjang limjang = LimjangPostConverter.toLimjang(request);
+    Limjang limjang = LimjangPostConverter.toLimjang(postDto);
 
     Member findMember = memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
     try {
-      List<String> priceList = request.getPrice();
-      Integer purpose = request.getPurposeType();
-      Integer priceType = request.getPriceType();
-
-      LimjangPrice limjangPrice = determineLimjangPrice(priceList, purpose, priceType);
-
-      limjang.postLimjang(findMember, limjangPrice);
+      limjang.postLimjang(findMember, findLimajngPrice(postDto));
       return limjangRepository.save(limjang);
     } catch (IllegalArgumentException e) {
       log.warn("IllegalArgumentException");
@@ -105,4 +99,12 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     originalLimjangPrice.updateLimjangPriceList(newLimjangPrice);
   }
 
+  private LimjangPrice findLimajngPrice (PostDto postDto) {
+
+    List<String> priceList = postDto.getPrice();
+    Integer purpose = postDto.getPurposeType();
+    Integer priceType = postDto.getPriceType();
+
+    return determineLimjangPrice(priceList, purpose, priceType);
+  }
 }
