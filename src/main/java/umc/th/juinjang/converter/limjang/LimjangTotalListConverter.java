@@ -32,9 +32,9 @@ public class LimjangTotalListConverter {
     List<LimjangListDto> limjangListDto = limjangList.stream()
         .map(limjang -> {
           if (limjang.getScrap() == null ) {
-            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1);
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getLimjangPrice(), 1);
           } else {
-            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 3);
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getLimjangPrice(), 3);
           }
         })
         .toList();

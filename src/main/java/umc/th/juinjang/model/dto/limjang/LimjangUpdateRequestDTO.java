@@ -14,7 +14,10 @@ public class LimjangUpdateRequestDTO {
   public static class UpdateDto {
 
     @NotNull
-    private Long limjangId;
+    private Integer priceType;
+
+    @VaildPriceListSize(minSize = 1, maxSize = 2)
+    private List<String> priceList;
 
     @NotBlank
     private String address;
@@ -24,13 +27,6 @@ public class LimjangUpdateRequestDTO {
 
     @NotBlank
     private String nickname;
-
-    @NotNull
-    private Integer priceType;
-
-    @VaildPriceListSize(minSize = 1, maxSize = 2)
-    private List<String> priceList;
-
   }
 
   @Getter
