@@ -55,7 +55,7 @@ public class Limjang extends BaseEntity {
   private Member memberId;
 
   // 가격 ID
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "price_id", referencedColumnName = "price_id")
   private LimjangPrice priceId;
 
