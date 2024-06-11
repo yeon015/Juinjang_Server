@@ -45,7 +45,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // LimjangPrice Error
     LIMJANGPRICE_NOTFOUND_ERROR(HttpStatus.BAD_REQUEST, "LIMJANGPRICE4000", "해당 임장가격 레코드가 존재하지 않습니다."),
-
+    LIMJANGPRICE_NULL_ERROR(HttpStatus.BAD_REQUEST, "LIMJANGPRICE4000", "임장 가격 저장에 실패했습니다. 임장 가격이 null입니다."),
 
     // scrap
     _SCRAP_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "SCRAP4000", "해당 게시글이 DB에 존재하지 않습니다. 관리자에게 문의 바랍니다."),

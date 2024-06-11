@@ -35,7 +35,7 @@ public class ChecklistAnswerAndReportConverter {
                 report.getLocationConditionsRate(),
                 report.getTotalRate());
 
-        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getPriceId());
+        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getLimjangPrice());
 
         return new ChecklistAnswerAndReportResponseDTO(answerDtoList, new ReportResponseDTO(reportDto, detailDto));
     }
@@ -50,7 +50,7 @@ public class ChecklistAnswerAndReportConverter {
                 .locationConditionsRate(report.getLocationConditionsRate())
                 .totalRate(report.getTotalRate())
                 .build();
-        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getPriceId());
+        LimjangDetailResponseDTO.DetailDto detailDto = LimjangDetailConverter.toDetail(limjang, limjang.getLimjangPrice());
         return new ReportResponseDTO(reportDTO, detailDto);
     }
 

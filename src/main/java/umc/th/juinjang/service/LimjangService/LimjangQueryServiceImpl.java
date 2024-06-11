@@ -95,7 +95,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 //        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
 
     return limjangRepository.findMainScreenContentsLimjang(findMember)
-        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
+        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getLimjangPrice())).toList();
   }
 
   @Override
@@ -117,6 +117,6 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     Limjang findLimjang = limjangRepository.findById(limjangId)
         .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
-    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getPriceId());
+    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getLimjangPrice());
   }
 }

@@ -1,11 +1,10 @@
 package umc.th.juinjang.converter.limjang;
 
-import static umc.th.juinjang.utils.LimjangUtil.makePriceList;
+import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePriceList;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO.LimjangListDto;
 import umc.th.juinjang.model.entity.Image;
@@ -33,9 +32,9 @@ public class LimjangTotalListConverter {
     List<LimjangListDto> limjangListDto = limjangList.stream()
         .map(limjang -> {
           if (limjang.getScrap() == null ) {
-            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 1);
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getLimjangPrice(), 1);
           } else {
-            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getPriceId(), 3);
+            return LimjangTotalListConverter.toLimjangList(limjang, limjang.getLimjangPrice(), 3);
           }
         })
         .toList();

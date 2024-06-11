@@ -13,9 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -24,17 +21,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.common.BaseEntity;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
-import umc.th.juinjang.utils.LimjangUtil;
-import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 @Entity
 @Getter
@@ -55,9 +46,9 @@ public class Limjang extends BaseEntity {
   private Member memberId;
 
   // 가격 ID
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "price_id", referencedColumnName = "price_id")
-  private LimjangPrice priceId;
+  private LimjangPrice limjangPrice;
 
   // 거래 목적
   @Enumerated(EnumType.STRING)
@@ -93,7 +84,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Report report;
 
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
@@ -102,7 +93,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Scrap scrap;
 
   @Column(name = "record_count")
@@ -113,7 +104,7 @@ public class Limjang extends BaseEntity {
   private boolean deleted = Boolean.FALSE;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){
-    this.priceId = limjangPrice;
+    this.limjangPrice = limjangPrice;
     this.memberId = member;
   }
 
