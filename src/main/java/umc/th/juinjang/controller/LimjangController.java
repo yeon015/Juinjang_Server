@@ -107,14 +107,14 @@ public class LimjangController {
 
   @CrossOrigin
   @Operation(summary = "임장 기본정보 수정", description = "임장 기본정보수정 api입니다. 수정할 정보를 전달해주세요.")
-  @PatchMapping("")
-  public ApiResponse updateLimjang(@RequestBody @Valid
-      LimjangUpdateRequestDTO.UpdateDto updateLimjang,
-      @AuthenticationPrincipal Member member
+  @PatchMapping("/{limjangId}")
+  public ApiResponse updateLimjang(
+      @AuthenticationPrincipal Member member,
+      @PathVariable(name = "limjangId") @Valid long limjangId,
+      @RequestBody @Valid
+      LimjangUpdateRequestDTO.UpdateDto updateLimjang
   ) {
-    limjangCommandService.updateLimjang(updateLimjang);
+    limjangCommandService.updateLimjang(member.getMemberId(), limjangId, updateLimjang);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_UPDATE);
   }
-
-
 }
