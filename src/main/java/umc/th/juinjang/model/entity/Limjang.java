@@ -48,7 +48,7 @@ public class Limjang extends BaseEntity {
   // 가격 ID
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "price_id", referencedColumnName = "price_id")
-  private LimjangPrice priceId;
+  private LimjangPrice limjangPrice;
 
   // 거래 목적
   @Enumerated(EnumType.STRING)
@@ -84,7 +84,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Report report;
 
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
@@ -93,7 +93,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Scrap scrap;
 
   @Column(name = "record_count")
@@ -104,7 +104,7 @@ public class Limjang extends BaseEntity {
   private boolean deleted = Boolean.FALSE;
 
   public void postLimjang(Member member, LimjangPrice limjangPrice){
-    this.priceId = limjangPrice;
+    this.limjangPrice = limjangPrice;
     this.memberId = member;
   }
 

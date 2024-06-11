@@ -35,7 +35,7 @@ public class LimjangPrice extends BaseEntity {
 
   private String pullRent;
 
-  @OneToOne(mappedBy = "priceId")
+  @OneToOne(mappedBy = "limjangPrice")
   private Limjang limjang;
 
   public void updateLimjangPriceList(LimjangPrice newLimjangPrice){
