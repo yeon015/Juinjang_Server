@@ -21,7 +21,6 @@ import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 
@@ -32,7 +31,6 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   private final LimjangRepository limjangRepository;
   private final MemberRepository memberRepository;
-  private final LimjangPriceRepository limjangPriceRepository;
   private final LimjangRetriever limjangRetriever;
 
   @Override
@@ -79,16 +77,13 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public void updateLimjang(LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo) {
+  public void updateLimjang(long memberId, long limjangId, LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo) {
 
     List<String> newPriceList = requestUpdateInfo.getPriceList();
-
     // 임장 찾기
-    Limjang originalLimjang = limjangRepository.findById(requestUpdateInfo.getLimjangId())
-        .orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-    // 임장 가격 찾기
-    LimjangPrice originalLimjangPrice = limjangPriceRepository.findById(originalLimjang.getPriceId().getPriceId())
-        .orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANGPRICE_NOTFOUND_ERROR));
+    Limjang originalLimjang = limjangRepository.findByIdWithLimjangPrice(memberId, limjangId);
+    // 임장 가격
+    LimjangPrice findLimjangPrice = originalLimjang.getLimjangPrice();
 
     // 새 정보
     Limjang newLimjang = LimjangUpdateConverter.toLimjang(requestUpdateInfo);
@@ -96,7 +91,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
     //업데이트
     originalLimjang.updateLimjang(newLimjang);
-    originalLimjangPrice.updateLimjangPriceList(newLimjangPrice);
+    findLimjangPrice.updateLimjangPriceList(newLimjangPrice);
   }
 
   private LimjangPrice findLimajngPrice (PostDto postDto) {
