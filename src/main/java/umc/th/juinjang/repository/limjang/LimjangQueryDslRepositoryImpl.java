@@ -5,24 +5,23 @@ import static umc.th.juinjang.model.entity.QLimjang.limjang;
 import static umc.th.juinjang.model.entity.QLimjangPrice.limjangPrice;
 import static umc.th.juinjang.model.entity.QReport.report;
 import static umc.th.juinjang.model.entity.QScrap.scrap;
+import static com.querydsl.core.group.GroupBy.list;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.model.entity.QLimjang;
-import umc.th.juinjang.repository.limjang.dto.LimjangMainListDBResponsetDto;
 
 public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository {
   private final JPAQueryFactory queryFactory;
 
   public LimjangQueryDslRepositoryImpl(EntityManager em) {
-    this.queryFactory = new JPAQueryFactory(em);
+    this.queryFactory = new JPAQueryFactory(JPQLTemplates.DEFAULT, em);
   }
 
   @Override
@@ -80,6 +79,18 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .where(limjang.memberId.eq(member))
         .orderBy(limjang.updatedAt.desc())
         .limit(5)
+        .fetch();
+  }
+
+  @Override
+  public List<Limjang> findAllLimjangs(Member member) {
+    return queryFactory
+        .selectFrom(limjang)
+        .leftJoin(limjang.report, report).fetchJoin()
+        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
+        .leftJoin(limjang.imageList, image).fetchJoin()
+        .where(limjang.memberId.eq(member))
         .fetch();
   }
 }
