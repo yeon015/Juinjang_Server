@@ -13,4 +13,6 @@ public interface LimjangQueryDslRepository {
   List<Limjang> findMainScreenContentsLimjang(Member member);
 
   Limjang findByIdWithLimjangPrice(long memberId, long limjangId);
+
+  List<Limjang> findAllLimjangs(Member member);
 }
