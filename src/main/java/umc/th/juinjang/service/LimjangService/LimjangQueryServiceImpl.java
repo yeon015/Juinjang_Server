@@ -18,7 +18,6 @@ import umc.th.juinjang.model.dto.limjang.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.model.entity.Report;
 import umc.th.juinjang.model.entity.enums.LimjangSort;
 import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
@@ -38,6 +37,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   public LimjangTotalListResponseDTO.TotalListDto getLimjangTotalList(
       Member member, String sort) {
 
+
     System.out.println("임장 전체 조회 API Service");
 
     // 멤버 찾기
@@ -53,12 +53,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     }
 
     // 멤버가 가지고있는 모든 글
-    List<Limjang> findLimjangList = limjangRepository.findLimjangByMemberId(findMember).stream().peek(
-          limjang -> {
-            Report report = reportRepository.findByLimjangId(limjang).orElse(null);
-            limjang.saveReport(report);
-          }
-      ).toList();
+    List<Limjang> findLimjangList = limjangRepository.findAllLimjangs(member);
 
     List<Limjang> sortedLimjangList = new ArrayList<>();
     switch (requestSort) {
