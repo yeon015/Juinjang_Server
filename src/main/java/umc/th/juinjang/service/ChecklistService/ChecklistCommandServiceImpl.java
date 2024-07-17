@@ -83,7 +83,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
     }
 
     private Report calculateAndSetCategoryRates(Report report, Map<ChecklistQuestionCategory, List<ChecklistAnswer>> categorizedAnswers) {
-        float totalRate = 0;
+        float totalRate = 0F;
         int categoryCount = categorizedAnswers.size();
 
         ChecklistQuestionCategory[] categories = ChecklistQuestionCategory.values();
@@ -127,12 +127,20 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         }
         //System.out.println("####" + report.getIndoorRate().toString() + " " + report.getPublicSpaceRate().toString() + " "+ report.getLocationConditionsRate().toString());
         //System.out.println(report.getIndoorKeyword() + " " + report.getPublicSpaceKeyword() + " "+ report.getLocationConditionsKeyword());
-        report.setTotalRate(totalRate / categoryCount);
+        System.out.println("totalRate : " + totalRate + " categoryCount : " + categoryCount);
+        if (categoryCount <= 0) {
+            report.setTotalRate(totalRate);
+        }
+        else {
+            report.setTotalRate(totalRate / categoryCount);
+        }
         return report;
     }
 
     private Float calculateAverage(List<ChecklistAnswer> answers) {
-
+        if (answers == null || answers.isEmpty()) {
+            return 0f;
+        }
         Float total = 0f;
         int count = 0;
         if (answers != null) {
