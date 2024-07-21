@@ -102,7 +102,9 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
 
             System.out.println(categoryRate);
             System.out.println(keyword);
-
+            if (categoryRate == 0f) {
+                categoryCount -= 1;
+            }
             switch (category) {
                 case INDOOR:
                     report.setIndoorRate(categoryRate);
@@ -150,7 +152,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
             }
         }
         if (count == 0) {
-            return total;
+            return 0f;
         }
         return total / count;
     }
