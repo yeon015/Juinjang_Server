@@ -84,9 +84,11 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
 
     private Report calculateAndSetCategoryRates(Report report, Map<ChecklistQuestionCategory, List<ChecklistAnswer>> categorizedAnswers) {
         float totalRate = 0F;
-        int categoryCount = categorizedAnswers.size();
+
+        //데드라인 : {answer 모음들}, 입지여건 : {answer 모음들}, 공용공간 ~~
 
         ChecklistQuestionCategory[] categories = ChecklistQuestionCategory.values();
+        int categoryCount = categories.length;
         for (ChecklistQuestionCategory category : categories) {
             if (category == ChecklistQuestionCategory.DEADLINE) {
                 categoryCount -= 1;
@@ -103,6 +105,7 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
             System.out.println(categoryRate);
             System.out.println(keyword);
             if (categoryRate == 0f) {
+                System.out.println("현재 category : " + category + " 하나 빼짐!");
                 categoryCount -= 1;
             }
             switch (category) {
