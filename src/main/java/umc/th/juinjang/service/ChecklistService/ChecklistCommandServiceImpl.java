@@ -93,7 +93,6 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
                 continue;
             }
             List<ChecklistAnswer> answers = categorizedAnswers.get(category);
-            System.out.println("############" + answers);
             Float categoryRate = calculateAverage(answers);
 
             if (categoryRate == null) {
@@ -143,16 +142,17 @@ public class ChecklistCommandServiceImpl implements ChecklistCommandService{
         }
         Float total = 0f;
         int count = 0;
-        if (answers != null) {
-            for (ChecklistAnswer answer : answers) {
-                if (answer.getQuestionId().getAnswerType() == ChecklistQuestionType.SCORE) {
-                    total += Float.parseFloat(answer.getAnswer());
-                    count++;
-                }
+        for (ChecklistAnswer answer : answers) {
+            if (answer.getQuestionId().getAnswerType() == ChecklistQuestionType.SCORE) {
+                System.out.println("questionId : " + answer.getQuestionId().getQuestionId() + " answerType : " + answer.getQuestionId().getAnswerType());
+                total += Float.parseFloat(answer.getAnswer());
+                count++;
             }
-            return total / count;
         }
-        return total;
+        if (count == 0) {
+            return total;
+        }
+        return total / count;
     }
 
     public String setRandomKeyword(Float rate){
