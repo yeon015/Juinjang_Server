@@ -52,7 +52,15 @@ jobs:
           ls *
           echo "${{ secrets.PROPERTIES_PROD }}" > ./application.yml
         shell: bash
-      
+
+      ## create .p8
+      - name: create .p8
+        if: contains(github.ref, 'main')
+        run: |
+          echo "${{ secrets.APPLE_AUTH }}" > src/main/resources/AUTHKEY_JUINJAG.p8
+        shell: bash
+
+
       - name: Build With Gradle
         if: contains(github.ref, 'main')
         run: ./gradlew build -x test

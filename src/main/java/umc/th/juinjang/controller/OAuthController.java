@@ -1,8 +1,10 @@
 package umc.th.juinjang.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -16,6 +18,7 @@ import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
+import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.service.JwtService;
 import umc.th.juinjang.service.auth.OAuthService;
 
@@ -93,4 +96,12 @@ public class OAuthController {
             throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
         return ApiResponse.onSuccess(oauthService.appleSignUp(appleSignUpReqDto));
     }
+
+    @DeleteMapping("/auth/withdraw")
+    public ApiResponse<Void> withdraw(@AuthenticationPrincipal Member member,
+                                      @Nullable@RequestHeader("X-Apple-Code") final String code){
+        oauthService.withdraw(member, code);
+        return ApiResponse.onSuccess(null);
+    }
+
 }

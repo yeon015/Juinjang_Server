@@ -10,9 +10,7 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
-import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
-import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
-import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.apple.*;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.entity.Member;
@@ -21,6 +19,7 @@ import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.JwtService;
 
 import javax.naming.AuthenticationException;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
@@ -35,6 +34,8 @@ public class OAuthService {
 
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
+    private final AppleClientSecretGenerator appleClientSecretGenerator;
+    private final AppleOAuthProvider appleOAuthProvider;
 
     // 카카오 로그인 (회원가입된 경우)
     // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
@@ -251,4 +252,22 @@ public class OAuthService {
         return createToken(member);
     }
 
+    public void withdraw(Member member, String code) {
+
+        if(member.getProvider() != MemberProvider.APPLE){
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        }
+        try {
+            String clientSecret = appleClientSecretGenerator.generateClientSecret();
+            String refreshToken = appleOAuthProvider.getAppleRefreshToken(code, clientSecret);
+            appleOAuthProvider.requestRevoke(refreshToken, clientSecret);
+        } catch (Exception e) {
+            throw new MemberHandler(FAILED_TO_LOAD_PRIVATE_KEY);
+        }
+        log.info("애플 탈퇴 성공");
+        //디이베서 지우기
+//        memberRepository.delete(member);
+
+        //soft인지 hard인지 추후 논의 예정
+    }
 }

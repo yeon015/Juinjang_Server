@@ -25,7 +25,9 @@ public enum ErrorStatus implements BaseErrorCode {
     UNCORRECTED_INFO(HttpStatus.BAD_REQUEST, "MEMBER4005", "올바르지 않은 정보입니다."),
     MEMBER_NOT_FOUND_IN_APPLE(HttpStatus.BAD_REQUEST, "MEMBER4006", "KAKAO로 회원가입한 회원입니다."),
     ALREADY_MEMBER(HttpStatus.BAD_REQUEST, "MEMBER4007", "이미 가입된 회원입니다."),
-
+    //로그아웃 에러
+    FAILED_TO_LOAD_PRIVATE_KEY(HttpStatus.BAD_REQUEST, "REVOKE4002", "private key 실패"),
+    LOGOUT_FAILED(HttpStatus.BAD_REQUEST, "REVOKE4002", "private key 실패"),
     // nickname 에러
     NICKNAME_EMPTY(HttpStatus.BAD_REQUEST, "NICKNAME4001", "닉네임이 존재하지 않습니다. 닉네임을 입력해주세요."),
     ALREADY_NICKNAME(HttpStatus.BAD_REQUEST, "NICKNAME4002", "이미 존재하는 닉네임입니다."),
@@ -84,6 +86,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //record 에러
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다");
+
 
     private final HttpStatus httpStatus;
     private final String code;
