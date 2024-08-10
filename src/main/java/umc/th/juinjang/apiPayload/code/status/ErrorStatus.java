@@ -25,6 +25,11 @@ public enum ErrorStatus implements BaseErrorCode {
     UNCORRECTED_INFO(HttpStatus.BAD_REQUEST, "MEMBER4005", "올바르지 않은 정보입니다."),
     MEMBER_NOT_FOUND_IN_APPLE(HttpStatus.BAD_REQUEST, "MEMBER4006", "KAKAO로 회원가입한 회원입니다."),
     ALREADY_MEMBER(HttpStatus.BAD_REQUEST, "MEMBER4007", "이미 가입된 회원입니다."),
+    // 카카오 target id 에러
+    EMPTY_TARGET_ID(HttpStatus.BAD_REQUEST, "MEMBER4008", "카카오 target id가 비어있습니다."),
+    UNCORRECTED_TARGET_ID(HttpStatus.BAD_REQUEST, "MEMBER4009", "target id와 회원 정보가 일치하지 않습니다. 올바르지 않은 카카오 target id 입니다."),
+    NOT_UNLINK_KAKAO(HttpStatus.BAD_REQUEST, "MEMBER4010", "카카오 연결 끊기에 실패하였습니다."),
+
     //로그아웃 에러
     FAILED_TO_LOAD_PRIVATE_KEY(HttpStatus.BAD_REQUEST, "REVOKE4002", "private key 실패"),
     LOGOUT_FAILED(HttpStatus.BAD_REQUEST, "REVOKE4002", "private key 실패"),

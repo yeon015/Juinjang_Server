@@ -40,6 +40,10 @@ public class Member extends BaseEntity implements UserDetails {
   @Column(name = "apple_sub")
   private String appleSub;
 
+  // kakao target id값 의미 (카카오의 유저 식별값. 탈퇴할 때 필요)
+  @Column(name="target_id")
+  private Long kakaoTargetId;
+
   @Lob
   private String imageUrl;
 
