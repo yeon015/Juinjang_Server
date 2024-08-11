@@ -287,12 +287,15 @@ public class OAuthService {
             throw new MemberHandler(FAILED_TO_LOAD_PRIVATE_KEY);
         }
         log.info("애플 탈퇴 성공");
-        //디이베서 지우기
-//        memberRepository.delete(member);
+        //디비에서 지우기
+        memberRepository.deleteById(member.getMemberId());
 
         //soft인지 hard인지 추후 논의 예정
     }
 
     // 사용자 정보 삭제 (DB)
+    public void deleteMember(Member member) {
+        memberRepository.deleteById(member.getMemberId());
+    }
 
 }

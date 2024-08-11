@@ -113,7 +113,7 @@ public class OAuthController {
         if (!isUnlink) {
             throw new ExceptionHandler(NOT_UNLINK_KAKAO);
         }
-
+        oauthService.deleteMember(member);
 
         return ApiResponse.onSuccess("탈퇴 완료");
     }
