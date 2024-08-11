@@ -44,7 +44,7 @@ public class OAuthService {
     private KakaoUnlinkClient kakaoUnlinkClient;
 
     @Value("${security.oauth2.client.registration.kakao.admin-key}")
-    private Long kakaoAdminKey;
+    private String kakaoAdminKey;
 
     // 카카오 로그인 (회원가입된 경우)
     // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
