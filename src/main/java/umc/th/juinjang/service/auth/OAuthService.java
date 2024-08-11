@@ -2,12 +2,15 @@ package umc.th.juinjang.service.auth;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
+import umc.th.juinjang.controller.KakaoUnlinkClient;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
@@ -36,6 +39,12 @@ public class OAuthService {
     private final JwtService jwtService;
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
+
+    @Autowired
+    private KakaoUnlinkClient kakaoUnlinkClient;
+
+    @Value("${security.oauth2.client.registration.kakao.admin-key}")
+    private Long kakaoAdminKey;
 
     // 카카오 로그인 (회원가입된 경우)
     // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
@@ -81,6 +90,7 @@ public class OAuthService {
                     Member.builder()
                             .email(email)
                             .provider(MemberProvider.KAKAO)
+                            .kakaoTargetId(kakaoSignUpReqDto.getKakaoTargetId())
                             .nickname(kakaoSignUpReqDto.getNickname())
                             .refreshToken("")
                             .refreshTokenExpiresAt(LocalDateTime.now())
@@ -252,7 +262,19 @@ public class OAuthService {
         return createToken(member);
     }
 
-    public void withdraw(Member member, String code) {
+    // 카카오 탈퇴 (카카오 연결 끊기)
+    public boolean kakaoWithdraw(Member member, Long kakaoTargetId) {
+        ResponseEntity<String> response = kakaoUnlinkClient.unlinkUser("KakaoAK " + kakaoAdminKey, "user_id", kakaoTargetId);
+
+        if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
+            return true;
+        } else { // 실패 처리 로직
+            return false;
+        }
+    }
+
+    // 애플 탈퇴
+    public void appleWithdraw(Member member, String code) {
 
         if(member.getProvider() != MemberProvider.APPLE){
             throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
@@ -265,9 +287,15 @@ public class OAuthService {
             throw new MemberHandler(FAILED_TO_LOAD_PRIVATE_KEY);
         }
         log.info("애플 탈퇴 성공");
-        //디이베서 지우기
-//        memberRepository.delete(member);
+        //디비에서 지우기
+        memberRepository.deleteById(member.getMemberId());
 
         //soft인지 hard인지 추후 논의 예정
     }
+
+    // 사용자 정보 삭제 (DB)
+    public void deleteMember(Member member) {
+        memberRepository.deleteById(member.getMemberId());
+    }
+
 }

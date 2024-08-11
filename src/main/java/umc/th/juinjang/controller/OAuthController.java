@@ -97,11 +97,33 @@ public class OAuthController {
         return ApiResponse.onSuccess(oauthService.appleSignUp(appleSignUpReqDto));
     }
 
-    @DeleteMapping("/auth/withdraw")
-    public ApiResponse<Void> withdraw(@AuthenticationPrincipal Member member,
-                                      @Nullable@RequestHeader("X-Apple-Code") final String code){
-        oauthService.withdraw(member, code);
-        return ApiResponse.onSuccess(null);
+    // 카카오 탈퇴
+    @DeleteMapping("/kakao/withdraw")
+    public ApiResponse<String> kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") Long kakaoTargetId) {
+        if(kakaoTargetId == null) {
+            throw new ExceptionHandler(EMPTY_TARGET_ID);
+        } else if(kakaoTargetId != member.getKakaoTargetId()) {
+            throw new ExceptionHandler(UNCORRECTED_TARGET_ID);
+        }
+
+        // 카카오 계정 연결 끊기
+        boolean isUnlink = oauthService.kakaoWithdraw(member, kakaoTargetId);
+
+        // 사용자 정보 삭제 (DB)
+        if (!isUnlink) {
+            throw new ExceptionHandler(NOT_UNLINK_KAKAO);
+        }
+        oauthService.deleteMember(member);
+
+        return ApiResponse.onSuccess("탈퇴 완료");
     }
 
+
+    // 애플 탈퇴
+    @DeleteMapping("/apple/withdraw")
+    public ApiResponse<Void> withdraw(@AuthenticationPrincipal Member member,
+                                      @Nullable@RequestHeader("X-Apple-Code") final String code){
+        oauthService.appleWithdraw(member, code);
+        return ApiResponse.onSuccess(null);
+    }
 }
