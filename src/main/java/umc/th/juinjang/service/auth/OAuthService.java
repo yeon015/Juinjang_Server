@@ -267,6 +267,7 @@ public class OAuthService {
         ResponseEntity<String> response = kakaoUnlinkClient.unlinkUser("KakaoAK " + kakaoAdminKey, "user_id", kakaoTargetId);
 
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
+            log.info("카카오 탈퇴 성공");
             return true;
         } else { // 실패 처리 로직
             return false;
@@ -287,10 +288,9 @@ public class OAuthService {
             throw new MemberHandler(FAILED_TO_LOAD_PRIVATE_KEY);
         }
         log.info("애플 탈퇴 성공");
+
         //디비에서 지우기
         memberRepository.deleteById(member.getMemberId());
-
-        //soft인지 hard인지 추후 논의 예정
     }
 
     // 사용자 정보 삭제 (DB)

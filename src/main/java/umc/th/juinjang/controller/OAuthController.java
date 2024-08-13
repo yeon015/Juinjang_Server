@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
+import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
@@ -99,7 +100,7 @@ public class OAuthController {
 
     // 카카오 탈퇴
     @DeleteMapping("/kakao/withdraw")
-    public ApiResponse<String> kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") Long kakaoTargetId) {
+    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") Long kakaoTargetId) {
         if(kakaoTargetId == null) {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
         } else if(kakaoTargetId != member.getKakaoTargetId()) {
@@ -115,15 +116,15 @@ public class OAuthController {
         }
         oauthService.deleteMember(member);
 
-        return ApiResponse.onSuccess("탈퇴 완료");
+        return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
 
 
     // 애플 탈퇴
     @DeleteMapping("/apple/withdraw")
-    public ApiResponse<Void> withdraw(@AuthenticationPrincipal Member member,
+    public ApiResponse withdraw(@AuthenticationPrincipal Member member,
                                       @Nullable@RequestHeader("X-Apple-Code") final String code){
         oauthService.appleWithdraw(member, code);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
 }
