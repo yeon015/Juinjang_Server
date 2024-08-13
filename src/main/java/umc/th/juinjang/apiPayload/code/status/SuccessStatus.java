@@ -26,7 +26,10 @@ public enum SuccessStatus implements BaseCode {
 
     // 이미지 관련 응답
     IMAGE_UPDATE(HttpStatus.OK, "IMAGE2000", "이미지 업로드 성공하였습니다."),
-    IMAGE_DELETE(HttpStatus.OK, "IMAGE2001", "이미지 삭제 성공하였습니다.");
+    IMAGE_DELETE(HttpStatus.OK, "IMAGE2001", "이미지 삭제 성공하였습니다."),
+
+    // 탈퇴 관련 응답
+    MEMBER_DELETE(HttpStatus.OK, "MEMBER2000", "회원 탈퇴를 성공하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
