@@ -264,7 +264,9 @@ public class OAuthService {
 
     // 카카오 탈퇴 (카카오 연결 끊기)
     public boolean kakaoWithdraw(Member member, Long kakaoTargetId) {
+        log.info("카카오 연결 끊기 시도");
         ResponseEntity<String> response = kakaoUnlinkClient.unlinkUser("KakaoAK " + kakaoAdminKey, "user_id", kakaoTargetId);
+        log.info("카카오 연결 끊기 : " + response.toString());
 
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
             log.info("카카오 탈퇴 성공");
