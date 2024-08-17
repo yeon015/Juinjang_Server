@@ -99,7 +99,7 @@ public class OAuthController {
     }
 
     // 카카오 탈퇴
-    @DeleteMapping("/kakao/withdraw")
+    @DeleteMapping("/withdraw/kakao")
     public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") Long kakaoTargetId) {
         if(kakaoTargetId == null) {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
@@ -121,7 +121,7 @@ public class OAuthController {
 
 
     // 애플 탈퇴
-    @DeleteMapping("/apple/withdraw")
+    @DeleteMapping("/withdraw/apple")
     public ApiResponse withdraw(@AuthenticationPrincipal Member member,
                                       @Nullable@RequestHeader("X-Apple-Code") final String code){
         oauthService.appleWithdraw(member, code);
