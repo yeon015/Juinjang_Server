@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,7 @@ import java.io.IOException;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -100,15 +102,21 @@ public class OAuthController {
 
     // 카카오 탈퇴
     @DeleteMapping("/withdraw/kakao")
-    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") Long kakaoTargetId) {
+    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") String kakaoTargetId) {
+        Long targetId;
+
         if(kakaoTargetId == null) {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
-        } else if(kakaoTargetId != member.getKakaoTargetId()) {
-            throw new ExceptionHandler(UNCORRECTED_TARGET_ID);
+        } else {
+            targetId = Long.parseLong(kakaoTargetId);
+            log.info("target_id 변환 : " + targetId);
+            if(targetId != member.getKakaoTargetId()) {
+                throw new ExceptionHandler(UNCORRECTED_TARGET_ID);
+            }
         }
 
         // 카카오 계정 연결 끊기
-        boolean isUnlink = oauthService.kakaoWithdraw(member, kakaoTargetId);
+        boolean isUnlink = oauthService.kakaoWithdraw(member, targetId);
 
         // 사용자 정보 삭제 (DB)
         if (!isUnlink) {
