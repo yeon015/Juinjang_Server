@@ -1,6 +1,7 @@
 package umc.th.juinjang.model.dto.auth.kakao;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,6 @@ public class KakaoSignUpRequestDto {
     private String kakaoNickname;
     @NotEmpty
     private String nickname;
-    @NotEmpty
+    @NotNull
     private Long kakaoTargetId;
 }
