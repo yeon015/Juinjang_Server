@@ -109,19 +109,10 @@ public class OAuthController {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
         } else {
             targetId = Long.parseLong(kakaoTargetId);
-            log.info("target_id 변환 : " + targetId);
-            log.info("변환된 target_id type : " + targetId.getClass().getName());
-            log.info("=======================");
-            log.info("member email : " + member.getEmail());
-            log.info("member의 target_id : " + member.getKakaoTargetId());
-
             if(!targetId.equals(member.getKakaoTargetId())) {
-                log.info("target_id 다름");
                 throw new ExceptionHandler(UNCORRECTED_TARGET_ID);
             }
         }
-
-        log.info("target_id 같음");
 
         // 카카오 계정 연결 끊기
         boolean isUnlink = oauthService.kakaoWithdraw(member, targetId);
