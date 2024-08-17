@@ -115,7 +115,7 @@ public class OAuthController {
             log.info("member email : " + member.getEmail());
             log.info("member의 target_id : " + member.getKakaoTargetId());
 
-            if(targetId.equals(member.getKakaoTargetId())) {
+            if(!targetId.equals(member.getKakaoTargetId())) {
                 log.info("target_id 다름");
                 throw new ExceptionHandler(UNCORRECTED_TARGET_ID);
             }
