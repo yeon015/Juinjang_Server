@@ -13,8 +13,11 @@ public interface AppleClient {
     @GetMapping(value = "/keys")
     ApplePublicKeyResponse getAppleAuthPublicKey();
 
-    @PostMapping(value = "/token", consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    AppleTokenResponse getAppleTokens(@RequestBody AppleTokenRequest request);
+    @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    AppleTokenResponse getAppleTokens(@RequestPart(value = "code") String code,
+                                      @RequestPart(value = "client_id") String client_id,
+                                      @RequestPart(value = "client_secret") String client_secret,
+                                      @RequestPart(value = "grant_type") String grant_type);
 
 
     @PostMapping(value = "/revoke", consumes = APPLICATION_FORM_URLENCODED_VALUE)
