@@ -282,6 +282,7 @@ public class OAuthService {
         }
         try {
             String clientSecret = appleClientSecretGenerator.generateClientSecret();
+            log.info("clientSecret================"+clientSecret);
             String refreshToken = appleOAuthProvider.getAppleRefreshToken(code, clientSecret);
             appleOAuthProvider.requestRevoke(refreshToken, clientSecret);
         } catch (Exception e) {
