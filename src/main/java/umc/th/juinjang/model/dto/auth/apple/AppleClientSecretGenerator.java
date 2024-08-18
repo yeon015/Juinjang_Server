@@ -22,7 +22,7 @@ public class AppleClientSecretGenerator {
     private String keyId;
     @Value("${apple.team-id}")
     private String teamId;
-    @Value("${apple.aud}")
+    @Value("${apple.client-id}")
     private String clientId;
 
     public String generateClientSecret() throws IOException {
