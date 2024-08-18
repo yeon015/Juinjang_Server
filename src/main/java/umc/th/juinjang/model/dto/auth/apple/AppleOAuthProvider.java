@@ -14,7 +14,7 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.FAILED_TO_LOAD_
 @Slf4j
 public class AppleOAuthProvider {
 
-    @Value("${apple.aud}")
+    @Value("${apple.client-id}")
     private String clientId;
     private final String GRANTTYPE = "authorization_code";
 
