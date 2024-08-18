@@ -22,7 +22,8 @@ public class AppleOAuthProvider {
 
     public String getAppleRefreshToken(final String code, final String clientSecret) {
         try {
-            AppleTokenResponse appleTokenResponse = appleClient.getAppleTokens(code, clientId, clientSecret, "authorization_code");
+            log.info("authrozation_code============="+code);
+            AppleTokenResponse appleTokenResponse = appleClient.getAppleTokens(code, clientId, clientSecret, GRANTTYPE);
             log.info("Apple token response: {}", appleTokenResponse);
             return appleTokenResponse.refreshToken();
         } catch (Exception e) {
