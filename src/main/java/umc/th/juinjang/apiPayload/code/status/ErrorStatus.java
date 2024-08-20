@@ -90,7 +90,10 @@ public enum ErrorStatus implements BaseErrorCode {
     S3_DELTE_FAILED(HttpStatus.NOT_FOUND, "S34000", "해당 file이 s3에 존재하지 않습니다. 백엔드 팀에 문의바랍니다."),
 
     //record 에러
-    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다");
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다"),
+
+    //withdraw 에러
+    WITHDRAW_REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "WITHDRAW400", "해당 탈퇴 사유 enum 값이 존재하지 않습니다");
 
 
     private final HttpStatus httpStatus;
