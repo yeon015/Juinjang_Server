@@ -16,15 +16,20 @@ import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
+import umc.th.juinjang.model.dto.auth.WithdrawReasonRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.Withdraw;
+import umc.th.juinjang.repository.withdraw.WithdrawRepository;
 import umc.th.juinjang.service.JwtService;
+import umc.th.juinjang.service.WithdrawService.WithdrawService;
 import umc.th.juinjang.service.auth.OAuthService;
 
 import java.io.IOException;
+import java.util.List;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 
@@ -36,6 +41,9 @@ import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 public class OAuthController {
 
     private final OAuthService oauthService;
+    private final WithdrawService withdrawService;
+
+    private final WithdrawRepository withdrawRepository;
     
 
     // 카카오 로그인
@@ -102,7 +110,7 @@ public class OAuthController {
 
     // 카카오 탈퇴
     @DeleteMapping("/withdraw/kakao")
-    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") String kakaoTargetId) {
+    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto) {
         Long targetId;
 
         if(kakaoTargetId == null) {
@@ -117,6 +125,9 @@ public class OAuthController {
         // 카카오 계정 연결 끊기
         boolean isUnlink = oauthService.kakaoWithdraw(member, targetId);
 
+        // 탈퇴 사유 추가
+        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+
         // 사용자 정보 삭제 (DB)
         if (!isUnlink) {
             throw new ExceptionHandler(NOT_UNLINK_KAKAO);
@@ -130,8 +141,17 @@ public class OAuthController {
     // 애플 탈퇴
     @DeleteMapping("/withdraw/apple")
     public ApiResponse withdraw(@AuthenticationPrincipal Member member,
-                                      @Nullable@RequestHeader("X-Apple-Code") final String code){
+                                      @Nullable@RequestHeader("X-Apple-Code") final String code, @RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto){
         oauthService.appleWithdraw(member, code);
+        // 탈퇴 사유 추가
+        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
         return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
+
+    // count 임시 test용 (최종 탈퇴 테스트 완료 후 지울 예정)
+//    @PostMapping("/withdraw/count")
+//    public ApiResponse<List<Withdraw>> withdrawReason(@RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto) {
+//        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+//        return ApiResponse.onSuccess(withdrawRepository.findAll());
+//    }
 }
