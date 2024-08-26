@@ -79,7 +79,7 @@ public class OAuthController {
     // 로그아웃 -> refresh 토큰 만료
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Refresh-Token");
         log.info("token : " + token);
 
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
