@@ -43,9 +43,6 @@ public class OAuthController {
     private final OAuthService oauthService;
     private final WithdrawService withdrawService;
 
-    private final WithdrawRepository withdrawRepository;
-    
-
     // 카카오 로그인
     // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
     @PostMapping("/kakao/login")
@@ -66,9 +63,6 @@ public class OAuthController {
         String accessToken = request.getHeader("Authorization");
         String refreshToken = request.getHeader("Refresh-Token");
 
-        System.out.println("Access Token: " + accessToken.substring(7));
-        System.out.println("Refresh Token: " + refreshToken.substring(7));
-
         if (StringUtils.hasText(accessToken) && accessToken.startsWith("Bearer ") && StringUtils.hasText(refreshToken) && refreshToken.startsWith("Bearer ")) {
             LoginResponseDto result = oauthService.regenerateAccessToken(accessToken.substring(7), refreshToken.substring(7));
             return ApiResponse.onSuccess(result);
@@ -80,7 +74,6 @@ public class OAuthController {
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request) {
         String token = request.getHeader("Refresh-Token");
-        log.info("token : " + token);
 
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             String result = oauthService.logout(token.substring(7));
@@ -149,10 +142,4 @@ public class OAuthController {
         return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
 
-    // count 임시 test용 (최종 탈퇴 테스트 완료 후 지울 예정)
-//    @PostMapping("/withdraw/count")
-//    public ApiResponse<List<Withdraw>> withdrawReason(@RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto) {
-//        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
-//        return ApiResponse.onSuccess(withdrawRepository.findAll());
-//    }
 }

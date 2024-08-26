@@ -28,9 +28,6 @@ public class WithdrawService {
                     .orElseThrow(() -> new ExceptionHandler(ErrorStatus.WITHDRAW_REASON_NOT_FOUND));
 
             withdraw.updateCount(withdraw.getCount() + 1);
-            System.out.println("withdraw id : " + withdraw.getWithdrawId());
-            System.out.println("withdraw enum : " + withdraw.getWithdrawReason());
-            System.out.println("withdraw count : " + withdraw.getCount());
             withdrawRepository.save(withdraw);
         }
     }
