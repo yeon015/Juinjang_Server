@@ -73,6 +73,10 @@ public class OAuthService {
     // 카카오 로그인 (회원가입 해야하는 경우)
     @Transactional
     public LoginResponseDto kakaoSignUp (KakaoSignUpRequestDto kakaoSignUpReqDto) {
+        Optional<Member> getTargetId = memberRepository.findByKakaoTargetId(kakaoSignUpReqDto.getKakaoTargetId());
+        if(!getTargetId.isEmpty())
+            throw new MemberHandler(ALREADY_MEMBER);
+
         String email = kakaoSignUpReqDto.getEmail();
         log.info(kakaoSignUpReqDto.getEmail());
 
@@ -96,9 +100,6 @@ public class OAuthService {
                             .refreshTokenExpiresAt(LocalDateTime.now())
                             .build()
             );
-            System.out.println("member id : " + member.getMemberId());
-            System.out.println("member email : " + member.getEmail());
-            System.out.println("member nickname : " + member.getNickname());
         }
 
         // accessToken, refreshToken 발급 후 반환
@@ -111,14 +112,9 @@ public class OAuthService {
         String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
         String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
 
-        System.out.println("newAccessToken : " + newAccessToken);
-        System.out.println("newRefreshToken : " + newRefreshToken);
-
         // DB에 refreshToken 저장
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
-
-        System.out.println("member nickname : " + member.getNickname());
 
         return new LoginResponseDto(newAccessToken, newRefreshToken, member.getEmail());
     }
@@ -127,14 +123,12 @@ public class OAuthService {
     @Transactional
     public LoginResponseDto regenerateAccessToken(String accessToken, String refreshToken) {
         if(jwtService.validateTokenBoolean(accessToken))  // access token 유효성 검사
-            //승연언니 이부분 원래 validateToken에서 validateTokenBoolean로 바꿨는데 괜찮을까여..(원래validateToken과 겹쳐서 그 함수는 걍 지웠어요)
             throw new ExceptionHandler(ACCESS_TOKEN_AUTHORIZED);
 
         if(!jwtService.validateTokenBoolean(refreshToken))  // refresh token 유효성 검사
             throw new ExceptionHandler(REFRESH_TOKEN_UNAUTHORIZED);
 
         Long memberId = jwtService.getMemberIdFromJwtToken(refreshToken);
-        log.info("memberId : " + memberId);
 
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getMember.isEmpty())
@@ -150,8 +144,6 @@ public class OAuthService {
         member.updateRefreshToken(newRefreshToken);
         memberRepository.save(member);
 
-        System.out.println("member nickname : " + member.getNickname());
-
         return new LoginResponseDto(newAccessToken, newRefreshToken, member.getNickname());
     }
 
@@ -159,7 +151,6 @@ public class OAuthService {
     @Transactional
     public String logout(String refreshToken) {
         Optional<Member> getMember = memberRepository.findByRefreshToken(refreshToken);
-        log.info("member refreshToken : " + getMember.get().getRefreshToken());
         if(getMember.isEmpty())
             throw new MemberHandler(MEMBER_NOT_FOUND);
 
