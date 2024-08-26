@@ -159,7 +159,7 @@ public class OAuthService {
     @Transactional
     public String logout(String refreshToken) {
         Optional<Member> getMember = memberRepository.findByRefreshToken(refreshToken);
-        System.out.println("member refreshToken : " + getMember.get().getRefreshToken());
+        log.info("member refreshToken : " + getMember.get().getRefreshToken());
         if(getMember.isEmpty())
             throw new MemberHandler(MEMBER_NOT_FOUND);
 
