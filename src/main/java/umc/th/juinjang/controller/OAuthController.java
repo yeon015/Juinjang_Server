@@ -80,6 +80,7 @@ public class OAuthController {
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+        System.out.println("token : " + token);
 
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             String result = oauthService.logout(token.substring(7));
