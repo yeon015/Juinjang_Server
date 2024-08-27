@@ -1,6 +1,8 @@
 package umc.th.juinjang.repository.limjang;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 
@@ -15,4 +17,6 @@ public interface LimjangQueryDslRepository {
   Limjang findByIdWithLimjangPrice(long memberId, long limjangId);
 
   List<Limjang> findAllLimjangs(Member member);
+
+  List<Limjang> findAllByMemberAndOrderByParam(Member member, LimjangSortOptions sort);
 }
