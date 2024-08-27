@@ -1,4 +1,4 @@
-package umc.th.juinjang.model.dto.limjang;
+package umc.th.juinjang.model.dto.limjang.response;
 
 import java.util.List;
 import java.util.Optional;

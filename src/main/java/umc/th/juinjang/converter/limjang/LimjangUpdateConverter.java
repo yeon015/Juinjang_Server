@@ -4,7 +4,7 @@ import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.checkExp
 
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 
