@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 import umc.th.juinjang.model.entity.common.BaseEntity;
@@ -75,8 +76,6 @@ public class Limjang extends BaseEntity {
   @Column(nullable = false)
   private String nickname;
 
-  // ================= 이거 점검해주세요
-  // 메모
   @Column(columnDefinition = "text")
   private String memo;
 
@@ -91,6 +90,7 @@ public class Limjang extends BaseEntity {
   private List<Record> recordList = new ArrayList<>();
 
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @BatchSize(size = 100)
   private List<Image> imageList = new ArrayList<>();
 
   @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
