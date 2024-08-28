@@ -49,21 +49,37 @@ public class OAuthService {
     // 카카오 로그인 (회원가입된 경우)
     // 프론트에서 받은 사용자 정보로 accessToken, refreshToken 발급
     @Transactional
-    public LoginResponseDto kakaoLogin(KakaoLoginRequestDto kakaoReqDto) {
+    public LoginResponseDto kakaoLogin(Long targetId, KakaoLoginRequestDto kakaoReqDto) {
         String email = kakaoReqDto.getEmail();
         log.info(kakaoReqDto.getEmail());
 
         if(email == null)
             throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
 
-        Optional<Member> getMember = memberRepository.findByEmail(email);
-        Member member;
-        if(getMember.isPresent()){  // 이미 회원가입한 회원인 경우
-            member = getMember.get();
-            if(!member.getProvider().equals(MemberProvider.KAKAO))   // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+        Optional<Member> getMemberByEmail = memberRepository.findByEmail(email);
+        Optional<Member> getMemberByTargetId = memberRepository.findByKakaoTargetId(targetId);
+        Member member = null;
+
+
+        if(getMemberByEmail.isPresent() && getMemberByTargetId.isEmpty()){
+            if(!getMemberByEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
                 throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
-        } else {    // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
+            } else {    // 잘못된 target_id가 들어왔을때(db에 없는)
+                throw new MemberHandler(UNCORRECTED_TARGET_ID);
+            }
+        } else if(getMemberByEmail.isPresent() && getMemberByTargetId.isPresent()){  // 이미 회원가입한 회원인 경우
+            if(!getMemberByEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+            } else if(getMemberByEmail.get().getMemberId() != getMemberByTargetId.get().getMemberId()) {
+                throw new MemberHandler(FAILED_TO_LOGIN);
+            }
+            member = getMemberByEmail.get();
+        } else if(getMemberByEmail.isEmpty() && getMemberByTargetId.isEmpty()){    // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
             throw new MemberHandler(MEMBER_NOT_FOUND);
+        }
+
+        if(member == null) {
+            throw new MemberHandler(FAILED_TO_LOGIN);
         }
 
         // accessToken, refreshToken 발급 후 반환
@@ -72,11 +88,7 @@ public class OAuthService {
 
     // 카카오 로그인 (회원가입 해야하는 경우)
     @Transactional
-    public LoginResponseDto kakaoSignUp (KakaoSignUpRequestDto kakaoSignUpReqDto) {
-        Optional<Member> getTargetId = memberRepository.findByKakaoTargetId(kakaoSignUpReqDto.getKakaoTargetId());
-        if(!getTargetId.isEmpty())
-            throw new MemberHandler(ALREADY_MEMBER);
-
+    public LoginResponseDto kakaoSignUp (Long targetId, KakaoSignUpRequestDto kakaoSignUpReqDto) {
         String email = kakaoSignUpReqDto.getEmail();
         log.info(kakaoSignUpReqDto.getEmail());
 
@@ -84,22 +96,37 @@ public class OAuthService {
             throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
 
         Optional<Member> getMember = memberRepository.findByEmail(email);
-        Member member;
-        if(getMember.isPresent() && getMember.get().getProvider().equals(MemberProvider.KAKAO)){  // 이미 회원가입한 회원인 경우 -> 에러 발생
-            throw new MemberHandler(ALREADY_MEMBER);
-        } else if(getMember.isPresent() && getMember.get().getProvider().equals(MemberProvider.APPLE)){
+        Optional<Member> getTargetId = memberRepository.findByKakaoTargetId(targetId);
+
+        Member member = null;
+
+        if(getMember.isPresent() && getTargetId.isEmpty() && getMember.get().getProvider().equals(MemberProvider.APPLE)) {
             throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
-        }else {    // 아직 회원가입 하지 않은 회원인 경우
+        } else if(getMember.isPresent() && getTargetId.isPresent()) {
+            if(!getMember.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+            } else if((getTargetId.get().getMemberId() != getMember.get().getMemberId())) {
+                throw new MemberHandler(FAILED_TO_LOGIN);
+            } else if(getMember.get().getProvider().equals(MemberProvider.KAKAO)) {
+                throw new MemberHandler(ALREADY_MEMBER);
+            }
+        } else if (getMember.isPresent() || getTargetId.isPresent()) {  // 둘 중 하나만 존재할 때 실행될 코드
+            throw new MemberHandler(FAILED_TO_LOGIN);
+        } else {   // 두 값 모두 존재하지 않을 때 실행될 코드, 아직 회원가입 하지 않은 회원인 경우
             member = memberRepository.save(
                     Member.builder()
                             .email(email)
                             .provider(MemberProvider.KAKAO)
-                            .kakaoTargetId(kakaoSignUpReqDto.getKakaoTargetId())
+                            .kakaoTargetId(targetId)
                             .nickname(kakaoSignUpReqDto.getNickname())
                             .refreshToken("")
                             .refreshTokenExpiresAt(LocalDateTime.now())
                             .build()
             );
+        }
+
+        if(member == null) {
+            throw new MemberHandler(FAILED_TO_SIGNUP);
         }
 
         // accessToken, refreshToken 발급 후 반환
@@ -266,7 +293,7 @@ public class OAuthService {
         }
     }
 
-    // 애플 탈퇴
+//     애플 탈퇴
     public void appleWithdraw(Member member, String code) {
 
         if(member.getProvider() != MemberProvider.APPLE){
