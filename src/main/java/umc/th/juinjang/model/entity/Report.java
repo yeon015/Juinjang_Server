@@ -50,8 +50,4 @@ public class Report extends BaseEntity {
 
   @Column(nullable = false)
   private Float totalRate;
-
-  // ================ 이거 점검해주세요
-
-
 }

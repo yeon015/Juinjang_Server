@@ -1,4 +1,4 @@
-package umc.th.juinjang.model.dto.limjang;
+package umc.th.juinjang.model.dto.limjang.request;
 
 import jakarta.validation.constraints.*;
 import java.util.List;

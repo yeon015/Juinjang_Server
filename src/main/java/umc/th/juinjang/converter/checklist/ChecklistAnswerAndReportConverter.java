@@ -4,7 +4,7 @@ import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerAndReportResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ChecklistAnswerResponseDTO;
 import umc.th.juinjang.model.dto.checklist.ReportResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.entity.ChecklistAnswer;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Report;

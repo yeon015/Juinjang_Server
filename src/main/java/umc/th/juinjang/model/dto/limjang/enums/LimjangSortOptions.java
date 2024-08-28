@@ -1,13 +1,13 @@
-package umc.th.juinjang.model.entity.enums;
+package umc.th.juinjang.model.dto.limjang.enums;
 
-public enum LimjangSort {
+public enum LimjangSortOptions {
   UPDATED("UPDATED"),
   CREATED("CREATED"),
   STAR("STAR");
 
   private final String value;
 
-  LimjangSort(String value) {
+  LimjangSortOptions(String value) {
     this.value = value;
   }
 
