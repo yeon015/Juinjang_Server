@@ -18,15 +18,15 @@ public class DiscordAlertProvider {
   private final DiscordFeignClient discordFeignClient;
   private final Environment environment;
 
-  public void sendMessage(SuccessStatus successStatus) {
+  public void sendAlert(SuccessStatus successStatus) {
     if (Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
-      sendMessageToDiscord(DiscordAlert.createAlert(successStatus.getMessage()));
+      sendAlertToDiscord(DiscordAlert.createAlert(successStatus.getMessage()));
     }
   }
 
-  private void sendMessageToDiscord(DiscordAlert discordAlert) {
+  private void sendAlertToDiscord(DiscordAlert discordAlert) {
     try {
-      discordFeignClient.sendMessage(discordAlert);
+      discordFeignClient.sendAlert(discordAlert);
     } catch (FeignException e) {
       log.info(ErrorStatus.DISCORD_ALERT_ERROR.getMessage()+ " " +e.getMessage());
     }

@@ -9,5 +9,5 @@ import umc.th.juinjang.external.discord.dto.DiscordAlert;
 @FeignClient(name = "${discord.name}", url = "${discord.webhook-url}")
 public interface DiscordFeignClient {
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  void sendMessage(@RequestBody DiscordAlert discordMessage);
+  void sendAlert(@RequestBody DiscordAlert discordMessage);
 }
