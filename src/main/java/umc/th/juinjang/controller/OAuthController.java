@@ -48,7 +48,7 @@ public class OAuthController {
     @PostMapping("/kakao/login")
     public ApiResponse<LoginResponseDto> kakaoLogin(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
         Long targetId;
-        if(kakaoTargetId.isEmpty()) {
+        if(kakaoTargetId == null) {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
         }
 
@@ -60,7 +60,7 @@ public class OAuthController {
     @PostMapping("/kakao/signup")
     public ApiResponse<LoginResponseDto> kakaoSignUp(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoSignUpRequestDto kakaoSignUpReqDto) {
         Long targetId;
-        if(kakaoTargetId.isEmpty()) {
+        if(kakaoTargetId == null) {
             throw new ExceptionHandler(EMPTY_TARGET_ID);
         }
 
