@@ -29,7 +29,10 @@ public enum SuccessStatus implements BaseCode {
     IMAGE_DELETE(HttpStatus.OK, "IMAGE2001", "이미지 삭제 성공하였습니다."),
 
     // 탈퇴 관련 응답
-    MEMBER_DELETE(HttpStatus.OK, "MEMBER2000", "회원 탈퇴를 성공하였습니다.");
+    MEMBER_DELETE(HttpStatus.OK, "MEMBER2000", "회원 탈퇴를 성공하였습니다."),
+
+    // discord alert
+    DISCORD_ALERT_SIGN_IN(HttpStatus.OK, "DISCORD200", "신규 유저가 회원가입했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
