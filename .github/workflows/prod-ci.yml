@@ -1,8 +1,8 @@
 # .github/workflows/dev-ci.yml
-name: CI for Prod
+name: CI-Prod
 
 on:
-  push:
+  pull_request:
     branches: [ "prod" ]
 
 permissions:

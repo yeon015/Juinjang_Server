@@ -2,10 +2,8 @@
 name: CD for Prod
 
 on:
-  workflow_run:
-    workflows: ["CI for Prod"]
-    types:
-      - completed
+  push:
+    branches: [ "prod" ]
 
 permissions:
   contents: read

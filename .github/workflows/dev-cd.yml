@@ -2,10 +2,8 @@
 name: CD for Dev
 
 on:
-  workflow_run:
-    workflows: ["CI for Dev"]
-    types:
-      - completed
+  push:
+    branches: [ "dev" ]
 
 permissions:
   contents: read
