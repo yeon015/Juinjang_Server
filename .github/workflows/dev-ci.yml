@@ -1,5 +1,5 @@
 # .github/workflows/dev-ci.yml
-name: CI for Dev
+name: CI-Dev
 
 on:
   push:

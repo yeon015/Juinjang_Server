@@ -3,9 +3,9 @@ name: CD for Dev
 
 on:
   workflow_run:
-    workflows: ["CI for Dev"]
+    workflows: ["CI-Dev"]
     types:
-      - completed
+      - success
 
 permissions:
   contents: read
