@@ -15,6 +15,4 @@ public class KakaoSignUpRequestDto {
     private String kakaoNickname;
     @NotEmpty
     private String nickname;
-    @NotNull
-    private Long kakaoTargetId;
 }

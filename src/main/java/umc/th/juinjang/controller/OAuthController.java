@@ -46,14 +46,26 @@ public class OAuthController {
     // 카카오 로그인
     // 프론트 측에서 전달해준 사용자 정보로 토큰 발급
     @PostMapping("/kakao/login")
-    public ApiResponse<LoginResponseDto> kakaoLogin(@RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
-        return ApiResponse.onSuccess(oauthService.kakaoLogin(kakaoReqDto));
+    public ApiResponse<LoginResponseDto> kakaoLogin(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
+        Long targetId;
+        if(kakaoTargetId == null) {
+            throw new ExceptionHandler(EMPTY_TARGET_ID);
+        }
+
+        targetId = Long.parseLong(kakaoTargetId);
+        return ApiResponse.onSuccess(oauthService.kakaoLogin(targetId, kakaoReqDto));
     }
 
     // 카카오 로그인 (회원가입)
     @PostMapping("/kakao/signup")
-    public ApiResponse<LoginResponseDto> kakaoSignUp(@RequestBody @Validated KakaoSignUpRequestDto kakaoSignUpReqDto) {
-        return ApiResponse.onSuccess(oauthService.kakaoSignUp(kakaoSignUpReqDto));
+    public ApiResponse<LoginResponseDto> kakaoSignUp(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoSignUpRequestDto kakaoSignUpReqDto) {
+        Long targetId;
+        if(kakaoTargetId == null) {
+            throw new ExceptionHandler(EMPTY_TARGET_ID);
+        }
+
+        targetId = Long.parseLong(kakaoTargetId);
+        return ApiResponse.onSuccess(oauthService.kakaoSignUp(targetId, kakaoSignUpReqDto));
     }
 
     // refreshToken으로 accessToken 재발급
