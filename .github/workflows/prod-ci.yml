@@ -1,4 +1,4 @@
-# .github/workflows/dev-ci.yml
+# .github/workflows/prod-ci.yml
 name: CI-Prod
 
 on:
@@ -33,19 +33,6 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Create application-prod.yml
-        if: contains(github.ref, 'dev')
-        run: |
-          mkdir -p ./src/main/resources
-          echo "${{ secrets.PROPERTIES_DEV }}" > ./src/main/resources/application-prod.yml
-        shell: bash
-
-      - name: Create .p8
-        if: contains(github.ref, 'dev')
-        run: |
-          echo "${{ secrets.APPLE_AUTH }}" > ./src/main/resources/AUTHKEY_JUINJAG.p8
-        shell: bash
 
       - name: Build With Gradle
         run: ./gradlew build -x test
