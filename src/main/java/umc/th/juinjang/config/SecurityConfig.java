@@ -1,13 +1,12 @@
 package umc.th.juinjang.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,26 +20,38 @@ import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.jwt.JwtExceptionFilter;
 import umc.th.juinjang.service.JwtService;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    @Autowired
     private final JwtService jwtService;
 
-    @Autowired
     private final JwtExceptionFilter jwtExceptionFilter;
 
+    private final Environment environment;
     @Bean
     @Order(0)
     public WebSecurityCustomizer webSecurityCustomizer(){
-        return web -> web.ignoring()
-                .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html", "/test",
-                        "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
-                        "/api/auth/kakao/**", "/api/auth/apple/**", "/api/checklist/**", "/api/report/**");
-      
+        String[] activeProfiles = environment.getActiveProfiles();
+        boolean isProd = Arrays.asList(activeProfiles).contains("prod");
+
+        //prod아닐때
+        if (!isProd) {
+            return web -> web.ignoring()
+                    .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html", "/test",
+                            "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
+                            "/api/auth/kakao/**", "/api/auth/apple/**");
+        }
+        else {
+            return web -> web.ignoring()
+                    .requestMatchers("/h2-console/**", "/api/auth/regenerate-token",
+                            "/api/auth/kakao/**", "/api/auth/apple/**" );
+        }
+
     }
 
     //선언 방식이 3.x에서 바뀜
@@ -54,7 +65,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
                 .sessionManagement((sessionManagement) ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                        세션을 사용하지 않는다고 설정함
                 )
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration),jwtService))
