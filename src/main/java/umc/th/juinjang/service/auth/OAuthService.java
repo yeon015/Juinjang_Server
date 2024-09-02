@@ -217,7 +217,7 @@ public class OAuthService {
         if(findSub.isEmpty() && findEmail.isPresent() && findEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Apple 아닌 다른 소셜 로그인 사용
             throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
         } else if(findSub.isPresent() && findEmail.isPresent()) {  // 재로그인
-            if(!member.getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
+            if(!findEmail.get().getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
                 throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
             } else if(findSub.get().getMemberId() != findEmail.get().getMemberId()) {
                 throw new MemberHandler(FAILED_TO_LOGIN);
@@ -256,9 +256,9 @@ public class OAuthService {
 
         Member member = null;
         if(findSub.isPresent() && findEmail.isPresent() && (findSub.get().getMemberId() == findEmail.get().getMemberId())
-                && member.getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
+                && findSub.get().getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
             throw new MemberHandler(ALREADY_MEMBER);
-        } else if(!findSub.isPresent() && findEmail.isPresent() && member.getProvider().equals(MemberProvider.KAKAO)){
+        } else if(!findSub.isPresent() && findEmail.isPresent() && findEmail.get().getProvider().equals(MemberProvider.KAKAO)){
             throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
         }else if(!findSub.isPresent() && !findEmail.isPresent()) {
             member = memberRepository.save(
