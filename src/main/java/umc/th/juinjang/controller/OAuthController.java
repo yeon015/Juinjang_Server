@@ -138,7 +138,7 @@ public class OAuthController {
         if (!isUnlink) {
             throw new ExceptionHandler(NOT_UNLINK_KAKAO);
         }
-        oauthService.deleteMember(member);
+//        oauthService.deleteMember(member);
 
         return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }

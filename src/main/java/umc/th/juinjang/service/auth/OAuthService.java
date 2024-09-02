@@ -287,6 +287,7 @@ public class OAuthService {
 
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
             log.info("카카오 탈퇴 성공");
+            memberRepository.deleteById(member.getMemberId());
             return true;
         } else { // 실패 처리 로직
             return false;
