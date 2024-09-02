@@ -18,17 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
-import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
-import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
-import umc.th.juinjang.model.dto.limjang.response.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
@@ -62,10 +61,10 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 메인화면에서 최근 임장 조회 API", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
   @GetMapping("/main")
-  public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
+  public ApiResponse<LimjangsMainGetResponse> getRecentUpdateList(
       @AuthenticationPrincipal Member member
   ){
-    return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList(member)));
+    return ApiResponse.onSuccess((limjangQueryService.getLimjangsMain(member)));
   }
 
   @CrossOrigin

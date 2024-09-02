@@ -101,13 +101,10 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
 
   @Override
   public List<Limjang> findMainScreenContentsLimjang(Member member) {
-
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
-        .leftJoin(limjang.imageList, image).fetchJoin()
+        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .where(limjang.memberId.eq(member))
         .orderBy(limjang.updatedAt.desc())
         .limit(5)

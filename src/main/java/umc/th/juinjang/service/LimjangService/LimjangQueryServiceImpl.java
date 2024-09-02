@@ -9,12 +9,11 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
-import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangTotalListConverter;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO.DetailDto;
-import umc.th.juinjang.model.dto.limjang.response.LimjangMainViewListResponsetDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
@@ -37,19 +36,8 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public List<LimjangMainViewListResponsetDTO.ListDto> getLimjangMainList(Member member) {
-    System.out.println("임장 메인화면 조회 API Service, 첫번째 줄");
-    // 멤버 찾기
-    Member findMember = memberRepository.findById(member.getMemberId())
-        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-    // 임장 찾는다
-    System.out.println("임장 메인화면 조회 API Service, 멤버 찾음" +findMember.getMemberId());
-//    return limjangRepository.findTop5ByMemberIdOrderByUpdatedAtDesc(findMember)
-//        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getPriceId())).toList();
-
-    return limjangRepository.findMainScreenContentsLimjang(findMember)
-        .stream().map(limjang -> LimjangMainListConverter.toLimjangList(limjang, limjang.getLimjangPrice())).toList();
+  public LimjangsMainGetResponse getLimjangsMain(final Member member) {
+    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(findMemberById(member)));
   }
 
   @Override
