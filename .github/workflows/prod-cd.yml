@@ -15,6 +15,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create application-prod.yml
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./src/main/resources/application-prod.yml
+        shell: bash
+
+      - name: Create .p8
+        run: |
+          echo "${{ secrets.APPLE_AUTH }}" > ./src/main/resources/AUTHKEY_JUINJAG.p8
+        shell: bash
+
+      - name: Build With Gradle
+        run: ./gradlew build -x test
+
       - name: Login to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
