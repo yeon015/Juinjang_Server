@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 import umc.th.juinjang.model.entity.common.BaseEntity;
@@ -46,7 +47,7 @@ public class Limjang extends BaseEntity {
   private Member memberId;
 
   // 가격 ID
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "price_id", referencedColumnName = "price_id")
   private LimjangPrice limjangPrice;
 
@@ -75,25 +76,24 @@ public class Limjang extends BaseEntity {
   @Column(nullable = false)
   private String nickname;
 
-  // ================= 이거 점검해주세요
-  // 메모
   @Column(columnDefinition = "text")
   private String memo;
 
   // 양방향 매핑
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Report report;
 
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
   private List<Record> recordList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @BatchSize(size = 100)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
   private Scrap scrap;
 
   @Column(name = "record_count")
@@ -118,10 +118,10 @@ public class Limjang extends BaseEntity {
   }
 
   public void updateLimjang(Limjang newLimjang){
-      this.address = newLimjang.getAddress();
-      this.addressDetail = newLimjang.getAddressDetail();
-      this.nickname = newLimjang.getNickname();
-      this.priceType = newLimjang.getPriceType();
+    this.address = newLimjang.getAddress();
+    this.addressDetail = newLimjang.getAddressDetail();
+    this.nickname = newLimjang.getNickname();
+    this.priceType = newLimjang.getPriceType();
   }
 
   public void updateMemo(String memo){
