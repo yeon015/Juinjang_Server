@@ -1,10 +1,7 @@
 package umc.th.juinjang.converter.record;
 
-import umc.th.juinjang.model.dto.limjang.LimjangMemoResponseDTO;
-import umc.th.juinjang.model.dto.record.RecordRequestDTO;
-import umc.th.juinjang.model.dto.record.RecordResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangMemoResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
-import umc.th.juinjang.model.entity.Record;
 
 public class LimjangMemoConverter {
 

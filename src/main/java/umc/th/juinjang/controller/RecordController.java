@@ -1,17 +1,15 @@
 package umc.th.juinjang.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.ApiResponse;
-import umc.th.juinjang.model.dto.limjang.LimjangMemoResponseDTO;
-import umc.th.juinjang.model.dto.limjang.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangMemoResponseDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordResponseDTO;
 import umc.th.juinjang.model.entity.Member;

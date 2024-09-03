@@ -1,0 +1,76 @@
+# .github/workflows/dev-cd.yml
+name: CD for Dev
+
+on:
+  push:
+    branches: [ "dev" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create application-dev.yml
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.PROPERTIES_DEV }}" > ./src/main/resources/application-dev.yml
+        shell: bash
+
+      - name: Create .p8
+        run: |
+          echo "${{ secrets.APPLE_AUTH }}" > ./src/main/resources/AUTHKEY_JUINJAG.p8
+        shell: bash
+
+      - name: Build With Gradle
+        run: ./gradlew build -x test
+
+
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile-dev
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_DEV }}
+
+
+      - name: Deploy to Dev
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST_DEV }}
+          username: ${{ secrets.EC2_USERNAME_DEV }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_DEV }}
+          port: 22
+          script: |
+            sudo docker rm -f $(docker ps -qa) || true
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_DEV }}
+            docker-compose up -d
+            docker image prune -f

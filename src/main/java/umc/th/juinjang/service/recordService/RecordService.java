@@ -3,7 +3,6 @@ package umc.th.juinjang.service.recordService;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.converter.record.LimjangMemoConverter;
 import umc.th.juinjang.converter.record.RecordConverter;
-import umc.th.juinjang.model.dto.limjang.LimjangMemoResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangMemoResponseDTO;
 import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordResponseDTO;
 import umc.th.juinjang.model.entity.Limjang;
@@ -25,8 +24,6 @@ import umc.th.juinjang.repository.record.RecordRepository;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

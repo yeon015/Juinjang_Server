@@ -1,9 +1,7 @@
 package umc.th.juinjang.model.dto.checklist;
 
 import lombok.*;
-import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
-
-import java.util.List;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 
 @AllArgsConstructor
 @Getter

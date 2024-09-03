@@ -3,34 +3,34 @@ package umc.th.juinjang.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
-
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
-import umc.th.juinjang.converter.limjang.LimjangMainListConverter;
 import umc.th.juinjang.converter.limjang.LimjangPostConverter;
-import umc.th.juinjang.model.dto.limjang.*;
-import umc.th.juinjang.model.entity.Limjang;
+import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
+import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.repository.record.RecordRepository;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
-import umc.th.juinjang.service.recordService.RecordService;
 
 @RestController
 @RequestMapping("/api/limjang")
@@ -53,23 +53,18 @@ public class LimjangController {
 
   @CrossOrigin
   @Operation(summary = "임장 전체 조회 API")
-  @GetMapping("")
-  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> getLimjangTotalList(
-      @AuthenticationPrincipal Member member,
-    @RequestParam("sort") String sort
-  ){
-    System.out.println("임장 전체 조회 API Controller");
+  @GetMapping
+  public ApiResponse<LimjangsGetResponse> getLimjangTotalList(@AuthenticationPrincipal Member member, @RequestParam("sort") LimjangSortOptions sort){
     return ApiResponse.onSuccess(limjangQueryService.getLimjangTotalList(member, sort));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 메인화면에서 최근 임장 조회 API", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
   @GetMapping("/main")
-  public ApiResponse<LimjangMainViewListResponsetDTO.RecentUpdatedDto> getRecentUpdateList(
+  public ApiResponse<LimjangsMainGetResponse> getRecentUpdateList(
       @AuthenticationPrincipal Member member
   ){
-    System.out.println("임장 메인화면 조회 API Controller");
-    return ApiResponse.onSuccess(LimjangMainListConverter.toLimjangMainList(limjangQueryService.getLimjangMainList(member)));
+    return ApiResponse.onSuccess((limjangQueryService.getLimjangsMain(member)));
   }
 
   @CrossOrigin

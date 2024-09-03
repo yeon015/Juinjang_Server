@@ -4,7 +4,7 @@ import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePric
 
 import java.util.Comparator;
 import java.util.List;
-import umc.th.juinjang.model.dto.limjang.LimjangDetailResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangCheckListVersionEnum;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;

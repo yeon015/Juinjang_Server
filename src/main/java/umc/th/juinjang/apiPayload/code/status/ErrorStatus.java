@@ -95,8 +95,10 @@ public enum ErrorStatus implements BaseErrorCode {
     RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "RECORD400", "record가 존재하지 않습니다"),
 
     //withdraw 에러
-    WITHDRAW_REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "WITHDRAW400", "해당 탈퇴 사유 enum 값이 존재하지 않습니다");
+    WITHDRAW_REASON_NOT_FOUND(HttpStatus.NOT_FOUND, "WITHDRAW400", "해당 탈퇴 사유 enum 값이 존재하지 않습니다"),
 
+    // discord alert
+    DISCORD_ALERT_ERROR(HttpStatus.NOT_FOUND, "DISCORD400", "discord 알림 수신 중 오류가 발생했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

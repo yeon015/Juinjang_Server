@@ -1,0 +1,74 @@
+# .github/workflows/prod-cd.yml
+name: CD for Prod
+
+on:
+  push:
+    branches: [ "prod" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Create application-prod.yml
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.PROPERTIES_PROD }}" > ./src/main/resources/application-prod.yml
+        shell: bash
+
+      - name: Create .p8
+        run: |
+          echo "${{ secrets.APPLE_AUTH }}" > ./src/main/resources/AUTHKEY_JUINJAG.p8
+        shell: bash
+
+      - name: Build With Gradle
+        run: ./gradlew build -x test
+
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile-prod
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_PROD }}
+
+      - name: Deploy to Prod
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST_PROD }}
+          username: ${{ secrets.EC2_USERNAME_PROD }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO_PROD }}
+            chmod 777 ./deploy.sh
+            ./deploy.sh
+            docker image prune -f
+          

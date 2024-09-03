@@ -1,5 +1,5 @@
 package umc.th.juinjang.service.auth;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
-import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.controller.KakaoUnlinkClient;
+import umc.th.juinjang.external.discord.DiscordAlertProvider;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
@@ -21,10 +22,6 @@ import umc.th.juinjang.model.entity.enums.MemberProvider;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.JwtService;
 
-import javax.naming.AuthenticationException;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,6 +36,7 @@ public class OAuthService {
     private final JwtService jwtService;
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
+    private final DiscordAlertProvider discordAlertProvider;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -131,6 +129,7 @@ public class OAuthService {
         }
 
         // accessToken, refreshToken 발급 후 반환
+        discordAlertProvider.sendAlert(SuccessStatus.DISCORD_ALERT_SIGN_IN);
         return createToken(member);
     }
 
@@ -278,6 +277,8 @@ public class OAuthService {
         // accessToken, refreshToken 발급
         if(member == null)
             throw new MemberHandler(FAILED_TO_LOGIN);
+
+        discordAlertProvider.sendAlert(SuccessStatus.DISCORD_ALERT_SIGN_IN);
         return createToken(member);
     }
 
