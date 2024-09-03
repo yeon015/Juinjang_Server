@@ -288,6 +288,7 @@ public class OAuthService {
 
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
             log.info("카카오 탈퇴 성공");
+            log.info("member id :: " + member.getMemberId());
             memberRepository.deleteById(member.getMemberId());
             return true;
         } else { // 실패 처리 로직
@@ -310,7 +311,7 @@ public class OAuthService {
             throw new MemberHandler(FAILED_TO_LOAD_PRIVATE_KEY);
         }
         log.info("애플 탈퇴 성공");
-
+        log.info("member id :: " + member.getMemberId());
         //디비에서 지우기
         memberRepository.deleteById(member.getMemberId());
     }
