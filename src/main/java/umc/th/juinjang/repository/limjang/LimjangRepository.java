@@ -41,6 +41,8 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query("UPDATE Limjang l SET l.memo = :memo WHERE l.limjangId = :limjangId")
   void updateMemo(@Param("limjangId") Long limjangId, @Param("memo") String memo);
 
+
+  void deleteByMemberId(Long memberId);
 }
 
 
