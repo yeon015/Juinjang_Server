@@ -30,7 +30,7 @@ public class LimjangPrice extends BaseEntity {
 
   private String pullRent;
 
-  @OneToOne(mappedBy = "limjangPrice", cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "limjangPrice", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Limjang limjang;
 
   public void updateLimjangPriceList(LimjangPrice newLimjangPrice){

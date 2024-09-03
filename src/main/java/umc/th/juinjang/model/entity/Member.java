@@ -53,7 +53,7 @@ public class Member extends BaseEntity implements UserDetails {
   @Column(nullable = false)
   private LocalDateTime refreshTokenExpiresAt;
 
-  @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "memberId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Limjang> limjangList = new ArrayList<>();
 
   // refreshToken 재발급
