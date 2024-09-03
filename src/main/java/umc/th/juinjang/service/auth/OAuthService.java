@@ -19,6 +19,7 @@ import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.enums.MemberProvider;
+import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.service.JwtService;
 
@@ -37,6 +38,8 @@ public class OAuthService {
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
     private final DiscordAlertProvider discordAlertProvider;
+
+    private final LimjangRepository limjangRepository;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -289,6 +292,7 @@ public class OAuthService {
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
             log.info("카카오 탈퇴 성공");
             log.info("member id :: " + member.getMemberId());
+            limjangRepository.deleteByMemberId(member.getMemberId());
             memberRepository.deleteById(member.getMemberId());
             return true;
         } else { // 실패 처리 로직
@@ -313,6 +317,7 @@ public class OAuthService {
         log.info("애플 탈퇴 성공");
         log.info("member id :: " + member.getMemberId());
         //디비에서 지우기
+        limjangRepository.deleteByMemberId(member.getMemberId());
         memberRepository.deleteById(member.getMemberId());
     }
 
