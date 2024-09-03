@@ -42,7 +42,7 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   void updateMemo(@Param("limjangId") Long limjangId, @Param("memo") String memo);
 
 
-  void deleteByMemberId(Long memberId);
+//  void deleteByMember(Member member);
 }
 
 
