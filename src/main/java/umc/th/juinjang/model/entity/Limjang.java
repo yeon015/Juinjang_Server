@@ -47,7 +47,7 @@ public class Limjang extends BaseEntity {
   private Member memberId;
 
   // 가격 ID
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
   @JoinColumn(name = "price_id", referencedColumnName = "price_id")
   private LimjangPrice limjangPrice;
 
@@ -80,20 +80,20 @@ public class Limjang extends BaseEntity {
   private String memo;
 
   // 양방향 매핑
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Report report;
 
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private List<Record> recordList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   @BatchSize(size = 100)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.REMOVE, orphanRemoval = true)
   private Scrap scrap;
 
   @Column(name = "record_count")
