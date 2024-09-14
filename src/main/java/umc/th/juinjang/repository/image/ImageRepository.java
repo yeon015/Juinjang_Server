@@ -10,4 +10,6 @@ import umc.th.juinjang.model.entity.Record;
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
   List<Image> findImagesByLimjangId(Limjang limjang);
+
+    void deleteAllByLimjangId(Limjang limjang);
 }

@@ -10,4 +10,6 @@ import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
     Optional<Report> findByLimjangId(Limjang limjang);
+
+    void deleteAllByLimjangId(Limjang limjang);
 }

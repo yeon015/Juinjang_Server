@@ -18,4 +18,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
   @Modifying
   @Query("delete from Scrap s where s.scrapId = :id")
   void deleteByScrapId(@Param("id")long id);
+
+  void deleteByLimjangId(Limjang limjang);
 }
