@@ -18,4 +18,5 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
     public List<Record> findTop3ByLimjangIdOrderByRecordIdDesc(Limjang limjang);
 
 
+    void deleteAllByLimjangId(Limjang limjang);
 }
