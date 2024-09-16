@@ -16,7 +16,9 @@ import umc.th.juinjang.model.entity.Member;
 @Repository
 public interface LimjangRepository extends JpaRepository<Limjang, Long>, LimjangQueryDslRepository {
 
-  List<Limjang> findLimjangByMemberId(Member member);
+
+  @Query(value = "SELECT * FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
+  List<Limjang> findLimjangByMemberIdIgnoreDeleted(@Param("memberId") Long memberId);
 
   @Modifying
   @Query("UPDATE Limjang l SET l.deleted = true, l.updatedAt = CURRENT_TIMESTAMP WHERE l.limjangId = :limjangId")
@@ -41,6 +43,10 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query("UPDATE Limjang l SET l.memo = :memo WHERE l.limjangId = :limjangId")
   void updateMemo(@Param("limjangId") Long limjangId, @Param("memo") String memo);
 
+  @Transactional
+  @Modifying
+  @Query(value = "DELETE FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
+  void deleteAllByMemberId(@Param("memberId") Long memberId);
 
 //  void deleteByMember(Member member);
 }

@@ -17,13 +17,20 @@ import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
+import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.enums.MemberProvider;
+import umc.th.juinjang.repository.checklist.ChecklistAnswerRepository;
+import umc.th.juinjang.repository.checklist.ReportRepository;
+import umc.th.juinjang.repository.image.ImageRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
+import umc.th.juinjang.repository.limjang.ScrapRepository;
+import umc.th.juinjang.repository.record.RecordRepository;
 import umc.th.juinjang.service.JwtService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
@@ -38,8 +45,12 @@ public class OAuthService {
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
     private final DiscordAlertProvider discordAlertProvider;
-
+    private final ScrapRepository scrapRepository;
     private final LimjangRepository limjangRepository;
+    private final ChecklistAnswerRepository checklistAnswerRepository;
+    private final RecordRepository recordRepository;
+    private final ImageRepository imageRepository;
+    private final ReportRepository reportRepository;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -286,21 +297,23 @@ public class OAuthService {
     }
 
     // 카카오 탈퇴 (카카오 연결 끊기)
+    @Transactional
     public boolean kakaoWithdraw(Member member, Long kakaoTargetId) {
         ResponseEntity<String> response = kakaoUnlinkClient.unlinkUser("KakaoAK " + kakaoAdminKey, "user_id", kakaoTargetId);
 
         if (response.getStatusCode().is2xxSuccessful()) { // 성공 처리 로직
             log.info("카카오 탈퇴 성공");
             log.info("member id :: " + member.getMemberId());
-//            limjangRepository.deleteByMemberId(member.getMemberId());
-            memberRepository.deleteById(member.getMemberId());
+
+            deleteMemberData(member);
+
             return true;
         } else { // 실패 처리 로직
             return false;
         }
     }
 
-//     애플 탈퇴
+    @Transactional
     public void appleWithdraw(Member member, String code) {
 
         if(member.getProvider() != MemberProvider.APPLE){
@@ -308,7 +321,6 @@ public class OAuthService {
         }
         try {
             String clientSecret = appleClientSecretGenerator.generateClientSecret();
-            log.info("clientSecret================"+clientSecret);
             String refreshToken = appleOAuthProvider.getAppleRefreshToken(code, clientSecret);
             appleOAuthProvider.requestRevoke(refreshToken, clientSecret);
         } catch (Exception e) {
@@ -316,13 +328,26 @@ public class OAuthService {
         }
         log.info("애플 탈퇴 성공");
         log.info("member id :: " + member.getMemberId());
-        //디비에서 지우기
-//        limjangRepository.deleteByMemberId(member.getMemberId());
-        memberRepository.deleteById(member.getMemberId());
+
+        deleteMemberData(member);
     }
 
-    // 사용자 정보 삭제 (DB)
-    public void deleteMember(Member member) {
+    private void deleteAllByLimjangId(Limjang limjang) {
+        scrapRepository.deleteByLimjangId(limjang);
+        checklistAnswerRepository.deleteAllByLimjangId(limjang);
+        imageRepository.deleteAllByLimjangId(limjang);
+        recordRepository.deleteAllByLimjangId(limjang);
+        reportRepository.deleteAllByLimjangId(limjang);
+    }
+
+    private void deleteMemberData(Member member) {
+        List<Limjang> limjangList = limjangRepository.findLimjangByMemberIdIgnoreDeleted(member.getMemberId());
+
+        for (Limjang limjang : limjangList) {
+            deleteAllByLimjangId(limjang);
+        }
+
+        limjangRepository.deleteAllByMemberId(member.getMemberId());
         memberRepository.deleteById(member.getMemberId());
     }
 
