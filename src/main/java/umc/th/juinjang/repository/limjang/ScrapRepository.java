@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.Scrap;
@@ -19,5 +20,8 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
   @Query("delete from Scrap s where s.scrapId = :id")
   void deleteByScrapId(@Param("id")long id);
 
-  void deleteByLimjangId(Limjang limjang);
+  @Transactional
+  @Modifying
+  @Query(value = "DELETE FROM scrap s WHERE s.limjang_id = :limjangId", nativeQuery = true)
+  void deleteByLimjangId(@Param("limjangId") Long limjangId);;
 }

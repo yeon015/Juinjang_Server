@@ -19,4 +19,8 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 
 
     void deleteAllByLimjangId(Limjang limjang);
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM record r WHERE r.limjang_id = :limjangId", nativeQuery = true)
+    void deleteByLimjangId(@Param("limjangId") Long limjangId);
 }
