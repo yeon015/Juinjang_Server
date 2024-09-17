@@ -333,11 +333,11 @@ public class OAuthService {
     }
 
     private void deleteAllByLimjangId(Limjang limjang) {
-        scrapRepository.deleteByLimjangId(limjang);
-        checklistAnswerRepository.deleteAllByLimjangId(limjang);
-        imageRepository.deleteAllByLimjangId(limjang);
-        recordRepository.deleteAllByLimjangId(limjang);
-        reportRepository.deleteAllByLimjangId(limjang);
+        scrapRepository.deleteByLimjangId(limjang.getLimjangId());
+        checklistAnswerRepository.deleteByLimjangId(limjang.getLimjangId());
+        imageRepository.deleteByLimjangId(limjang.getLimjangId());
+        recordRepository.deleteByLimjangId(limjang.getLimjangId());
+        reportRepository.deleteByLimjangId(limjang.getLimjangId());
     }
 
     private void deleteMemberData(Member member) {
