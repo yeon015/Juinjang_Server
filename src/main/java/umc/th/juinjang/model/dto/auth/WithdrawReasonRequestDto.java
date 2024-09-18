@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WithdrawReasonRequestDto {
-    @NotEmpty
+
     List<String> withdrawReason;
 }
