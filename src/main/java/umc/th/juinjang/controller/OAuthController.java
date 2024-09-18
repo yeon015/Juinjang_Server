@@ -116,7 +116,7 @@ public class OAuthController {
 
     // 카카오 탈퇴
     @DeleteMapping("/withdraw/kakao")
-    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto) {
+    public ApiResponse kakaoWithdraw(@AuthenticationPrincipal Member member, @RequestHeader("target-id") String kakaoTargetId, @RequestBody WithdrawReasonRequestDto withdrawReasonReqDto) {
         Long targetId;
 
         if(kakaoTargetId == null) {
@@ -132,13 +132,14 @@ public class OAuthController {
         boolean isUnlink = oauthService.kakaoWithdraw(member, targetId);
 
         // 탈퇴 사유 추가
-        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+        if(withdrawReasonReqDto.getWithdrawReason() != null) {
+            withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+        }
 
         // 사용자 정보 삭제 (DB)
         if (!isUnlink) {
             throw new ExceptionHandler(NOT_UNLINK_KAKAO);
         }
-//        oauthService.deleteMember(member);
 
         return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
@@ -149,8 +150,12 @@ public class OAuthController {
     public ApiResponse withdraw(@AuthenticationPrincipal Member member,
                                       @Nullable@RequestHeader("X-Apple-Code") final String code, @RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto){
         oauthService.appleWithdraw(member, code);
+
         // 탈퇴 사유 추가
-        withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+        if(withdrawReasonReqDto.getWithdrawReason() != null) {
+            withdrawService.addWithdrawReason(withdrawReasonReqDto.getWithdrawReason());
+        }
+
         return ApiResponse.onSuccess(SuccessStatus.MEMBER_DELETE);
     }
 
