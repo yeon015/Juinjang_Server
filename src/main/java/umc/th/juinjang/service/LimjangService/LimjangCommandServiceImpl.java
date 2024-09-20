@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
-import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
-import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequestDTO.PostDto;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
@@ -35,20 +35,15 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public Limjang postLimjang(PostDto postDto, Member member) {
+  public Limjang postLimjang(LimjangPostRequest postDto, Member member) {
+    Limjang limjang = LimjangPostRequestConverter.toLimjang(postDto);
+    limjang.postLimjang(findMemberById(member), findLimajngPrice(postDto));
+    return limjangRepository.save(limjang);
+  }
 
-    Limjang limjang = LimjangPostConverter.toLimjang(postDto);
-
-    Member findMember = memberRepository.findById(member.getMemberId())
+  private Member findMemberById(Member member) {
+    return memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
-
-    try {
-      limjang.postLimjang(findMember, findLimajngPrice(postDto));
-      return limjangRepository.save(limjang);
-    } catch (IllegalArgumentException e) {
-      log.warn("IllegalArgumentException");
-    }
-    return null;
   }
 
   @Override
@@ -94,11 +89,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
     findLimjangPrice.updateLimjangPriceList(newLimjangPrice);
   }
 
-  private LimjangPrice findLimajngPrice (PostDto postDto) {
+  private LimjangPrice findLimajngPrice (LimjangPostRequest postDto) {
 
-    List<String> priceList = postDto.getPrice();
-    Integer purpose = postDto.getPurposeType();
-    Integer priceType = postDto.getPriceType();
+    List<String> priceList = postDto.price();
+    Integer purpose = postDto.purposeType();
+    Integer priceType = postDto.priceType();
 
     return determineLimjangPrice(priceList, purpose, priceType);
   }
