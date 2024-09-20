@@ -2,20 +2,17 @@ package umc.th.juinjang.service.LimjangService;
 
 import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.determineLimjangPrice;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO.UpdateDto;
@@ -50,13 +47,13 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Override
   @Transactional
   public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
-    List<Long> findIdList = new ArrayList<>();
+    checkLimjangExistence(deleteIds);
+    deleteIds.getLimjangIdList().forEach(limjangRepository::softDeleteById);
+  }
 
+  private void checkLimjangExistence(DeleteDto deleteIds) {
     for (Long id : deleteIds.getLimjangIdList()){
-      findIdList.add(limjangRetriever.findById(id).getLimjangId());
-    }
-    for (Long id : findIdList){
-      limjangRepository.softDeleteById(id);
+      limjangRetriever.findById(id);
     }
   }
 
