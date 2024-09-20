@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
+import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
