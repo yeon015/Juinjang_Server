@@ -68,8 +68,6 @@ public class Limjang extends BaseEntity {
   @Column(nullable = false)
   private String address;
 
-  // 상세주소
-  @Column(nullable = false)
   private String addressDetail;
 
   // 집 별명

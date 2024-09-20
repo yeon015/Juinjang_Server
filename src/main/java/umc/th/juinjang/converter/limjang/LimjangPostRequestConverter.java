@@ -4,7 +4,7 @@ import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.checkExp
 
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO.PostDTO;
 import umc.th.juinjang.model.entity.Limjang;
@@ -12,22 +12,23 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 
-public class LimjangPostConverter {
+public class LimjangPostRequestConverter {
 
   // 요청
-  public static Limjang toLimjang(LimjangPostRequestDTO.PostDto postDto) {
-    List<String> priceList = postDto.getPrice();
-    Integer priceType = postDto.getPriceType();
+  public static Limjang toLimjang(LimjangPostRequest postDto) {
+    List<String> priceList = postDto.price();
+
+    Integer priceType = postDto.priceType();
 
     checkExpectedSize(priceType, priceList.size(), ErrorStatus.LIMJANG_POST_PRICE_ERROR);
 
       return Limjang.builder()
-        .purpose(LimjangPurpose.find(postDto.getPurposeType()))
-        .propertyType(LimjangPropertyType.find(postDto.getPropertyType()))
+        .purpose(LimjangPurpose.find(postDto.purposeType()))
+        .propertyType(LimjangPropertyType.find(postDto.propertyType()))
         .priceType(LimjangPriceType.find(priceType))
-        .address(postDto.getAddress())
-        .addressDetail(postDto.getAddressDetail())
-        .nickname(postDto.getNickname())
+        .address(postDto.address())
+        .addressDetail(postDto.addressDetail())
+        .nickname(postDto.nickname())
         .build();
   }
 

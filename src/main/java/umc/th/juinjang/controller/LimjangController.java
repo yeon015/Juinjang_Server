@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
-import umc.th.juinjang.converter.limjang.LimjangPostConverter;
+import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
-import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO;
@@ -43,12 +43,9 @@ public class LimjangController {
 
   @CrossOrigin
   @Operation(summary = "임장 생성 API")
-  @PostMapping("")
-  public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(
-      @RequestBody @Valid LimjangPostRequestDTO.PostDto postDto,
-      @AuthenticationPrincipal Member member
-  ){
-    return ApiResponse.onSuccess(LimjangPostConverter.toPostDTO(limjangCommandService.postLimjang(postDto, member)));
+  @PostMapping
+  public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(@RequestBody @Valid LimjangPostRequest postDto, @AuthenticationPrincipal Member member){
+    return ApiResponse.onSuccess(LimjangPostRequestConverter.toPostDTO(limjangCommandService.postLimjang(postDto, member)));
   }
 
   @CrossOrigin
