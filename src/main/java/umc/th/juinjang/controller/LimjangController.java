@@ -44,10 +44,7 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 생성 API")
   @PostMapping
-  public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(
-      @RequestBody @Valid LimjangPostRequest postDto,
-      @AuthenticationPrincipal Member member
-  ){
+  public ApiResponse<LimjangPostResponseDTO.PostDTO> postLimjang(@RequestBody @Valid LimjangPostRequest postDto, @AuthenticationPrincipal Member member){
     return ApiResponse.onSuccess(LimjangPostRequestConverter.toPostDTO(limjangCommandService.postLimjang(postDto, member)));
   }
 
