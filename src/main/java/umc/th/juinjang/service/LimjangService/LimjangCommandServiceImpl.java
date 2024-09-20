@@ -18,6 +18,7 @@ import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
 import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO.UpdateDto;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.Member;
@@ -49,30 +50,20 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Override
   @Transactional
   public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
-
-    System.out.println("임장 선택 삭제 service 입니다");
     List<Long> findIdList = new ArrayList<>();
 
     for (Long id : deleteIds.getLimjangIdList()){
       findIdList.add(limjangRetriever.findById(id).getLimjangId());
-      System.out.println("삭제할 임장 id : : "+id);
     }
-
-    try {
-      for (Long id : findIdList){
-        System.out.println("try문 안 -- 삭제할 임장 id : : "+id);
-        limjangRepository.softDeleteById(id);
-      }
-    } catch (DataIntegrityViolationException e) {
-      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_COMPLETE);
-    } catch (EmptyResultDataAccessException e) {
-      throw new LimjangHandler(ErrorStatus.LIMJANG_DELETE_NOT_FOUND);
+    for (Long id : findIdList){
+      limjangRepository.softDeleteById(id);
     }
   }
 
   @Override
   @Transactional
-  public void updateLimjang(long memberId, long limjangId, LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo) {
+  public void updateLimjang(long memberId, long limjangId, LimjangUpdateRequestDTO.
+    UpdateDto requestUpdateInfo) {
 
     List<String> newPriceList = requestUpdateInfo.getPriceList();
     // 임장 찾기
