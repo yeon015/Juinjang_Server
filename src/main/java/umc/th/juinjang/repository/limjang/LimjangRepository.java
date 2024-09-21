@@ -3,6 +3,7 @@ package umc.th.juinjang.repository.limjang;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,9 +21,13 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query(value = "SELECT * FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
   List<Limjang> findLimjangByMemberIdIgnoreDeleted(@Param("memberId") Long memberId);
 
+  Optional<Limjang> findByLimjangIdAndMemberIdAndDeletedIsFalse(Long id, Member member);
+
+  List<Limjang> findAllByLimjangIdInAndMemberIdAndDeletedIsFalse(List<Long> id, Member member);
+
   @Modifying
-  @Query("UPDATE Limjang l SET l.deleted = true, l.updatedAt = CURRENT_TIMESTAMP WHERE l.limjangId = :limjangId")
-  void softDeleteById(@Param("limjangId") Long limjangId);
+  @Query("UPDATE Limjang l SET l.deleted = true WHERE l.limjangId in :ids")
+  void softDeleteByIds(@Param("ids") List<Long> ids);
 
   @Modifying
   @Query(value ="DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)

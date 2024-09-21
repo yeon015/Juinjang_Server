@@ -8,14 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
+import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
-import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
-import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO.DeleteDto;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
-import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO.UpdateDto;
+import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.Member;
@@ -35,7 +34,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Transactional
   public Limjang postLimjang(LimjangPostRequest postDto, Member member) {
     Limjang limjang = LimjangPostRequestConverter.toLimjang(postDto);
-    limjang.postLimjang(findMemberById(member), findLimajngPrice(postDto));
+    limjang.saveMemberAndPrice(findMemberById(member), findLimajngPrice(postDto));
     return limjangRepository.save(limjang);
   }
 
@@ -46,15 +45,20 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public void deleteLimjangs(LimjangDeleteRequestDTO.DeleteDto deleteIds) {
-    checkLimjangExistence(deleteIds);
-    deleteIds.getLimjangIdList().forEach(limjangRepository::softDeleteById);
+  public void deleteLimjangs(LimjangsDeleteRequest requestIds, Member member) {
+    List<Long> ids = requestIds.limjangIdList();
+    checkLimjangsExistence(ids, member);
+    limjangRepository.softDeleteByIds(ids);
   }
 
-  private void checkLimjangExistence(DeleteDto deleteIds) {
-    for (Long id : deleteIds.getLimjangIdList()){
-      limjangRetriever.findById(id);
+  private void checkLimjangsExistence(List<Long> ids, Member member) {
+    if (isRequestSizeMismatch(ids, limjangRetriever.findAllByIdsInAndMemberAndDeletedIsFalse(ids, member))) {
+      throw new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
     }
+  }
+
+  private boolean isRequestSizeMismatch(List<Long> ids, List<Limjang> findLimjangs) {
+    return ids.size() != findLimjangs.size();
   }
 
   @Override
