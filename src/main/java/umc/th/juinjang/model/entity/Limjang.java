@@ -101,7 +101,7 @@ public class Limjang extends BaseEntity {
   @Column(nullable = false, name = "deleted")
   private boolean deleted = Boolean.FALSE;
 
-  public void postLimjang(Member member, LimjangPrice limjangPrice){
+  public void saveMemberAndPrice(Member member, LimjangPrice limjangPrice){
     this.limjangPrice = limjangPrice;
     this.memberId = member;
   }
