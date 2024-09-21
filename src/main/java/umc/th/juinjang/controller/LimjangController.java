@@ -20,9 +20,9 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
-import umc.th.juinjang.model.dto.limjang.request.LimjangDeleteRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
+import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
@@ -66,13 +66,9 @@ public class LimjangController {
 
   @CrossOrigin
   @Operation(summary = "임장 선택 삭제", description = "임장 게시글을 여러 개 선택해서 삭제하는 api입니다.")
-  @DeleteMapping("")
-  public ApiResponse deleteLimjang(@RequestBody @Valid   LimjangDeleteRequestDTO.DeleteDto deleteIds,
-      @AuthenticationPrincipal Member member
-//  public ApiResponse deleteLimjang(@PathVariable(name = "limjangIds") @Valid List<Long> deleteIds
-  ){
-    System.out.println("임장 선택 삭제 controller 입니다");
-    limjangCommandService.deleteLimjangs(deleteIds);
+  @DeleteMapping
+  public ApiResponse deleteLimjang(@RequestBody @Valid LimjangsDeleteRequest deleteIds, @AuthenticationPrincipal Member member){
+    limjangCommandService.deleteLimjangs(deleteIds, member);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_DELETE);
   }
 
