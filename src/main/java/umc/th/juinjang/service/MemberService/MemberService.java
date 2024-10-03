@@ -47,11 +47,6 @@ public class MemberService {
 
     // 닉네임 수정
     public MemberResponseDto.nicknameDto patchNickname(Member member, MemberRequestDto memberRequestDto) {
-        // 받아온 닉네임 중복 확인
-        Member findMember = memberRepository.findByNickname(memberRequestDto.getNickname());
-        if(findMember != null)
-            throw new MemberHandler(ALREADY_NICKNAME);
-
         // Member 받아오면 해당 member의 nickname 변경
         member.updateNickname(memberRequestDto.getNickname());
         memberRepository.save(member);  // 변수 없이 member 그대로 저장
