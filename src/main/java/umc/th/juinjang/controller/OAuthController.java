@@ -148,7 +148,7 @@ public class OAuthController {
     // 애플 탈퇴
     @DeleteMapping("/withdraw/apple")
     public ApiResponse withdraw(@AuthenticationPrincipal Member member,
-                                      @Nullable@RequestHeader("X-Apple-Code") final String code, @RequestBody @Validated WithdrawReasonRequestDto withdrawReasonReqDto){
+                                      @Nullable@RequestHeader("X-Apple-Code") final String code, @RequestBody WithdrawReasonRequestDto withdrawReasonReqDto){
         oauthService.appleWithdraw(member, code);
 
         // 탈퇴 사유 추가

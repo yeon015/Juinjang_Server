@@ -125,7 +125,7 @@ public class OAuthService {
             }
         } else if (getMember.isPresent() || getTargetId.isPresent()) {  // 둘 중 하나만 존재할 때 실행될 코드
             throw new MemberHandler(FAILED_TO_LOGIN);
-        } else {   // 두 값 모두 존재하지 않을 때 실행될 코드, 아직 회원가입 하지 않은 회원인 경우
+        } else if (!getMember.isPresent() && !getTargetId.isPresent()) {   // 두 값 모두 존재하지 않을 때 실행될 코드, 아직 회원가입 하지 않은 회원인 경우
             member = memberRepository.save(
                     Member.builder()
                             .email(email)

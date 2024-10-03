@@ -37,11 +37,11 @@ public class Member extends BaseEntity implements UserDetails {
   private MemberProvider provider;
 
   // apple client id값을 의미
-  @Column(name = "apple_sub")
+  @Column(name = "apple_sub", unique = true)
   private String appleSub;
 
   // kakao target id값 의미 (카카오의 유저 식별값. 탈퇴할 때 필요)
-  @Column(name="target_id")
+  @Column(name="target_id", unique = true)
   private Long kakaoTargetId;
 
   @Lob
