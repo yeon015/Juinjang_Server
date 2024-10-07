@@ -10,14 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
-import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
-import umc.th.juinjang.converter.limjang.LimjangUpdateConverter;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPatchRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
-import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 
@@ -28,13 +27,12 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   private final LimjangRepository limjangRepository;
   private final MemberRepository memberRepository;
-  private final LimjangRetriever limjangRetriever;
 
   @Override
   @Transactional
   public Limjang postLimjang(LimjangPostRequest postDto, Member member) {
-    Limjang limjang = LimjangPostRequestConverter.toLimjang(postDto);
-    limjang.saveMemberAndPrice(findMemberById(member), findLimajngPrice(postDto));
+    Limjang limjang = postDto.toEntity();
+    limjang.saveMemberAndPrice(findMemberById(member), getLimjangPrice(postDto.price(), postDto.purposeType(), postDto.priceType()));
     return limjangRepository.save(limjang);
   }
 
@@ -52,7 +50,7 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   }
 
   private void checkLimjangsExistence(List<Long> ids, Member member) {
-    if (isRequestSizeMismatch(ids, limjangRetriever.findAllByIdsInAndMemberAndDeletedIsFalse(ids, member))) {
+    if (isRequestSizeMismatch(ids, limjangRepository.findAllByLimjangIdInAndMemberIdAndDeletedIsFalse(ids, member))) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
     }
   }
@@ -63,30 +61,18 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
 
   @Override
   @Transactional
-  public void updateLimjang(long memberId, long limjangId, LimjangUpdateRequestDTO.
-    UpdateDto requestUpdateInfo) {
-
-    List<String> newPriceList = requestUpdateInfo.getPriceList();
-    // 임장 찾기
-    Limjang originalLimjang = limjangRepository.findByIdWithLimjangPrice(memberId, limjangId);
-    // 임장 가격
-    LimjangPrice findLimjangPrice = originalLimjang.getLimjangPrice();
-
-    // 새 정보
-    Limjang newLimjang = LimjangUpdateConverter.toLimjang(requestUpdateInfo);
-    LimjangPrice newLimjangPrice = determineLimjangPrice(newPriceList, originalLimjang.getPurpose().getValue(), newLimjang.getPriceType().getValue());
-
-    //업데이트
-    originalLimjang.updateLimjang(newLimjang);
-    findLimjangPrice.updateLimjangPriceList(newLimjangPrice);
+  public void updateLimjang(Member member, long id, LimjangPatchRequest request) {
+    Limjang limjang = getByMemberAndIdWithLimjangPrice(member, id);
+    limjang.updateLimjang(request.address(), request.addressDetail(), request.nickname(), LimjangPriceType.find(request.priceType()));
+    limjang.getLimjangPrice().updateLimjangPrice(getLimjangPrice(request.priceList(), limjang.getPurpose().getValue(), request.priceType()));
   }
 
-  private LimjangPrice findLimajngPrice (LimjangPostRequest postDto) {
-
-    List<String> priceList = postDto.price();
-    Integer purpose = postDto.purposeType();
-    Integer priceType = postDto.priceType();
-
+  private LimjangPrice getLimjangPrice(List<String> priceList, int purpose, int priceType) {
     return determineLimjangPrice(priceList, purpose, priceType);
+  }
+
+  private Limjang getByMemberAndIdWithLimjangPrice(Member member, long id) {
+    return limjangRepository.findByLimjangIdAndMemberIdWithLimjangPriceAndDeletedIsFalse(id, member)
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
   }
 }
