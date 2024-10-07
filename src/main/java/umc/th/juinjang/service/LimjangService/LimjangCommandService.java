@@ -1,5 +1,6 @@
 package umc.th.juinjang.service.LimjangService;
 
+import umc.th.juinjang.model.dto.limjang.request.LimjangPatchRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
@@ -12,5 +13,5 @@ public interface LimjangCommandService {
 
   void deleteLimjangs(LimjangsDeleteRequest deleteIds, Member member);
 
-  void updateLimjang(long memberId, long limjangId, LimjangUpdateRequestDTO.UpdateDto requestUpdateInfo);
+  void updateLimjang(Member member, long limjangId, LimjangPatchRequest request);
 }
