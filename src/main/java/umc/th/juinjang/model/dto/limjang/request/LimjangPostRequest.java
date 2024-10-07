@@ -2,19 +2,19 @@ package umc.th.juinjang.model.dto.limjang.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPropertyType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
-import umc.th.juinjang.validation.annotation.VaildPriceListSize;
 
 public record LimjangPostRequest(
     @NotNull
     Integer purposeType,
     Integer propertyType,
     Integer priceType,
-    @VaildPriceListSize(minSize = 1, maxSize = 2)
+    @Size(min = 1, max = 2)
     List<String> price,
     @NotBlank
     String address,
