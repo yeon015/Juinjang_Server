@@ -32,11 +32,11 @@ public class LimjangCommandServiceImpl implements LimjangCommandService {
   @Transactional
   public Limjang postLimjang(LimjangPostRequest postDto, Member member) {
     Limjang limjang = postDto.toEntity();
-    limjang.saveMemberAndPrice(findMemberById(member), getLimjangPrice(postDto.price(), postDto.purposeType(), postDto.priceType()));
+    limjang.saveMemberAndPrice(getMemberById(member), getLimjangPrice(postDto.price(), postDto.purposeType(), postDto.priceType()));
     return limjangRepository.save(limjang);
   }
 
-  private Member findMemberById(Member member) {
+  private Member getMemberById(Member member) {
     return memberRepository.findById(member.getMemberId())
         .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
   }
