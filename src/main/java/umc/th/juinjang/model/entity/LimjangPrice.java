@@ -33,7 +33,7 @@ public class LimjangPrice extends BaseEntity {
   @OneToOne(mappedBy = "limjangPrice", cascade = CascadeType.ALL, orphanRemoval = true)
   private Limjang limjang;
 
-  public void updateLimjangPriceList(LimjangPrice newLimjangPrice){
+  public void updateLimjangPrice(LimjangPrice newLimjangPrice){
       this.marketPrice = newLimjangPrice.getMarketPrice();
       this.sellingPrice = newLimjangPrice.getSellingPrice();
       this.depositPrice = newLimjangPrice.getDepositPrice();

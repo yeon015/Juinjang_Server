@@ -1,5 +1,6 @@
 package umc.th.juinjang.service.LimjangService;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.ArrayList;
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
@@ -9,10 +10,8 @@ import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 
 public class LimjangPriceBridge {
-  public static LimjangPrice determineLimjangPrice(
-      List<String> priceList, Integer purpose, Integer priceType
-      ){
-
+  public static LimjangPrice determineLimjangPrice(List<String> priceList, Integer purpose, Integer priceType){
+    checkExpectedSize(priceType, priceList.size());
     if (purpose == 0){ // 부동산 투자 목적 -> 실거래가
       return LimjangPrice.builder().marketPrice(priceList.get(0)).build();
     } else if (purpose == 1){ // 직접 거래 목적
@@ -87,12 +86,10 @@ public class LimjangPriceBridge {
     return priceList;
   }
 
-  public static void checkExpectedSize(Integer priceType, Integer priceListSize, ErrorStatus errorStatus){
-    // 월세의 경우 가격 배열길이 2여야만 함. 나머지는 1
-    int expectedSize = (priceType == 2) ? 2 : 1;
-
+  public static void checkExpectedSize(int priceType, int priceListSize){
+    int expectedSize = (priceType == 2) ? 2 : 1; // 월세의 경우 배열길이 2
     if (priceListSize != expectedSize) {
-      throw new LimjangHandler(errorStatus);
+      throw new LimjangHandler(ErrorStatus.LIMJANG_POST_PRICE_ERROR);
     }
   }
 }

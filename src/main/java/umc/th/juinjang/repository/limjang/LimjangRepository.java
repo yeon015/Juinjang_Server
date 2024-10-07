@@ -53,7 +53,8 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query(value = "DELETE FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
   void deleteAllByMemberId(@Param("memberId") Long memberId);
 
-//  void deleteByMember(Member member);
+  @Query("SELECT l FROM Limjang l join fetch l.limjangPrice WHERE l.limjangId = :id AND l.memberId = :member AND l.deleted = false")
+  Optional<Limjang> findByLimjangIdAndMemberIdWithLimjangPriceAndDeletedIsFalse(@Param("id") Long id, @Param("member") Member member);
 }
 
 
