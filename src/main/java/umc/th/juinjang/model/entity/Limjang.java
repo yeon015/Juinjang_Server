@@ -115,11 +115,11 @@ public class Limjang extends BaseEntity {
     this.scrap = null;
   }
 
-  public void updateLimjang(Limjang newLimjang){
-    this.address = newLimjang.getAddress();
-    this.addressDetail = newLimjang.getAddressDetail();
-    this.nickname = newLimjang.getNickname();
-    this.priceType = newLimjang.getPriceType();
+  public void updateLimjang(String address, String addressDetail, String nickname, LimjangPriceType priceType){
+    this.address = address;
+    this.addressDetail = addressDetail;
+    this.nickname = nickname;
+    this.priceType = priceType;
   }
 
   public void updateMemo(String memo){
