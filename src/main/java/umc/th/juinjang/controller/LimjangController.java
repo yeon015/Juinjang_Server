@@ -20,6 +20,7 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.converter.limjang.LimjangPostRequestConverter;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
+import umc.th.juinjang.model.dto.limjang.request.LimjangPatchRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
@@ -94,15 +95,10 @@ public class LimjangController {
   }
 
   @CrossOrigin
-  @Operation(summary = "임장 기본정보 수정", description = "임장 기본정보수정 api입니다. 수정할 정보를 전달해주세요.")
+  @Operation(summary = "임장 기본정보 수정", description = "임장 기본 정보 수정 api입니다. 수정할 정보를 전달해주세요.")
   @PatchMapping("/{limjangId}")
-  public ApiResponse updateLimjang(
-      @AuthenticationPrincipal Member member,
-      @PathVariable(name = "limjangId") @Valid long limjangId,
-      @RequestBody @Valid
-      LimjangUpdateRequestDTO.UpdateDto updateLimjang
-  ) {
-    limjangCommandService.updateLimjang(member.getMemberId(), limjangId, updateLimjang);
+  public ApiResponse updateLimjang(@AuthenticationPrincipal Member member, @PathVariable(name = "limjangId") long id, @RequestBody @Valid LimjangPatchRequest request) {
+    limjangCommandService.updateLimjang(member, id, request);
     return ApiResponse.onSuccess(SuccessStatus.LIMJANG_UPDATE);
   }
 }
