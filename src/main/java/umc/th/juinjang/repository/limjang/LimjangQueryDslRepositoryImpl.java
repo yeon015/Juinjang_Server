@@ -33,14 +33,13 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
 
   @Override
   public List<Limjang> searchLimjangs(Member member, String keyword) {
-    String rKeyword = keyword.replaceAll(" ", "");
-
+    String rKeyword = removeKeywordBlank(keyword);
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
         .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.imageList, image).fetchJoin()
+        .where(limjang.deleted.isFalse())
         .where(limjang.memberId.eq(member),
             keywordOf(
                 removeBlank(limjang.nickname).containsIgnoreCase(rKeyword),
@@ -48,6 +47,10 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
                 removeBlank(limjang.addressDetail).containsIgnoreCase(rKeyword)
             ))
         .fetch();
+  }
+
+  private String removeKeywordBlank(String keyword) {
+    return keyword.replaceAll(" ", "");
   }
 
   @Override
@@ -69,6 +72,7 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .leftJoin(limjang.report, report).fetchJoin()
         .leftJoin(limjang.scrap, scrap).fetchJoin()
         .where(limjang.memberId.eq(member))
+        .where(limjang.deleted.isFalse())
         .orderBy(getOrderByLimjangSortOptions(sort))
         .fetch();
   }
