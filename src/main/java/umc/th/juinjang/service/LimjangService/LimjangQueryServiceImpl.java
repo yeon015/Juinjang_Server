@@ -1,6 +1,10 @@
 package umc.th.juinjang.service.LimjangService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -9,9 +13,8 @@ import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
-import umc.th.juinjang.converter.limjang.LimjangTotalListConverter;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO.DetailDto;
-import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsGetByKeywordResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.entity.Limjang;
@@ -19,6 +22,7 @@ import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
+import umc.th.juinjang.repository.limjang.ScrapRepository;
 
 @Slf4j
 @Service
@@ -27,29 +31,39 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   private final LimjangRepository limjangRepository;
   private final MemberRepository memberRepository;
+  private final ScrapRepository scrapRepository;
 
   @Override
   @Transactional(readOnly = true)
   public LimjangsGetResponse getLimjangTotalList(Member member, LimjangSortOptions sort) {
-    return LimjangsGetResponse.of(limjangRepository.findAllByMemberAndOrderByParam(findMemberById(member), sort));
+    return LimjangsGetResponse.of(limjangRepository.findAllByMemberAndOrderByParam(checkMemberExist(member), sort));
   }
 
   @Override
   @Transactional(readOnly = true)
   public LimjangsMainGetResponse getLimjangsMain(final Member member) {
-    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(findMemberById(member)));
+    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(
+        checkMemberExist(member)));
   }
 
   @Override
   @Transactional(readOnly = true)
-  public LimjangTotalListResponseDTO.TotalListDto getLimjangSearchList(Member member, String keyword) {
+  public LimjangsGetByKeywordResponse getLimjangSearchList(Member member, String keyword) {
+    checkMemberExist(member);
+    List<Limjang> limjangList = limjangRepository.searchLimjangs(member, keyword).stream().toList();
+    return LimjangsGetByKeywordResponse.of(limjangList, mapLimjangToScrapStatus(limjangList));
+  }
 
-    Member findMember = memberRepository.findById(member.getMemberId())
-        .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+  private Map<Long, Boolean> mapLimjangToScrapStatus(List<Limjang> limjangList) {
+    Set<Long> limjangIdsInScrap = getLimjangIdsInScrap(limjangList);
+    return limjangList.stream().collect(Collectors.toMap(
+        Limjang::getLimjangId,
+        it -> limjangIdsInScrap.contains(it.getLimjangId())
+    ));
+  }
 
-    List<Limjang> findLimjangListByKeyword = limjangRepository.searchLimjangs(findMember, keyword).stream().toList();
-
-    return LimjangTotalListConverter.toLimjangTotalList(findLimjangListByKeyword);
+  private Set<Long> getLimjangIdsInScrap(List<Limjang> limjangList) {
+    return new HashSet<>(scrapRepository.findAllByLimjangIdIn(limjangList).stream().map(it -> it.getLimjangId().getLimjangId()).toList());
   }
 
   @Override
@@ -62,7 +76,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getLimjangPrice());
   }
 
-  private Member findMemberById(Member member) {
+  private Member checkMemberExist(Member member) {
     return memberRepository.findById(member.getMemberId()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
   }
 }
