@@ -25,6 +25,7 @@ import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsGetByKeywordResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.entity.Member;
@@ -74,11 +75,7 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 검색", description = "임장 게시글을 검색하는 api입니다. 집별명, 일반주소, 상세주소로 검색이 가능합니다.")
   @GetMapping("/{keyword}")
-  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> searchLimjangs(
-      @AuthenticationPrincipal Member member,
-      @PathVariable(name = "keyword") @Valid String keyword
-  ) {
-
+  public ApiResponse<LimjangsGetByKeywordResponse> searchLimjangs(@AuthenticationPrincipal Member member, @PathVariable(name = "keyword") String keyword) {
       return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(member, keyword));
   }
 
