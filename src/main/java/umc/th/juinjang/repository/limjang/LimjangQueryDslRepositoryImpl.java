@@ -70,7 +70,7 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .selectFrom(limjang)
         .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.memberId.eq(member))
         .where(limjang.deleted.isFalse())
         .orderBy(getOrderByLimjangSortOptions(sort))
@@ -85,9 +85,8 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         orders.add(new OrderSpecifier<>(DESC, report.totalRate.coalesce(0f), OrderSpecifier.NullHandling.NullsLast));
         orders.add(new OrderSpecifier<>(DESC, limjang.createdAt));
       }
-      case CREATED -> new OrderSpecifier<>(DESC, limjang.createdAt);
+      case CREATED -> orders.add(new OrderSpecifier<>(DESC, limjang.createdAt));
     }
-
     return orders.toArray(new OrderSpecifier[orders.size()]);
   }
 
