@@ -81,7 +81,7 @@ public class Limjang extends BaseEntity {
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ChecklistAnswer> answerList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
   private Report report;
 
   @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -91,8 +91,8 @@ public class Limjang extends BaseEntity {
   @BatchSize(size = 100)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Scrap scrap;
+  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Scrap> scrap = new ArrayList<>();
 
   @Column(name = "record_count")
   @ColumnDefault("0") //default 0
@@ -104,15 +104,6 @@ public class Limjang extends BaseEntity {
   public void saveMemberAndPrice(Member member, LimjangPrice limjangPrice){
     this.limjangPrice = limjangPrice;
     this.memberId = member;
-  }
-
-  public void addScrap(Scrap scrap) {
-    this.scrap = scrap;
-    scrap.saveLimjang(this);
-  }
-
-  public void removeScrap(){
-    this.scrap = null;
   }
 
   public void updateLimjang(String address, String addressDetail, String nickname, LimjangPriceType priceType){
@@ -128,9 +119,4 @@ public class Limjang extends BaseEntity {
   public void saveImages(Image image){
     this.imageList.add(image);
   }
-
-  public void saveReport(Report report){
-    this.report = report;
-  }
-
 }
