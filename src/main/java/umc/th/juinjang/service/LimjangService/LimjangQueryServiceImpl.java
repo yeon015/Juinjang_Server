@@ -36,14 +36,15 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Override
   @Transactional(readOnly = true)
   public LimjangsGetResponse getLimjangTotalList(Member member, LimjangSortOptions sort) {
-    return LimjangsGetResponse.of(limjangRepository.findAllByMemberAndOrderByParam(checkMemberExist(member), sort));
+    checkMemberExist(member);
+    List<Limjang> limjangList = limjangRepository.findAllByMemberAndOrderByParam(member, sort);
+    return LimjangsGetResponse.of(limjangList, mapLimjangToScrapStatus(limjangList));
   }
 
   @Override
   @Transactional(readOnly = true)
   public LimjangsMainGetResponse getLimjangsMain(final Member member) {
-    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(
-        checkMemberExist(member)));
+    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(checkMemberExist(member)));
   }
 
   @Override
