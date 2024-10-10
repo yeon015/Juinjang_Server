@@ -37,7 +37,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Transactional(readOnly = true)
   public LimjangsGetResponse getLimjangTotalList(Member member, LimjangSortOptions sort) {
     checkMemberExist(member);
-    List<Limjang> limjangList = limjangRepository.findAllByMemberAndOrderByParam(member, sort);
+    List<Limjang> limjangList = limjangRepository.findAllByMemberAndDeletedIsFalseOrderByParam(member, sort);
     return LimjangsGetResponse.of(limjangList, mapLimjangToScrapStatus(limjangList));
   }
 
@@ -51,7 +51,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Transactional(readOnly = true)
   public LimjangsGetByKeywordResponse getLimjangSearchList(Member member, String keyword) {
     checkMemberExist(member);
-    List<Limjang> limjangList = limjangRepository.searchLimjangs(member, keyword).stream().toList();
+    List<Limjang> limjangList = limjangRepository.searchLimjangsWhereDeletedIsFalse(member, keyword);
     return LimjangsGetByKeywordResponse.of(limjangList, mapLimjangToScrapStatus(limjangList));
   }
 

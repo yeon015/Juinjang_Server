@@ -32,12 +32,12 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
   }
 
   @Override
-  public List<Limjang> searchLimjangs(Member member, String keyword) {
+  public List<Limjang> searchLimjangsWhereDeletedIsFalse(Member member, String keyword) {
     String rKeyword = removeKeywordBlank(keyword);
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
+        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.deleted.isFalse())
         .where(limjang.memberId.eq(member),
@@ -53,19 +53,7 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
     return keyword.replaceAll(" ", "");
   }
 
-  @Override
-  public Limjang findByIdWithLimjangPrice(long memberId, long limjangId) {
-    return queryFactory
-        .selectFrom(limjang)
-        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
-        .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .where(limjang.memberId.memberId.eq(memberId))
-        .where(limjang.limjangId.eq(limjangId))
-        .fetchOne();
-  }
-
-  public List<Limjang> findAllByMemberAndOrderByParam(Member member, LimjangSortOptions sort) {
+  public List<Limjang> findAllByMemberAndDeletedIsFalseOrderByParam(Member member, LimjangSortOptions sort) {
     return queryFactory
         .selectFrom(limjang)
         .join(limjang.limjangPrice, limjangPrice).fetchJoin()
@@ -111,18 +99,6 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .where(limjang.memberId.eq(member))
         .orderBy(limjang.updatedAt.desc())
         .limit(5)
-        .fetch();
-  }
-
-  @Override
-  public List<Limjang> findAllLimjangs(Member member) {
-    return queryFactory
-        .selectFrom(limjang)
-        .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
-        .leftJoin(limjang.imageList, image).fetchJoin()
-        .where(limjang.memberId.eq(member))
         .fetch();
   }
 }
