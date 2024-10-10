@@ -30,7 +30,7 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   void softDeleteByIds(@Param("ids") List<Long> ids);
 
   @Modifying
-  @Query(value ="DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
+  @Query(value = "DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
   void hardDelete(@Param("dateTime") LocalDateTime dateTime);
 
   // 가장 최근에 update된 5개 순서대로
@@ -56,5 +56,4 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query("SELECT l FROM Limjang l join fetch l.limjangPrice WHERE l.limjangId = :id AND l.memberId = :member AND l.deleted = false")
   Optional<Limjang> findByLimjangIdAndMemberIdWithLimjangPriceAndDeletedIsFalse(@Param("id") Long id, @Param("member") Member member);
 }
-
 
