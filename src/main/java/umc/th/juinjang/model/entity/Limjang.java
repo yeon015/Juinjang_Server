@@ -91,9 +91,6 @@ public class Limjang extends BaseEntity {
   @BatchSize(size = 100)
   private List<Image> imageList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "limjangId", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Scrap> scrap = new ArrayList<>();
-
   @Column(name = "record_count")
   @ColumnDefault("0") //default 0
   private int recordCount;
