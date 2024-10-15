@@ -22,11 +22,12 @@ import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPatchRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangPostRequest;
 import umc.th.juinjang.model.dto.limjang.request.LimjangsDeleteRequest;
-import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangPostResponse;
-import umc.th.juinjang.model.dto.limjang.response.LimjangTotalListResponseDTO;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsGetByKeywordResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetVersion2Response;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.service.LimjangService.LimjangCommandService;
 import umc.th.juinjang.service.LimjangService.LimjangQueryService;
@@ -57,10 +58,15 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 메인화면에서 최근 임장 조회 API", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
   @GetMapping("/main")
-  public ApiResponse<LimjangsMainGetResponse> getRecentUpdateList(
-      @AuthenticationPrincipal Member member
-  ){
+  public ApiResponse<LimjangsMainGetResponse> getRecentUpdateList(@AuthenticationPrincipal Member member) {
     return ApiResponse.onSuccess((limjangQueryService.getLimjangsMain(member)));
+  }
+
+  @CrossOrigin
+  @Operation(summary = "임장 메인화면에서 최근 임장 조회 API version 2", description = "가장 최근에 수정된 순으로 최대 5개까지 볼 수 있다.")
+  @GetMapping("/v2/main")
+  public ApiResponse<LimjangsMainGetVersion2Response> getRecentUpdateListVersion2(@AuthenticationPrincipal Member member) {
+    return ApiResponse.onSuccess((limjangQueryService.getLimjangsMainVersion2(member)));
   }
 
   @CrossOrigin
@@ -74,22 +80,15 @@ public class LimjangController {
   @CrossOrigin
   @Operation(summary = "임장 검색", description = "임장 게시글을 검색하는 api입니다. 집별명, 일반주소, 상세주소로 검색이 가능합니다.")
   @GetMapping("/{keyword}")
-  public ApiResponse<LimjangTotalListResponseDTO.TotalListDto> searchLimjangs(
-      @AuthenticationPrincipal Member member,
-      @PathVariable(name = "keyword") @Valid String keyword
-  ) {
-
+  public ApiResponse<LimjangsGetByKeywordResponse> searchLimjangs(@AuthenticationPrincipal Member member, @PathVariable(name = "keyword") String keyword) {
       return ApiResponse.onSuccess(limjangQueryService.getLimjangSearchList(member, keyword));
   }
 
   @CrossOrigin
   @Operation(summary = "임장 상세보기", description = "임장 상세보기 api입니다. 임장 id를 전달해주세요.")
   @GetMapping("/detail/{limjangId}")
-  public ApiResponse<LimjangDetailResponseDTO.DetailDto> getDetailLimjang(
-      @PathVariable(name = "limjangId") @Valid Long limjangId,
-      @AuthenticationPrincipal Member member
-  ) {
-    return ApiResponse.onSuccess(limjangQueryService.getLimjangDetail(limjangId));
+  public ApiResponse<LimjangDetailGetResponse> getLimjang(@PathVariable(name = "limjangId") @Valid Long id, @AuthenticationPrincipal Member member) {
+    return ApiResponse.onSuccess(limjangQueryService.getDetail(id, member));
   }
 
   @CrossOrigin

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
+import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
 import umc.th.juinjang.model.entity.enums.LimjangPriceType;
 import umc.th.juinjang.model.entity.enums.LimjangPurpose;
@@ -91,5 +92,10 @@ public class LimjangPriceBridge {
     if (priceListSize != expectedSize) {
       throw new LimjangHandler(ErrorStatus.LIMJANG_POST_PRICE_ERROR);
     }
+  }
+
+  public static String getPriceToString(Limjang limjang) {
+    List<String> priceList = makePriceListVersion2(limjang.getPriceType(),limjang.getPurpose(), limjang.getLimjangPrice());
+    return (limjang.getPriceType().getValue() == 2) ? priceList.get(1) : priceList.get(0);
   }
 }

@@ -32,15 +32,14 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
   }
 
   @Override
-  public List<Limjang> searchLimjangs(Member member, String keyword) {
-    String rKeyword = keyword.replaceAll(" ", "");
-
+  public List<Limjang> searchLimjangsWhereDeletedIsFalse(Member member, String keyword) {
+    String rKeyword = removeKeywordBlank(keyword);
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
+        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.imageList, image).fetchJoin()
+        .where(limjang.deleted.isFalse())
         .where(limjang.memberId.eq(member),
             keywordOf(
                 removeBlank(limjang.nickname).containsIgnoreCase(rKeyword),
@@ -50,25 +49,18 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         .fetch();
   }
 
-  @Override
-  public Limjang findByIdWithLimjangPrice(long memberId, long limjangId) {
-    return queryFactory
-        .selectFrom(limjang)
-        .join(limjang.limjangPrice, limjangPrice).fetchJoin()
-        .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .where(limjang.memberId.memberId.eq(memberId))
-        .where(limjang.limjangId.eq(limjangId))
-        .fetchOne();
+  private String removeKeywordBlank(String keyword) {
+    return keyword.replaceAll(" ", "");
   }
 
-  public List<Limjang> findAllByMemberAndOrderByParam(Member member, LimjangSortOptions sort) {
+  public List<Limjang> findAllByMemberAndDeletedIsFalseOrderByParam(Member member, LimjangSortOptions sort) {
     return queryFactory
         .selectFrom(limjang)
         .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
+        .leftJoin(limjang.imageList, image).fetchJoin()
         .where(limjang.memberId.eq(member))
+        .where(limjang.deleted.isFalse())
         .orderBy(getOrderByLimjangSortOptions(sort))
         .fetch();
   }
@@ -81,9 +73,8 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
         orders.add(new OrderSpecifier<>(DESC, report.totalRate.coalesce(0f), OrderSpecifier.NullHandling.NullsLast));
         orders.add(new OrderSpecifier<>(DESC, limjang.createdAt));
       }
-      case CREATED -> new OrderSpecifier<>(DESC, limjang.createdAt);
+      case CREATED -> orders.add(new OrderSpecifier<>(DESC, limjang.createdAt));
     }
-
     return orders.toArray(new OrderSpecifier[orders.size()]);
   }
 
@@ -100,26 +91,15 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
   }
 
   @Override
-  public List<Limjang> findMainScreenContentsLimjang(Member member) {
+  public List<Limjang> findAllByMemberAndDeletedIsFalseWithReportAndLimjangPriceOrderByUpdateAtLimit5(Member member) {
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
         .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .where(limjang.memberId.eq(member))
+        .where(limjang.deleted.isFalse())
         .orderBy(limjang.updatedAt.desc())
         .limit(5)
-        .fetch();
-  }
-
-  @Override
-  public List<Limjang> findAllLimjangs(Member member) {
-    return queryFactory
-        .selectFrom(limjang)
-        .leftJoin(limjang.report, report).fetchJoin()
-        .leftJoin(limjang.scrap, scrap).fetchJoin()
-        .leftJoin(limjang.limjangPrice, limjangPrice).fetchJoin()
-        .leftJoin(limjang.imageList, image).fetchJoin()
-        .where(limjang.memberId.eq(member))
         .fetch();
   }
 }

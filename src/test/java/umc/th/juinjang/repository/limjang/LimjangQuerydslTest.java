@@ -11,11 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.config.TestConfig;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
@@ -58,7 +54,7 @@ public class LimjangQuerydslTest {
 
       // when
       String keyword = "인창";
-      List<Limjang> findLimjangs = limjangRepository.searchLimjangs(member, keyword);
+      List<Limjang> findLimjangs = limjangRepository.searchLimjangsWhereDeletedIsFalse(member, keyword);
       // then
 
       for (int i = 0; i < findLimjangs.size(); i++) {
@@ -78,7 +74,7 @@ public class LimjangQuerydslTest {
 
       // when
       String keyword = "인창";
-      List<Limjang> findLimjangs = limjangRepository.searchLimjangs(member, keyword);
+      List<Limjang> findLimjangs = limjangRepository.searchLimjangsWhereDeletedIsFalse(member, keyword);
 
       // then
       assertThat(findLimjangs)
