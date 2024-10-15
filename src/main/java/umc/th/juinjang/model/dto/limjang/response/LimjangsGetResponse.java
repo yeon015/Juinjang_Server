@@ -37,7 +37,7 @@ public record LimjangsGetResponse(List<LimjangsResponse> limjangList) {
     }
   }
 
-  public static LimjangsGetResponse of(final List<Limjang> limjangList, Map<Long, Boolean> mapLimjangToScrapStatus) {
+  public static LimjangsGetResponse of(List<Limjang> limjangList, Map<Long, Boolean> mapLimjangToScrapStatus) {
     return new LimjangsGetResponse(limjangList.stream().map(limjang -> LimjangsResponse.of(limjang, limjang.getLimjangPrice(), mapLimjangToScrapStatus.get(limjang.getLimjangId()))).toList());
   }
 

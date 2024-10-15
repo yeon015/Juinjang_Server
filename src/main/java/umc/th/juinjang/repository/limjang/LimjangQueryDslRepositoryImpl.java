@@ -91,12 +91,13 @@ public class LimjangQueryDslRepositoryImpl implements LimjangQueryDslRepository 
   }
 
   @Override
-  public List<Limjang> findMainScreenContentsLimjang(Member member) {
+  public List<Limjang> findAllByMemberAndDeletedIsFalseWithReportAndLimjangPriceOrderByUpdateAtLimit5(Member member) {
     return queryFactory
         .selectFrom(limjang)
         .leftJoin(limjang.report, report).fetchJoin()
         .join(limjang.limjangPrice, limjangPrice).fetchJoin()
         .where(limjang.memberId.eq(member))
+        .where(limjang.deleted.isFalse())
         .orderBy(limjang.updatedAt.desc())
         .limit(5)
         .fetch();

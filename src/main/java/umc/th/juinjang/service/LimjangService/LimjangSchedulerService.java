@@ -17,7 +17,7 @@ public class LimjangSchedulerService {
   private final LimjangRepository limjangRepository;
 
   @Transactional
-//  @Scheduled(fixedRate = 60000) // 1분 간격으로 실행 - test용
+  // @Scheduled(fixedRate = 60000) // 1분 간격으로 실행 - test용
 //  @Scheduled(fixedRate = 7 * 24 * 60 * 60 * 1000) // 일주일 간격으로 실행 <- 나중에 출시하면 이걸로
   @Scheduled(fixedRate = 31557600000L) // 일년 간격으로 실행(임시)
   public void cleanUpData() {

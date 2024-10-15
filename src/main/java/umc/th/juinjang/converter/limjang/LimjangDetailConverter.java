@@ -5,7 +5,7 @@ import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePric
 import java.util.Comparator;
 import java.util.List;
 import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO;
-import umc.th.juinjang.model.dto.limjang.enums.LimjangCheckListVersionEnum;
+import umc.th.juinjang.model.entity.enums.LimjangCheckListVersion;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.LimjangPrice;
@@ -28,14 +28,14 @@ public class LimjangDetailConverter {
     LimjangPropertyType propertyType = limjang.getPropertyType();
     LimjangPriceType priceType = limjang.getPriceType();
 
-    LimjangCheckListVersionEnum checkListVersion;
+    LimjangCheckListVersion checkListVersion;
     if (purposeType == LimjangPurpose.RESIDENTIAL_PURPOSE &&
         (propertyType == LimjangPropertyType.VILLA||
             propertyType == LimjangPropertyType.OFFICE_TEL)
     ){
-      checkListVersion = LimjangCheckListVersionEnum.NON_LIMJANG;
+      checkListVersion = LimjangCheckListVersion.NON_LIMJANG;
     } else {
-      checkListVersion = LimjangCheckListVersionEnum.LIMJANG;
+      checkListVersion = LimjangCheckListVersion.LIMJANG;
     }
 
     List<String> priceList = makePriceListVersion2(priceType, purposeType,limjangPrice);

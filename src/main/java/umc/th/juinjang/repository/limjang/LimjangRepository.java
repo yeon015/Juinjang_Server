@@ -17,11 +17,8 @@ import umc.th.juinjang.model.entity.Member;
 @Repository
 public interface LimjangRepository extends JpaRepository<Limjang, Long>, LimjangQueryDslRepository {
 
-
   @Query(value = "SELECT * FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
   List<Limjang> findLimjangByMemberIdIgnoreDeleted(@Param("memberId") Long memberId);
-
-  Optional<Limjang> findByLimjangIdAndMemberIdAndDeletedIsFalse(Long id, Member member);
 
   List<Limjang> findAllByLimjangIdInAndMemberIdAndDeletedIsFalse(List<Long> id, Member member);
 
@@ -32,9 +29,6 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Modifying
   @Query(value = "DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
   void hardDelete(@Param("dateTime") LocalDateTime dateTime);
-
-  // 가장 최근에 update된 5개 순서대로
-  List<Limjang> findTop5ByMemberIdOrderByUpdatedAtDesc(Member member);
 
   Optional<Limjang> findLimjangByLimjangIdAndMemberId(Long limjangId, Member member);
 
@@ -55,5 +49,7 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
 
   @Query("SELECT l FROM Limjang l join fetch l.limjangPrice WHERE l.limjangId = :id AND l.memberId = :member AND l.deleted = false")
   Optional<Limjang> findByLimjangIdAndMemberIdWithLimjangPriceAndDeletedIsFalse(@Param("id") Long id, @Param("member") Member member);
-}
 
+  @Query("SELECT l FROM Limjang l join fetch l.limjangPrice left join fetch l.report WHERE l.limjangId = :id AND l.memberId = :member AND l.deleted = false")
+  Optional<Limjang> findByLimjangIdAndDeletedIsFalse(@Param("id") Long id, @Param("member") Member member);
+}
