@@ -21,8 +21,6 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query(value = "SELECT * FROM limjang l WHERE l.member_id = :memberId", nativeQuery = true)
   List<Limjang> findLimjangByMemberIdIgnoreDeleted(@Param("memberId") Long memberId);
 
-  Optional<Limjang> findByLimjangIdAndMemberIdAndDeletedIsFalse(Long id, Member member);
-
   List<Limjang> findAllByLimjangIdInAndMemberIdAndDeletedIsFalse(List<Long> id, Member member);
 
   @Modifying
@@ -32,9 +30,6 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Modifying
   @Query(value = "DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
   void hardDelete(@Param("dateTime") LocalDateTime dateTime);
-
-  // 가장 최근에 update된 5개 순서대로
-  List<Limjang> findTop5ByMemberIdOrderByUpdatedAtDesc(Member member);
 
   Optional<Limjang> findLimjangByLimjangIdAndMemberId(Long limjangId, Member member);
 
