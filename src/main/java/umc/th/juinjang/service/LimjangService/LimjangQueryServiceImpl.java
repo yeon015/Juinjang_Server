@@ -17,6 +17,7 @@ import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO.Detai
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetByKeywordResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
+import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetVersion2Response;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.dto.limjang.enums.LimjangSortOptions;
@@ -44,7 +45,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   @Override
   @Transactional(readOnly = true)
   public LimjangsMainGetResponse getLimjangsMain(final Member member) {
-    return LimjangsMainGetResponse.of(limjangRepository.findMainScreenContentsLimjang(checkMemberExist(member)));
+    return LimjangsMainGetResponse.of(limjangRepository.findAllByMemberAndDeletedIsFalseWithReportAndLimjangPriceOrderByUpdateAtLimit5(checkMemberExist(member)));
   }
 
   @Override
@@ -53,6 +54,24 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
     checkMemberExist(member);
     List<Limjang> limjangList = limjangRepository.searchLimjangsWhereDeletedIsFalse(member, keyword);
     return LimjangsGetByKeywordResponse.of(limjangList, mapLimjangToScrapStatus(limjangList));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public DetailDto getLimjangDetail(Long limjangId) {
+    Limjang findLimjang = limjangRepository.findById(limjangId)
+        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getLimjangPrice());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public LimjangsMainGetVersion2Response getLimjangsMainVersion2(Member member) {
+    return LimjangsMainGetVersion2Response.of(limjangRepository.findAllByMemberAndDeletedIsFalseWithReportAndLimjangPriceOrderByUpdateAtLimit5(checkMemberExist(member)));
+  }
+
+  private Member checkMemberExist(Member member) {
+    return memberRepository.findById(member.getMemberId()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
   }
 
   private Map<Long, Boolean> mapLimjangToScrapStatus(List<Limjang> limjangList) {
@@ -65,19 +84,5 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   private Set<Long> getLimjangIdsInScrap(List<Limjang> limjangList) {
     return new HashSet<>(scrapRepository.findAllByLimjangIdIn(limjangList).stream().map(it -> it.getLimjangId().getLimjangId()).toList());
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public DetailDto getLimjangDetail(Long limjangId) {
-
-    Limjang findLimjang = limjangRepository.findById(limjangId)
-        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-
-    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getLimjangPrice());
-  }
-
-  private Member checkMemberExist(Member member) {
-    return memberRepository.findById(member.getMemberId()).orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
   }
 }
