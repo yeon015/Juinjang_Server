@@ -9,7 +9,7 @@ public interface LimjangQueryDslRepository {
 
   List<Limjang> searchLimjangsWhereDeletedIsFalse(Member member, String keyword);
 
-  List<Limjang> findMainScreenContentsLimjang(Member member);
+  List<Limjang> findAllByMemberAndDeletedIsFalseWithReportAndLimjangPriceOrderByUpdateAtLimit5(Member member);
 
   List<Limjang> findAllByMemberAndDeletedIsFalseOrderByParam(Member member, LimjangSortOptions sort);
 }
