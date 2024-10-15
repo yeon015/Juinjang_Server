@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.LimjangHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
-import umc.th.juinjang.converter.limjang.LimjangDetailConverter;
-import umc.th.juinjang.model.dto.limjang.response.LimjangDetailResponseDTO.DetailDto;
+import umc.th.juinjang.model.dto.limjang.response.LimjangDetailGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetByKeywordResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
@@ -58,10 +57,12 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
 
   @Override
   @Transactional(readOnly = true)
-  public DetailDto getLimjangDetail(Long limjangId) {
-    Limjang findLimjang = limjangRepository.findById(limjangId)
-        .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-    return LimjangDetailConverter.toDetail(findLimjang, findLimjang.getLimjangPrice());
+  public LimjangDetailGetResponse getDetail(long id, Member member) {
+    return LimjangDetailGetResponse.of(getByIdAndMember(id, member));
+  }
+
+  private Limjang getByIdAndMember(Long id, Member member) {
+    return limjangRepository.findByLimjangIdAndDeletedIsFalse(id, member).orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
   }
 
   @Override

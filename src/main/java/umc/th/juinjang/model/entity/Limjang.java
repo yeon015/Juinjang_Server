@@ -120,4 +120,6 @@ public class Limjang extends BaseEntity {
   public String getDefaultImage() {
     return this.imageList.isEmpty() ? null :this.imageList.get(0).getImageUrl();
   }
+
+
 }
