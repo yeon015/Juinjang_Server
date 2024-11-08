@@ -143,7 +143,7 @@ public class OAuthService {
         }
 
         // accessToken, refreshToken 발급 후 반환
-        discordAlertProvider.sendAlert(SuccessStatus.DISCORD_ALERT_SIGN_IN);
+        discordAlertProvider.sendAlert(member);
         return createToken(member);
     }
 
@@ -292,7 +292,7 @@ public class OAuthService {
         if(member == null)
             throw new MemberHandler(FAILED_TO_LOGIN);
 
-        discordAlertProvider.sendAlert(SuccessStatus.DISCORD_ALERT_SIGN_IN);
+        discordAlertProvider.sendAlert(member);
         return createToken(member);
     }
 
