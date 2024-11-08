@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.external.discord.dto.DiscordAlert;
+import umc.th.juinjang.model.entity.Member;
 
 @RequiredArgsConstructor
 @Component
@@ -18,9 +18,9 @@ public class DiscordAlertProvider {
   private final DiscordFeignClient discordFeignClient;
   private final Environment environment;
 
-  public void sendAlert(SuccessStatus successStatus) {
+  public void sendAlert(Member member) {
     if (Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
-      sendAlertToDiscord(DiscordAlert.createAlert(successStatus.getMessage()));
+      sendAlertToDiscord(DiscordAlert.createAlert(member.getMemberId(), member.getProvider(), member.getNickname()));
     }
   }
 
