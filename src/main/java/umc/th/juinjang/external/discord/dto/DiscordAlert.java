@@ -1,10 +1,9 @@
 package umc.th.juinjang.external.discord.dto;
 
-public record DiscordAlert(
-    String content
-) {
+import umc.th.juinjang.model.entity.enums.MemberProvider;
 
-  public static DiscordAlert createAlert(String message) {
-    return new DiscordAlert(message);
+public record DiscordAlert(String content) {
+  public static DiscordAlert createAlert(Long id, MemberProvider memberProvider, String nickname) {
+    return new DiscordAlert("주인장에 " +memberProvider+" "+id+"번째 유저 < "+nickname+" >님이 생겼어요!");
   }
 }
