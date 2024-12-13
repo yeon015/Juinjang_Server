@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
-import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.controller.KakaoUnlinkClient;
 import umc.th.juinjang.external.discord.DiscordAlertProvider;
@@ -17,27 +16,34 @@ import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
+import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
+import umc.th.juinjang.model.entity.Record;
 import umc.th.juinjang.model.entity.enums.MemberProvider;
 import umc.th.juinjang.repository.checklist.ChecklistAnswerRepository;
 import umc.th.juinjang.repository.checklist.ReportRepository;
 import umc.th.juinjang.repository.image.ImageRepository;
+import umc.th.juinjang.repository.limjang.LimjangPriceRepository;
 import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.repository.limjang.ScrapRepository;
 import umc.th.juinjang.repository.record.RecordRepository;
 import umc.th.juinjang.service.JwtService;
+import umc.th.juinjang.service.S3Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OAuthService {
 
     private final MemberRepository memberRepository;
@@ -51,6 +57,8 @@ public class OAuthService {
     private final RecordRepository recordRepository;
     private final ImageRepository imageRepository;
     private final ReportRepository reportRepository;
+    private final S3Service s3Service;
+    private final LimjangPriceRepository limjangPriceRepository;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -331,16 +339,33 @@ public class OAuthService {
 
         deleteMemberData(member);
     }
-
-    private void deleteAllByLimjangId(Limjang limjang) {
+    @Transactional
+    public void deleteAllByLimjangId(Limjang limjang) {
         scrapRepository.deleteByLimjangId(limjang.getLimjangId());
         checklistAnswerRepository.deleteByLimjangId(limjang.getLimjangId());
+        limjangPriceRepository.deleteAllByLimjang(limjang);
+        List<String> imageList = limjang.getImageList()
+                .stream()
+                .map(Image::getImageUrl)
+                .collect(Collectors.toList());
+        List<String> recordList = limjang.getRecordList()
+                .stream()
+                .map(Record::getRecordUrl)
+                .collect(Collectors.toList());
+
+
+        deleteFromS3(imageList);
+        deleteFromS3(recordList);
+
         imageRepository.deleteByLimjangId(limjang.getLimjangId());
         recordRepository.deleteByLimjangId(limjang.getLimjangId());
         reportRepository.deleteByLimjangId(limjang.getLimjangId());
+
     }
 
-    private void deleteMemberData(Member member) {
+
+    @Transactional
+    public void deleteMemberData(Member member) {
         List<Limjang> limjangList = limjangRepository.findLimjangByMemberIdIgnoreDeleted(member.getMemberId());
 
         for (Limjang limjang : limjangList) {
@@ -349,6 +374,15 @@ public class OAuthService {
 
         limjangRepository.deleteAllByMemberId(member.getMemberId());
         memberRepository.deleteById(member.getMemberId());
+        deleteFromS3(Collections.singletonList(member.getImageUrl()));
     }
+
+    @Transactional
+    public void deleteFromS3(List<String> urlList){
+        for (String url : urlList) {
+            s3Service.deleteFile(url);
+        }
+    }
+
 
 }
