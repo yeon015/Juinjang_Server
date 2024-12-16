@@ -19,4 +19,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
   @Modifying
   @Query(value = "DELETE FROM image i WHERE i.limjang_id = :limjangId", nativeQuery = true)
   void deleteByLimjangId(@Param("limjangId") Long limjangId);
+
 }
