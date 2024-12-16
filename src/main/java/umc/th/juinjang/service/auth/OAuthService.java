@@ -372,9 +372,13 @@ public class OAuthService {
             deleteAllByLimjangId(limjang);
         }
 
+
+        if (member.getImageUrl() != null) {
+            deleteFromS3(Collections.singletonList(member.getImageUrl()));
+        }
+
         limjangRepository.deleteAllByMemberId(member.getMemberId());
         memberRepository.deleteById(member.getMemberId());
-        deleteFromS3(Collections.singletonList(member.getImageUrl()));
     }
 
     @Transactional
@@ -383,6 +387,4 @@ public class OAuthService {
             s3Service.deleteFile(url);
         }
     }
-
-
 }
