@@ -75,7 +75,9 @@ dependencies {
 
 	implementation 'commons-codec:commons-codec:1.16.0'  // Base64 인코딩을 위한 의존성
 
-}
+	// prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+}가
 
 tasks.named('test') {
 	useJUnitPlatform()
