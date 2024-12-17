@@ -77,7 +77,7 @@ dependencies {
 
 	// prometheus
 	implementation 'io.micrometer:micrometer-registry-prometheus'
-}가
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
