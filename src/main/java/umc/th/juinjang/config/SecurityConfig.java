@@ -44,12 +44,12 @@ public class SecurityConfig {
             return web -> web.ignoring()
                     .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html", "/test",
                             "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
-                            "/api/auth/kakao/**", "/api/auth/apple/**");
+                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus");
         }
         else {
             return web -> web.ignoring()
                     .requestMatchers("/h2-console/**", "/api/auth/regenerate-token",
-                            "/api/auth/kakao/**", "/api/auth/apple/**" );
+                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus");
         }
 
     }
