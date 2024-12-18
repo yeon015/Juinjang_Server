@@ -44,12 +44,12 @@ public class SecurityConfig {
             return web -> web.ignoring()
                     .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html", "/test",
                             "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
-                            "/api/auth/kakao/**", "/api/auth/apple/**");
+                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus");
         }
         else {
-            return web -> web.ignoring()
+          return web -> web.ignoring()
                     .requestMatchers("/h2-console/**", "/api/auth/regenerate-token",
-                            "/api/auth/kakao/**", "/api/auth/apple/**");
+                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus");
         }
 
     }
@@ -76,8 +76,7 @@ public class SecurityConfig {
                                         AntPathRequestMatcher.antMatcher("/api/auth/**")
                                 ).authenticated()
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/h2-console/**"),
-                                        AntPathRequestMatcher.antMatcher("/actuator/prometheus")
+                                    AntPathRequestMatcher.antMatcher("/h2-console/**")
                                 ).permitAll()
 
                                 .anyRequest().authenticated()
