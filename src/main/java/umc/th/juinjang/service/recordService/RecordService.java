@@ -51,7 +51,7 @@ public class RecordService {
 
     public RecordResponseDTO.RecordDTO uploadRecord(Member member, RecordRequestDTO.RecordDto recordRequestDTO, MultipartFile multipartFile) throws IOException {
 
-        if(limjangRepository.findLimjangByLimjangIdAndMemberId(recordRequestDTO.getLimjangId(), member).isEmpty()){
+        if(limjangRepository.findLimjangByLimjangIdAndMemberIdAndDeletedIsFalse(recordRequestDTO.getLimjangId(), member).isEmpty()){
             throw new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR);
         }
         Limjang limjang = limjangRepository.findById(recordRequestDTO.getLimjangId()).get();
@@ -127,7 +127,7 @@ public class RecordService {
     }
 
     public List<RecordResponseDTO.RecordDTO> getAllRecord(Member member, Long limjangId) {
-        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberIdAndDeletedIsFalse(limjangId, member)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
         List<Record> records = recordRepository.findAllByLimjangIdOrderByRecordIdDesc(limjang);
@@ -137,7 +137,7 @@ public class RecordService {
     }
 
     public RecordResponseDTO.RecordMemoDto getThreeRecord(Member member, Long limjangId) {
-        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberIdAndDeletedIsFalse(limjangId, member)
                 .orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
         List<Record> records = recordRepository.findTop3ByLimjangIdOrderByRecordIdDesc(limjang);
 
@@ -148,7 +148,7 @@ public class RecordService {
     public LimjangMemoResponseDTO.MemoDto createLimjangMemo(Member member, Long limjangId, String memo) {
 
 
-        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberId(limjangId, member)
+        Limjang limjang = limjangRepository.findLimjangByLimjangIdAndMemberIdAndDeletedIsFalse(limjangId, member)
                 .orElseThrow(() -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
 
         limjang.updateMemo(memo);
