@@ -31,4 +31,8 @@ public class Scrap extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "limjang_id")
   private Limjang limjangId;
+
+  public static Scrap create(Limjang limjang) {
+    return Scrap.builder().limjangId(limjang).build();
+  }
 }
