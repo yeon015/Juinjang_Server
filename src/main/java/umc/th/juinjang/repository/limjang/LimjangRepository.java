@@ -3,11 +3,9 @@ package umc.th.juinjang.repository.limjang;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public interface LimjangRepository extends JpaRepository<Limjang, Long>, Limjang
   @Query(value = "DELETE FROM limjang l WHERE l.deleted = true AND l.updated_at < :dateTime", nativeQuery = true)
   void hardDelete(@Param("dateTime") LocalDateTime dateTime);
 
-  Optional<Limjang> findLimjangByLimjangIdAndMemberId(Long limjangId, Member member);
+  Optional<Limjang> findLimjangByLimjangIdAndMemberIdAndDeletedIsFalse(Long limjangId, Member member);
 
   @Modifying
   @Transactional

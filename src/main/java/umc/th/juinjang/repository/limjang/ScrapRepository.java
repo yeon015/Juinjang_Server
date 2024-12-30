@@ -8,16 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.model.entity.Limjang;
-import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.Scrap;
 
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
-  @Query("select s from Scrap s where s.limjangId = :limjang")
-  Optional<Scrap> serachByLimjang(@Param("limjang")Limjang limjang);
 
-  @Modifying
-  @Query("delete from Scrap s where s.scrapId = :id")
-  void deleteByScrapId(@Param("id")long id);
+  Optional<Scrap> findByLimjangId(Limjang limjang);
 
   @Transactional
   @Modifying
