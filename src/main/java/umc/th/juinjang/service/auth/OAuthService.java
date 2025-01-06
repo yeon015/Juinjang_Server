@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.controller.KakaoUnlinkClient;
-import umc.th.juinjang.external.discord.DiscordAlertProvider;
+import umc.th.juinjang.event.publisher.MemberEventPublisher;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
@@ -50,7 +50,6 @@ public class OAuthService {
     private final JwtService jwtService;
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
-    private final DiscordAlertProvider discordAlertProvider;
     private final ScrapRepository scrapRepository;
     private final LimjangRepository limjangRepository;
     private final ChecklistAnswerRepository checklistAnswerRepository;
@@ -59,6 +58,7 @@ public class OAuthService {
     private final ReportRepository reportRepository;
     private final S3Service s3Service;
     private final LimjangPriceRepository limjangPriceRepository;
+    private final MemberEventPublisher memberEventPublisher;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -151,8 +151,12 @@ public class OAuthService {
         }
 
         // accessToken, refreshToken 발급 후 반환
-        discordAlertProvider.sendAlert(member);
+        publishDiscordAlert(member);
         return createToken(member);
+    }
+
+    private void publishDiscordAlert(Member member) {
+        memberEventPublisher.publishSignUpEvent(member);
     }
 
     // accessToken, refreshToken 발급
@@ -300,7 +304,7 @@ public class OAuthService {
         if(member == null)
             throw new MemberHandler(FAILED_TO_LOGIN);
 
-        discordAlertProvider.sendAlert(member);
+        publishDiscordAlert(member);
         return createToken(member);
     }
 
