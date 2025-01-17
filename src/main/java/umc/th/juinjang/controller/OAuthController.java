@@ -16,9 +16,11 @@ import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
+import umc.th.juinjang.model.dto.auth.LoginResponseVersion2Dto;
 import umc.th.juinjang.model.dto.auth.WithdrawReasonRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestVersion2Dto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.entity.Member;
@@ -113,6 +115,22 @@ public class OAuthController {
             throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
         return ApiResponse.onSuccess(oauthService.appleSignUp(appleSignUpReqDto));
     }
+
+    //V2
+    @PostMapping("/v2/apple/login")
+    public ApiResponse<LoginResponseVersion2Dto> appleLoginVersion2(@RequestBody @Validated AppleLoginRequestDto appleReqDto) {
+        if (appleReqDto.getIdentityToken() == null)
+            throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
+        return ApiResponse.onSuccess(oauthService.appleLoginVersion2(appleReqDto));
+    }
+
+    @PostMapping("/v2/apple/signup")
+    public ApiResponse<LoginResponseVersion2Dto> appleSignUpVersion2(@RequestBody @Validated AppleSignUpRequestVersion2Dto appleSignUpReqDto) {
+        if (appleSignUpReqDto.getIdentityToken() == null)
+            throw new ExceptionHandler(APPLE_ID_TOKEN_EMPTY);
+        return ApiResponse.onSuccess(oauthService.appleSignUpVersion2(appleSignUpReqDto));
+    }
+
 
     // 카카오 탈퇴
     @DeleteMapping("/withdraw/kakao")
