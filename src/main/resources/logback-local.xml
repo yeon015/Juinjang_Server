@@ -2,7 +2,7 @@
 <configuration>
   <include resource="logback-appender.xml"/>
 
-  <property name="LOG_PATH" value="~/info-local" />
+  <property name="LOG_PATH" value="${user.home}/logs" />
   <property name="SERVER_INFO" value="local" />
 
   <root level="INFO">
@@ -14,7 +14,7 @@
 
   <!--  추후 필터 구현 후 연결 예정-->
   <!--  <logger name="Filter" level="INFO" additivity="false">-->
-<!--          <appender-ref ref="API_CONSOLE"/>-->
+  <!--          <appender-ref ref="API_CONSOLE"/>-->
   <!--    <appender-ref ref="API_FILE"/>-->
   <!--  </logger>-->
 
