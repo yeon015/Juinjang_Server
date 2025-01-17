@@ -15,6 +15,7 @@ import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.converter.record.RecordConverter;
+import umc.th.juinjang.model.dto.member.MemberAgreeVersionPostRequest;
 import umc.th.juinjang.model.dto.member.MemberRequestDto;
 import umc.th.juinjang.model.dto.member.MemberResponseDto;
 import umc.th.juinjang.model.entity.Member;
@@ -94,5 +95,13 @@ public class MemberService {
         memberRepository.save(member);
 
         return new MemberResponseDto.profileDto(member.getNickname(), member.getEmail(), member.getProvider().toString(), member.getImageUrl());
+    }
+
+    public void createMemberAgreeVersion(final Member member, final MemberAgreeVersionPostRequest memberAgreeVersionPostRequest) {
+        getMember(member).updateAgreeVersion(memberAgreeVersionPostRequest.agreeVersion());
+    }
+
+    private Member getMember(Member member) {
+        return memberRepository.findById(member.getMemberId()).orElseThrow(() -> new MemberHandler(MEMBER_NOT_FOUND));
     }
 }
