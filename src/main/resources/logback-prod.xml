@@ -2,6 +2,9 @@
 <configuration>
   <include resource="logback-appender.xml"/>
 
+  <property name="LOG_PATH" value="${user.home}/logs" />
+  <property name="SERVER_INFO" value="prod" />
+
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
     <appender-ref ref="CONSOLE_INFO_FILE"/>
