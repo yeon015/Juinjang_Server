@@ -36,7 +36,7 @@ public class Member extends BaseEntity implements UserDetails {
   @Column(nullable = false)
   private MemberProvider provider;
 
-  @Column(name = "agree_version", nullable = false)
+  @Column(name = "agree_version")
   private String agreeVersion;
 
   // apple client id값을 의미
@@ -113,4 +113,6 @@ public class Member extends BaseEntity implements UserDetails {
   public void updateImage(String imageUrl) {
     this.imageUrl = imageUrl;
   }
+
+  public void updateAgreeVersion(final String agreeVersion) { this.agreeVersion = agreeVersion; }
 }
