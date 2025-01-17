@@ -2,7 +2,7 @@
 <configuration>
   <include resource="logback-appender.xml"/>
 
-  <property name="LOG_PATH" value="${user.정}/logs" />
+  <property name="LOG_PATH" value="${user.home}/logs" />
   <property name="SERVER_INFO" value="dev" />
 
   <root level="INFO">
