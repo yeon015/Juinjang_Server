@@ -58,7 +58,7 @@ public class MemberController {
     }
 
     @Operation(summary = "약관 동의 버전 전송")
-    @PostMapping ("/members/terms")
+    @PatchMapping ("/members/terms")
     public ApiResponse<Void> createMemberAgreeVersion(@AuthenticationPrincipal Member member, @RequestBody @Valid MemberAgreeVersionPostRequest memberAgreeVersionPostRequest) {
         memberService.createMemberAgreeVersion(member, memberAgreeVersionPostRequest);
         return ApiResponse.onSuccess(null);
