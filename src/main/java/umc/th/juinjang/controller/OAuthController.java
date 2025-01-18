@@ -23,6 +23,7 @@ import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleSignUpRequestVersion2Dto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestVersion2Dto;
 import umc.th.juinjang.model.entity.Member;
 import umc.th.juinjang.model.entity.Withdraw;
 import umc.th.juinjang.repository.withdraw.WithdrawRepository;
@@ -69,6 +70,32 @@ public class OAuthController {
         targetId = Long.parseLong(kakaoTargetId);
         return ApiResponse.onSuccess(oauthService.kakaoSignUp(targetId, kakaoSignUpReqDto));
     }
+
+    //V2
+    // 카카오 로그인
+    @PostMapping("/v2/kakao/login")
+    public ApiResponse<LoginResponseVersion2Dto> kakaoLoginVersion2(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoLoginRequestDto kakaoReqDto) {
+        Long targetId;
+        if(kakaoTargetId == null) {
+            throw new ExceptionHandler(EMPTY_TARGET_ID);
+        }
+
+        targetId = Long.parseLong(kakaoTargetId);
+        return ApiResponse.onSuccess(oauthService.kakaoLoginVersion2(targetId, kakaoReqDto));
+    }
+
+    // 카카오 로그인 (회원가입)
+    @PostMapping("/v2/kakao/signup")
+    public ApiResponse<LoginResponseVersion2Dto> kakaoSignUpVersion2(@RequestHeader("target-id") String kakaoTargetId, @RequestBody @Validated KakaoSignUpRequestVersion2Dto kakaoSignUpReqDto) {
+        Long targetId;
+        if(kakaoTargetId == null) {
+            throw new ExceptionHandler(EMPTY_TARGET_ID);
+        }
+
+        targetId = Long.parseLong(kakaoTargetId);
+        return ApiResponse.onSuccess(oauthService.kakaoSignUpVersion2(targetId, kakaoSignUpReqDto));
+    }
+
 
     // refreshToken으로 accessToken 재발급
     // Authorization : Bearer Token에 refreshToken 담기
