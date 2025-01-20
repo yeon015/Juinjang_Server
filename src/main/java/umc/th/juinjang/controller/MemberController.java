@@ -1,6 +1,7 @@
 package umc.th.juinjang.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
+import umc.th.juinjang.model.dto.member.MemberAgreeVersionPostRequest;
 import umc.th.juinjang.model.dto.member.MemberRequestDto;
 import umc.th.juinjang.model.dto.member.MemberResponseDto;
 import umc.th.juinjang.model.entity.Member;
@@ -53,5 +55,12 @@ public class MemberController {
             throw new ExceptionHandler(ErrorStatus.IMAGE_EMPTY);
         MemberResponseDto.profileDto result = memberService.updateProfileImage(member, multipartFile);
         return ApiResponse.onSuccess(result);
+    }
+
+    @Operation(summary = "약관 동의 버전 전송")
+    @PatchMapping ("/members/terms")
+    public ApiResponse<Void> createMemberAgreeVersion(@AuthenticationPrincipal Member member, @RequestBody @Valid MemberAgreeVersionPostRequest memberAgreeVersionPostRequest) {
+        memberService.createMemberAgreeVersion(member, memberAgreeVersionPostRequest);
+        return ApiResponse.onSuccess(null);
     }
 }

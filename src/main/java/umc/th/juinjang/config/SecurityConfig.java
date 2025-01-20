@@ -44,7 +44,8 @@ public class SecurityConfig {
             return web -> web.ignoring()
                     .requestMatchers("/swagger-ui/**", "/swagger/**", "/swagger-resources/**", "/swagger-ui.html", "/test",
                             "/configuration/ui",  "/v3/api-docs/**", "/h2-console/**", "/api/auth/regenerate-token",
-                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus");
+                            "/api/auth/kakao/**", "/api/auth/apple/**", "/actuator/prometheus",
+                            "/api/auth/v2/apple/**", "/api/auth/v2/kakao/**");
         }
         else {
           return web -> web.ignoring()

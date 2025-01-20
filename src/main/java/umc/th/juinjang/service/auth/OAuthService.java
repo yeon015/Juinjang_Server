@@ -10,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.controller.KakaoUnlinkClient;
-import umc.th.juinjang.external.discord.DiscordAlertProvider;
+import umc.th.juinjang.event.publisher.MemberEventPublisher;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
+import umc.th.juinjang.model.dto.auth.LoginResponseVersion2Dto;
 import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.*;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
+import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestVersion2Dto;
 import umc.th.juinjang.model.entity.Image;
 import umc.th.juinjang.model.entity.Limjang;
 import umc.th.juinjang.model.entity.Member;
@@ -50,7 +52,6 @@ public class OAuthService {
     private final JwtService jwtService;
     private final AppleClientSecretGenerator appleClientSecretGenerator;
     private final AppleOAuthProvider appleOAuthProvider;
-    private final DiscordAlertProvider discordAlertProvider;
     private final ScrapRepository scrapRepository;
     private final LimjangRepository limjangRepository;
     private final ChecklistAnswerRepository checklistAnswerRepository;
@@ -59,6 +60,7 @@ public class OAuthService {
     private final ReportRepository reportRepository;
     private final S3Service s3Service;
     private final LimjangPriceRepository limjangPriceRepository;
+    private final MemberEventPublisher memberEventPublisher;
 
     @Autowired
     private KakaoUnlinkClient kakaoUnlinkClient;
@@ -151,8 +153,12 @@ public class OAuthService {
         }
 
         // accessToken, refreshToken 발급 후 반환
-        discordAlertProvider.sendAlert(member);
+        publishDiscordAlert(member);
         return createToken(member);
+    }
+
+    private void publishDiscordAlert(Member member) {
+        memberEventPublisher.publishSignUpEvent(member);
     }
 
     // accessToken, refreshToken 발급
@@ -167,6 +173,20 @@ public class OAuthService {
 
         return new LoginResponseDto(newAccessToken, newRefreshToken, member.getEmail());
     }
+
+    //ver2
+    // accessToken, refreshToken 발급
+    @Transactional
+    public LoginResponseVersion2Dto createTokenVersion2(Member member) {
+        String newAccessToken = jwtService.encodeJwtToken(new TokenDto(member.getMemberId()));
+        String newRefreshToken = jwtService.encodeJwtRefreshToken(member.getMemberId());
+
+        // DB에 refreshToken 저장
+        member.updateRefreshToken(newRefreshToken);
+
+        return new LoginResponseVersion2Dto(newAccessToken, newRefreshToken, member.getEmail(), member.getAgreeVersion());
+    }
+
 
     // refreshToken으로 accessToken 발급하기
     @Transactional
@@ -300,7 +320,7 @@ public class OAuthService {
         if(member == null)
             throw new MemberHandler(FAILED_TO_LOGIN);
 
-        discordAlertProvider.sendAlert(member);
+        publishDiscordAlert(member);
         return createToken(member);
     }
 
@@ -386,5 +406,183 @@ public class OAuthService {
         for (String url : urlList) {
             s3Service.deleteFile(url);
         }
+    }
+
+    // V2
+    // 카카오
+    @Transactional
+    public LoginResponseVersion2Dto kakaoLoginVersion2(Long targetId, KakaoLoginRequestDto kakaoReqDto) {
+        String email = kakaoReqDto.getEmail();
+        log.info(kakaoReqDto.getEmail());
+
+        if(email == null)
+            throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
+
+        Optional<Member> getMemberByEmail = memberRepository.findByEmail(email);
+        Optional<Member> getMemberByTargetId = memberRepository.findByKakaoTargetId(targetId);
+        Member member = null;
+
+
+        if(getMemberByEmail.isPresent() && getMemberByTargetId.isEmpty()){
+            if(!getMemberByEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+            } else {    // 잘못된 target_id가 들어왔을때(db에 없는)
+                throw new MemberHandler(UNCORRECTED_TARGET_ID);
+            }
+        } else if(getMemberByEmail.isPresent() && getMemberByTargetId.isPresent()){  // 이미 회원가입한 회원인 경우
+            if(!getMemberByEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+            } else if(getMemberByEmail.get().getMemberId() != getMemberByTargetId.get().getMemberId()) {
+                throw new MemberHandler(FAILED_TO_LOGIN);
+            }
+            member = getMemberByEmail.get();
+        } else if(getMemberByEmail.isEmpty() && getMemberByTargetId.isEmpty()){    // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        }
+
+        if(member == null) {
+            throw new MemberHandler(FAILED_TO_LOGIN);
+        }
+
+        // accessToken, refreshToken 발급 후 반환
+        return createTokenVersion2(member);
+    }
+
+    // 카카오 로그인 (회원가입 해야하는 경우)
+    @Transactional
+    public LoginResponseVersion2Dto kakaoSignUpVersion2(Long targetId, KakaoSignUpRequestVersion2Dto kakaoSignUpReqDto) {
+        String email = kakaoSignUpReqDto.getEmail();
+        log.info(kakaoSignUpReqDto.getEmail());
+
+        if(email == null)
+            throw new MemberHandler(MEMBER_EMAIL_NOT_FOUND);
+
+        Optional<Member> getMember = memberRepository.findByEmail(email);
+        Optional<Member> getTargetId = memberRepository.findByKakaoTargetId(targetId);
+
+        Member member = null;
+
+        if(getMember.isPresent() && getTargetId.isEmpty() && getMember.get().getProvider().equals(MemberProvider.APPLE)) {
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+        } else if(getMember.isPresent() && getTargetId.isPresent()) {
+//            if(!getMember.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Kakao가 아닌 다른 소셜 로그인 사용
+//                throw new MemberHandler(MEMBER_NOT_FOUND_IN_KAKAO);
+//            } else
+            if((getTargetId.get().getMemberId() != getMember.get().getMemberId())) {
+                throw new MemberHandler(FAILED_TO_LOGIN);
+            } else if(getMember.get().getProvider().equals(MemberProvider.KAKAO)) {
+                throw new MemberHandler(ALREADY_MEMBER);
+            }
+        } else if (getMember.isPresent() || getTargetId.isPresent()) {  // 둘 중 하나만 존재할 때 실행될 코드
+            throw new MemberHandler(FAILED_TO_LOGIN);
+        } else if (!getMember.isPresent() && !getTargetId.isPresent()) {   // 두 값 모두 존재하지 않을 때 실행될 코드, 아직 회원가입 하지 않은 회원인 경우
+            member = memberRepository.save(
+                    Member.builder()
+                            .email(email)
+                            .provider(MemberProvider.KAKAO)
+                            .kakaoTargetId(targetId)
+                            .nickname(kakaoSignUpReqDto.getNickname())
+                            .refreshToken("")
+                            .refreshTokenExpiresAt(LocalDateTime.now())
+                            .agreeVersion(kakaoSignUpReqDto.getAgreeVersion())
+                            .build()
+            );
+        }
+
+        if(member == null) {
+            throw new MemberHandler(FAILED_TO_SIGNUP);
+        }
+
+        // accessToken, refreshToken 발급 후 반환
+        publishDiscordAlert(member);
+        return createTokenVersion2(member);
+    }
+
+    // 애플
+    public LoginResponseVersion2Dto appleLoginVersion2(AppleLoginRequestDto appleLoginRequest) {
+        // email, sub값 추출 후 db에서 해당 email값 그리고 sub값을 가진 유저가 있는지 find
+        // 1. 추출한 email, sub 값이 null이면 -> 잘못된 apple token
+        // 2. db에서 각각 find한 회원 id가 다르면 에러 (올바르지 않은 정보)
+        // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
+        // 4. db에 email, sub값 둘 다 없으면 회원가입
+
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleLoginRequest.getIdentityToken().replaceAll("\\n", ""));
+        String email = appleInfo.getEmail();
+        String sub = appleInfo.getSub();
+
+        if(email == null || sub == null)
+            throw new ExceptionHandler(INVALID_APPLE_ID_TOKEN);
+
+
+        Optional<Member> findSub = memberRepository.findByAppleSub(sub);
+        Optional<Member> findEmail = memberRepository.findByEmail(email);
+
+        Member member = null;
+        if(findSub.isEmpty() && findEmail.isPresent() && findEmail.get().getProvider().equals(MemberProvider.KAKAO)) {  // 이미 회원가입했지만 Apple 아닌 다른 소셜 로그인 사용
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        } else if(findSub.isPresent() && findEmail.isPresent()) {  // 재로그인
+            if(!findEmail.get().getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입했지만 apple이 아닌 다른 소셜 로그인 사용
+                throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+            } else if(findSub.get().getMemberId() != findEmail.get().getMemberId()) {
+                throw new MemberHandler(FAILED_TO_LOGIN);
+            }
+            member = findEmail.get();
+        } else if(!findSub.isPresent() && !findEmail.isPresent()) {  // 회원가입이 안되어있는 경우 -> 에러 발생. 회원가입 해야 함
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        }
+
+        // accessToken, refreshToken 발급
+        if(member == null)
+            throw new MemberHandler(MEMBER_NOT_FOUND);
+        return createTokenVersion2(member);
+
+    }
+
+    @Transactional
+    public LoginResponseVersion2Dto appleSignUpVersion2(AppleSignUpRequestVersion2Dto appleSignUpRequestDto) {
+        // email, sub값 추출 후 db에서 해당 email값 그리고 sub값을 가진 유저가 있는지 find
+        // 1. 추출한 email, sub 값이 null이면 -> 잘못된 apple token
+        // 2. db에서 각각 find한 회원 id가 다르면 에러 (올바르지 않은 정보)
+        // 3. db에 email, sub값 둘 다 있으면 재로그인 (혹시 provider가 다르다면 에러)
+        // 4. db에 email, sub값 둘 다 없으면 회원가입
+        // 탈퇴 처리는 추후에
+
+        AppleInfo appleInfo = jwtService.getAppleAccountId(appleSignUpRequestDto.getIdentityToken());
+        String email = appleInfo.getEmail();
+        String sub = appleInfo.getSub();
+
+        if(email == null || sub == null)
+            throw new ExceptionHandler(INVALID_APPLE_ID_TOKEN);
+
+
+        Optional<Member> findSub = memberRepository.findByAppleSub(sub);
+        Optional<Member> findEmail = memberRepository.findByEmail(email);
+
+        Member member = null;
+        if(findSub.isPresent() && findEmail.isPresent() && (findSub.get().getMemberId() == findEmail.get().getMemberId())
+                && findSub.get().getProvider().equals(MemberProvider.APPLE)) {  // 이미 회원가입한 회원인 경우 -> 에러 발생
+            throw new MemberHandler(ALREADY_MEMBER);
+        } else if(!findSub.isPresent() && findEmail.isPresent() && findEmail.get().getProvider().equals(MemberProvider.KAKAO)){
+            throw new MemberHandler(MEMBER_NOT_FOUND_IN_APPLE);
+        }else if(!findSub.isPresent() && !findEmail.isPresent()) {
+            member = memberRepository.save(
+                    Member.builder()
+                            .email(email)
+                            .nickname(appleSignUpRequestDto.getNickname())
+                            .provider(MemberProvider.APPLE)
+                            .appleSub(sub)
+                            .refreshToken("")
+                            .refreshTokenExpiresAt(LocalDateTime.now())
+                            .agreeVersion(appleSignUpRequestDto.getAgreeVersion())
+                            .build()
+            );
+        }
+
+        // accessToken, refreshToken 발급
+        if(member == null)
+            throw new MemberHandler(FAILED_TO_LOGIN);
+
+        publishDiscordAlert(member);
+        return createTokenVersion2(member);
     }
 }

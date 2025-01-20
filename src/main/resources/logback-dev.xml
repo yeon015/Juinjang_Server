@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <include resource="logback-appender.xml"/>
+  <springProperty scope="context" name="LOG_PATH" source="logging.file.path"/>
+  <property name="LOG_PATH" value="${LOG_PATH}" />
+  <property name="SERVER_INFO" value="dev" />
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+    <appender-ref ref="CONSOLE_INFO_FILE"/>
+    <appender-ref ref="CONSOLE_WARN_FILE"/>
+    <appender-ref ref="CONSOLE_ERROR_FILE"/>
+  </root>
+
+  <!--  추후 필터 구현 후 연결 예정-->
+<!--  <logger name="Filter" level="INFO" additivity="false">-->
+<!--    <appender-ref ref="API_INFO_FILE"/>-->
+<!--    <appender-ref ref="API_WARN_FILE"/>-->
+<!--    <appender-ref ref="API_ERROR_FILE"/>-->
+<!--  </logger>-->
+
+  <logger name="org.hibernate" level="ERROR"/>
+  <logger name="org.springframework.web" level="INFO"/>
+</configuration>
