@@ -29,8 +29,8 @@ import umc.th.juinjang.model.dto.limjang.response.LimjangsGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetResponse;
 import umc.th.juinjang.model.dto.limjang.response.LimjangsMainGetVersion2Response;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.service.LimjangService.LimjangCommandService;
-import umc.th.juinjang.service.LimjangService.LimjangQueryService;
+import umc.th.juinjang.service.limjang.LimjangCommandService;
+import umc.th.juinjang.service.limjang.LimjangQueryService;
 
 @RestController
 @RequestMapping("/api/limjang")

@@ -20,9 +20,9 @@ import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.model.dto.image.ImageDeleteRequestDTO;
 import umc.th.juinjang.model.dto.image.ImageListResponseDTO;
-import umc.th.juinjang.service.ImageService.ImageCommandService;
-import umc.th.juinjang.service.ImageService.ImageQueryService;
-import umc.th.juinjang.service.LimjangService.LimjangCommandService;
+import umc.th.juinjang.service.image.ImageCommandService;
+import umc.th.juinjang.service.image.ImageQueryService;
+import umc.th.juinjang.service.limjang.LimjangCommandService;
 
 @RestController
 @RequestMapping("/api/limjang/image")

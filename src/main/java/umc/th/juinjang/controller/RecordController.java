@@ -13,7 +13,7 @@ import umc.th.juinjang.model.dto.limjang.request.LimjangUpdateRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordRequestDTO;
 import umc.th.juinjang.model.dto.record.RecordResponseDTO;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.service.recordService.RecordService;
+import umc.th.juinjang.service.record.RecordService;
 import java.io.IOException;
 import java.util.List;
 

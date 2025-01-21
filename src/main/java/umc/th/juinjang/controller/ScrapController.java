@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.service.ScrapService.ScrapService;
+import umc.th.juinjang.service.scrap.ScrapService;
 
 @RestController
 @RequestMapping("/api/limjangs/scraps")
