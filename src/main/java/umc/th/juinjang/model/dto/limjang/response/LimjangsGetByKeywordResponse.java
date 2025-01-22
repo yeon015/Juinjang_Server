@@ -1,6 +1,6 @@
 package umc.th.juinjang.model.dto.limjang.response;
 
-import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePriceListVersion2;
+import static umc.th.juinjang.service.limjang.LimjangPriceBridge.makePriceListVersion2;
 
 import java.util.List;
 import java.util.Map;

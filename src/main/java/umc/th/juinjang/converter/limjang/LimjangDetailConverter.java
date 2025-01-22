@@ -1,6 +1,6 @@
 package umc.th.juinjang.converter.limjang;
 
-import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.makePriceListVersion2;
+import static umc.th.juinjang.service.limjang.LimjangPriceBridge.makePriceListVersion2;
 
 import java.util.Comparator;
 import java.util.List;

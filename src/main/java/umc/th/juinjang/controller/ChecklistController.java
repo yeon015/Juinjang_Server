@@ -6,8 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.model.dto.checklist.*;
-import umc.th.juinjang.service.ChecklistService.ChecklistCommandService;
-import umc.th.juinjang.service.ChecklistService.ChecklistQueryService;
+import umc.th.juinjang.service.checklist.ChecklistCommandService;
+import umc.th.juinjang.service.checklist.ChecklistQueryService;
 
 import java.util.List;
 

@@ -1,20 +1,16 @@
 package umc.th.juinjang.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.SuccessStatus;
-import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.auth.LoginResponseDto;
 import umc.th.juinjang.model.dto.auth.LoginResponseVersion2Dto;
 import umc.th.juinjang.model.dto.auth.WithdrawReasonRequestDto;
@@ -25,14 +21,8 @@ import umc.th.juinjang.model.dto.auth.kakao.KakaoLoginRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestDto;
 import umc.th.juinjang.model.dto.auth.kakao.KakaoSignUpRequestVersion2Dto;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.model.entity.Withdraw;
-import umc.th.juinjang.repository.withdraw.WithdrawRepository;
-import umc.th.juinjang.service.JwtService;
-import umc.th.juinjang.service.WithdrawService.WithdrawService;
+import umc.th.juinjang.service.withdraw.WithdrawService;
 import umc.th.juinjang.service.auth.OAuthService;
-
-import java.io.IOException;
-import java.util.List;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.*;
 
