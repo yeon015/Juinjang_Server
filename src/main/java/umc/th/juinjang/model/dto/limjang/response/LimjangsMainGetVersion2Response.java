@@ -1,6 +1,6 @@
 package umc.th.juinjang.model.dto.limjang.response;
 
-import static umc.th.juinjang.service.LimjangService.LimjangPriceBridge.getPriceToString;
+import static umc.th.juinjang.service.limjang.LimjangPriceBridge.getPriceToString;
 
 import java.util.List;
 import lombok.Builder;

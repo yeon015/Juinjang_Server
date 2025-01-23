@@ -4,19 +4,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import umc.th.juinjang.apiPayload.ApiResponse;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
-import umc.th.juinjang.apiPayload.exception.handler.MemberHandler;
 import umc.th.juinjang.model.dto.member.MemberAgreeVersionPostRequest;
 import umc.th.juinjang.model.dto.member.MemberRequestDto;
 import umc.th.juinjang.model.dto.member.MemberResponseDto;
 import umc.th.juinjang.model.entity.Member;
-import umc.th.juinjang.service.MemberService.MemberService;
+import umc.th.juinjang.service.member.MemberService;
 
 import static umc.th.juinjang.apiPayload.code.status.ErrorStatus.NICKNAME_EMPTY;
 

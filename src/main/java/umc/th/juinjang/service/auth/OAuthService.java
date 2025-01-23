@@ -31,8 +31,7 @@ import umc.th.juinjang.repository.limjang.LimjangRepository;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.repository.limjang.ScrapRepository;
 import umc.th.juinjang.repository.record.RecordRepository;
-import umc.th.juinjang.service.JwtService;
-import umc.th.juinjang.service.S3Service;
+import umc.th.juinjang.service.external.S3Service;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

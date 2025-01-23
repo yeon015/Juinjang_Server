@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import umc.th.juinjang.jwt.JwtAuthenticationFilter;
 import umc.th.juinjang.jwt.JwtExceptionFilter;
-import umc.th.juinjang.service.JwtService;
+import umc.th.juinjang.service.auth.JwtService;
 
 import java.util.Arrays;
 
