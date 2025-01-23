@@ -1,11 +1,9 @@
 package umc.th.juinjang.service.auth;
 
-import ch.qos.logback.core.spi.ErrorCodes;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import umc.th.juinjang.apiPayload.ExceptionHandler;
 import umc.th.juinjang.apiPayload.code.status.ErrorStatus;
@@ -24,14 +21,10 @@ import umc.th.juinjang.model.dto.auth.TokenDto;
 import umc.th.juinjang.model.dto.auth.apple.AppleClient;
 import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.repository.limjang.MemberRepository;
-import umc.th.juinjang.service.auth.UserDetailServiceImpl;
 import umc.th.juinjang.utils.ApplePublicKeyGenerator;
 
-import javax.naming.AuthenticationException;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -42,12 +35,12 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String JWT_SECRET;
-
+    @Value ("${jwt.access-token-expiration}")
+    private Long ACCESS_TOKEN_EXPIRE_TIME;
+    @Value ("${jwt.refresh-token-expiration}")
+    private Long REFRESH_TOKEN_EXPIRE_TIME;
 
     private final UserDetailServiceImpl userDetailService;
-    private Long tokenValidTime = 1000L * 60 * 60; // 1h
-    private Long refreshTokenValidTime = 1000L * 60 * 60 * 24 * 7; // 7d
-
 
     @Autowired
     private final AppleClient appleAuthClient;
@@ -66,7 +59,7 @@ public class JwtService {
                 .setIssuer("juinjang")
                 .setIssuedAt(now)
                 .setSubject(tokenDto.getMemberId().toString())
-                .setExpiration(new Date(now.getTime() + tokenValidTime))
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME))
                 .claim("memberId", tokenDto.getMemberId())
                 .signWith(SignatureAlgorithm.HS256,
                         Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(
@@ -80,7 +73,7 @@ public class JwtService {
         return Jwts.builder()
                 .setIssuedAt(now)
                 .setSubject(memberId.toString())
-                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
                 .claim("memberId", memberId)
                 .claim("roles", "USER")
                 .signWith(SignatureAlgorithm.HS256,
