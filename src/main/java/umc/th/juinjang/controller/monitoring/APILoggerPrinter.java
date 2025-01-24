@@ -1,6 +1,6 @@
 package umc.th.juinjang.controller.monitoring;
 
-import static umc.th.juinjang.model.common.LoggerProvider.getLogger;
+import static umc.th.juinjang.utils.LoggerProvider.getLogger;
 
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;

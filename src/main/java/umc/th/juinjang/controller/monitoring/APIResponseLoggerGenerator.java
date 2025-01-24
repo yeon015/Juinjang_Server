@@ -1,36 +1,31 @@
 package umc.th.juinjang.controller.monitoring;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 public class APIResponseLoggerGenerator extends APILoggerGenerator {
-  private final ContentCachingResponseWrapper responseWrapper;
-  public APIResponseLoggerGenerator(ContentCachingResponseWrapper responseWrapper) {
-    this.responseWrapper = responseWrapper;
+  private final ContentCachingResponseWrapper response;
+
+  public APIResponseLoggerGenerator(ContentCachingResponseWrapper response) {
+    this.response = response;
   }
 
   @Override
   public String generateLog() {
-    Map<String, Object> logData = getBaseLogInfo();
+    StringBuilder logBuilder = new StringBuilder();
 
-    logData.put("status", responseWrapper.getStatus());
-    logData.put("responseBody", getBody(responseWrapper.getContentAsByteArray()));
+    logBuilder.append("Response : ").append(" ");
+    logBuilder.append(getBaseLogInfo());
+    logBuilder.append("[status] ").append(response.getStatus()).append(" ");
+    logBuilder.append("[responseBody] ").append(getBody(response.getContentAsByteArray())).append(" ");
 
-    return getJsonToString(logData);
+    return logBuilder.toString();
   }
 
   protected String getBody(byte[] info) {
     String responseBody = new String(info, StandardCharsets.UTF_8);
-
     responseBody = responseBody.replaceAll("\"accessToken\":\"[^\"]*\"", "\"accessToken\":\"[TOKEN]\"");
     responseBody = responseBody.replaceAll("\"refreshToken\":\"[^\"]*\"", "\"refreshToken\":\"[TOKEN]\"");
-    try {
-      Object jsonObject = objectMapper.readValue(responseBody, Object.class);
-      return objectMapper.writeValueAsString(jsonObject);
-    } catch (Exception e){
-      logger.info("토큰 파싱 중 오류 발");
-    }
-    return null;
+    return  responseBody;
   }
 }

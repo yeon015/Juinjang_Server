@@ -2,36 +2,45 @@ package umc.th.juinjang.controller.monitoring;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class APIRequestLoggerGenerator extends APILoggerGenerator{
 
-  private final CustomContentCachingHttpRequestWrapper requestWrapper;
+  private final CustomContentCachingHttpRequestWrapper request;
 
-  public APIRequestLoggerGenerator(CustomContentCachingHttpRequestWrapper requestWrapper) {
-    this.requestWrapper = requestWrapper;
+  public APIRequestLoggerGenerator(CustomContentCachingHttpRequestWrapper request) {
+    this.request = request;
   }
 
   @Override
   public String generateLog() {
-    Map<String, Object> logData = getBaseLogInfo();
+    StringBuilder logBuilder = new StringBuilder();
 
-    logData.put("method", requestWrapper.getMethod());
-    logData.put("uri", requestWrapper.getRequestURI());
-    logData.put("query", requestWrapper.getQueryString());
-    logData.put("headers", getHeaders(requestWrapper));
-    logData.put("requestBody", requestWrapper.getRequestBody());
+    logBuilder.append("Request : ").append(" ");
+    logBuilder.append(getBaseLogInfo());
+    logBuilder.append("[method] ").append(request.getMethod()).append(" ");
+    logBuilder.append("[uri] ").append(getQuery()).append(" ");
+    logBuilder.append("[headers] ").append(getHeadersAsString(request)).append(" ");
+    logBuilder.append("[requestBody] ").append(getBody(request.getCachedBody())).append(" ");
 
-    return getJsonToString(logData);
+    return logBuilder.toString();
   }
 
-  private Map<String, String> getHeaders(HttpServletRequest request) {
+  private String getQuery() {
+    String uri = request.getRequestURI();
+    String queryString = request.getQueryString();
+
+    if (queryString != null) {
+      uri += "?" + queryString;
+    }
+    return uri;
+  }
+
+  private String getHeadersAsString(HttpServletRequest request) {
     return Collections.list(request.getHeaderNames()).stream()
         .filter(headerName -> !headerName.equalsIgnoreCase("Authorization"))
-        .collect(Collectors.toMap(
-            headerName -> headerName,
-            request::getHeader
-        ));
+        .filter(headerName -> !headerName.equalsIgnoreCase("refresh-token"))
+        .map(headerName -> headerName + "=" + request.getHeader(headerName))
+        .collect(Collectors.joining(", "));
   }
 }
