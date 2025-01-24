@@ -89,5 +89,4 @@
       <pattern>${API_FILE_LOG_PATTERN}</pattern>
     </encoder>
   </appender>
-
 </included>

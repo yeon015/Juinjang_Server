@@ -12,11 +12,13 @@
     <appender-ref ref="CONSOLE_ERROR_FILE"/>
   </root>
 
-  <logger name="umc.th.juinjang.controller.monitoring.APILoggerFilter" level="INFO" additivity="false">
+  <logger name="umc.th.juinjang.controller.monitoring.APILoggerPrinter" level="INFO" additivity="false">
     <appender-ref ref="API_FILE"/>
     <appender-ref ref="API_CONSOLE"/>
   </logger>
 
   <logger name="org.hibernate" level="ERROR"/>
   <logger name="org.springframework.web" level="INFO"/>
+  <logger name="org.springframework.boot.actuate.endpoint.web" level="ERROR" />
+  <logger name="io.micrometer.prometheus" level="ERROR" />
 </configuration>
