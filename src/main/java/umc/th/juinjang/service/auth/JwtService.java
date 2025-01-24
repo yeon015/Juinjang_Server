@@ -1,5 +1,7 @@
 package umc.th.juinjang.service.auth;
 
+import static umc.th.juinjang.utils.LoggerProvider.registerUserId;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -33,6 +35,7 @@ import umc.th.juinjang.model.dto.auth.apple.AppleClient;
 import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.utils.ApplePublicKeyGenerator;
+import umc.th.juinjang.utils.LoggerProvider;
 
 @Service
 @RequiredArgsConstructor
@@ -135,7 +138,7 @@ public class JwtService {
         System.out.println(this.getMemberIdFromJwtToken(token));
 
         UserDetails userDetails = userDetailService.loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
-        MDC.put("user_id", String.valueOf(this.getMemberIdFromJwtToken(token)));
+        registerUserId(String.valueOf(this.getMemberIdFromJwtToken(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
