@@ -90,4 +90,10 @@
     </encoder>
   </appender>
 
+  <turboFilter class="ch.qos.logback.classic.turbo.MatchingFilter">
+    <name>ExcludePrometheus</name>
+    <onMatch>DENY</onMatch>
+    <onMismatch>NEUTRAL</onMismatch>
+    <regex>/actuator/prometheus</regex>
+  </turboFilter>
 </included>
