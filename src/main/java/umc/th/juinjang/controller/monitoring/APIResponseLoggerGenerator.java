@@ -1,5 +1,7 @@
 package umc.th.juinjang.controller.monitoring;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
@@ -23,9 +25,19 @@ public class APIResponseLoggerGenerator extends APILoggerGenerator {
   }
 
   protected String getBody(byte[] info) {
-    String responseBody = new String(info, StandardCharsets.UTF_8);
-    responseBody = responseBody.replaceAll("\"accessToken\":\"[^\"]*\"", "\"accessToken\":\"[TOKEN]\"");
-    responseBody = responseBody.replaceAll("\"refreshToken\":\"[^\"]*\"", "\"refreshToken\":\"[TOKEN]\"");
-    return  responseBody;
+    String responseBody = "";
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode rootNode = objectMapper.readTree(new String(info, StandardCharsets.UTF_8));
+      responseBody = replaceToken(rootNode.path("message").asText("N/A"));
+    } catch (Exception e) {
+      logger.error("responseBody 추출 오류");
+    }
+    return responseBody;
+  }
+
+  private String replaceToken(String responseBody) {
+    return responseBody.replaceAll("\"accessToken\":\"[^\"]*\"", "\"accessToken\":\"[TOKEN]\"")
+        .replaceAll("\"refreshToken\":\"[^\"]*\"", "\"refreshToken\":\"[TOKEN]\"");
   }
 }
