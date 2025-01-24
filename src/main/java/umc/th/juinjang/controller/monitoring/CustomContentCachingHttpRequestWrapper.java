@@ -1,25 +1,36 @@
 package umc.th.juinjang.controller.monitoring;
 
+import static umc.th.juinjang.utils.LoggerProvider.getLogger;
+
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
-
+@Slf4j
 public class CustomContentCachingHttpRequestWrapper extends HttpServletRequestWrapper {
 
+  private final Logger logger = getLogger(CustomContentCachingHttpRequestWrapper.class);
   private final byte[] cachedBody;
 
-  public CustomContentCachingHttpRequestWrapper(HttpServletRequest request) throws IOException {
+  public CustomContentCachingHttpRequestWrapper(HttpServletRequest request) {
     super(request);
-    this.cachedBody = request.getInputStream().readAllBytes();
+    byte[] tempBody = new byte[0];
+    try {
+      tempBody = request.getInputStream().readAllBytes();
+    } catch (Exception e) {
+      logger.error("CustomContentCachingHttpRequestWrapper init error {}", e.getMessage());
+    } finally {
+      this.cachedBody = tempBody;
+    }
   }
 
   @Override
-  public ServletInputStream getInputStream() throws IOException {
+  public ServletInputStream getInputStream() {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(cachedBody);
     return new ServletInputStream() {
       @Override
@@ -43,7 +54,7 @@ public class CustomContentCachingHttpRequestWrapper extends HttpServletRequestWr
     };
   }
 
-  public String getRequestBody() {
-    return new String(cachedBody, StandardCharsets.UTF_8).replaceAll("[\\n\\r\\t]", "").replaceAll("\\\\", "");
+  public byte[] getCachedBody() {
+    return this.cachedBody;
   }
 }
