@@ -7,11 +7,8 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
-@Slf4j
 public class CustomContentCachingHttpRequestWrapper extends HttpServletRequestWrapper {
 
   private final Logger logger = getLogger(CustomContentCachingHttpRequestWrapper.class);
