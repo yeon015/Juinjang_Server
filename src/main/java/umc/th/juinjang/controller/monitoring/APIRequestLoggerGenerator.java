@@ -1,6 +1,7 @@
 package umc.th.juinjang.controller.monitoring;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -42,5 +43,9 @@ public class APIRequestLoggerGenerator extends APILoggerGenerator{
         .filter(headerName -> !headerName.equalsIgnoreCase("refresh-token"))
         .map(headerName -> headerName + "=" + request.getHeader(headerName))
         .collect(Collectors.joining(", "));
+  }
+
+  protected String getBody(byte[] info) {
+    return new String(info, StandardCharsets.UTF_8).replace("\n", "").replace("\r", "");
   }
 }

@@ -6,26 +6,38 @@ import static umc.th.juinjang.utils.LoggerProvider.registerRequestId;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.MDC;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 @Slf4j
 public class APILoggerFilter extends OncePerRequestFilter {
+
   private final APILoggerPrinter apiLoggerPrinter = new APILoggerPrinter();
   private static final Logger logger = getLogger(APILoggerFilter.class);
+  private final AntPathMatcher pathMatcher = new AntPathMatcher();
+  private final List<String> EXCLUDED_URLS;
+
+  public APILoggerFilter(List<String> EXCLUDED_URLS) {
+    this.EXCLUDED_URLS = EXCLUDED_URLS;
+  }
 
   @Override
   protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain chain ) {
+    CustomContentCachingHttpRequestWrapper requestWrapper =  new CustomContentCachingHttpRequestWrapper(servletRequest);
+    ContentCachingResponseWrapper responseWrapper =  new ContentCachingResponseWrapper(servletResponse);
     registerRequestId(UUID.randomUUID().toString());
 
-    CustomContentCachingHttpRequestWrapper requestWrapper =  new CustomContentCachingHttpRequestWrapper(servletRequest);
-    ContentCachingResponseWrapper responseWrapper =  new ContentCachingResponseWrapper(servletResponse);;
-
     try {
+      if (shouldNotFilter(requestWrapper)) {
+        chain.doFilter(requestWrapper, responseWrapper);
+        return;
+      }
       apiLoggerPrinter.print(new APIRequestLoggerGenerator(requestWrapper));
       chain.doFilter(requestWrapper, responseWrapper);
       apiLoggerPrinter.print(new APIResponseLoggerGenerator(responseWrapper));
@@ -35,5 +47,10 @@ public class APILoggerFilter extends OncePerRequestFilter {
     } finally {
       MDC.clear();
     }
+  }
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) {
+    return EXCLUDED_URLS.stream().anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
   }
 }

@@ -2,6 +2,7 @@ package umc.th.juinjang.controller.monitoring;
 
 import static umc.th.juinjang.utils.LoggerProvider.getLogger;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,6 @@ public class APILoggerPrinter {
   }
 
   public void print(APILoggerGenerator apiLoggerGenerator) {
-    logger.info(apiLoggerGenerator.generateLog());
+      logger.info(apiLoggerGenerator.generateLog());
   }
 }

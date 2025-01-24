@@ -9,7 +9,7 @@
   <property name="ERROR_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%X{request_id:-NORequestID}] [%X{user_id:-unknown}] [%thread] [%logger{1}] - %msg%n"/>
 
   <property name="API_FILE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [%thread] [%logger{1}] - %msg%n"/>
-  <property name="API_CONSOLE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%clr-5level] [%thread] [%logger{1}] - %msg%n"/>
+  <property name="API_CONSOLE_LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%clr(%-5level)] [%thread] [%logger{1}] - %msg%n"/>
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
