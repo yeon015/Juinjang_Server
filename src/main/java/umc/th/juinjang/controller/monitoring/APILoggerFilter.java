@@ -4,8 +4,10 @@ import static umc.th.juinjang.utils.LoggerProvider.getLogger;
 import static umc.th.juinjang.utils.LoggerProvider.registerRequestId;
 
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -28,25 +30,27 @@ public class APILoggerFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain chain ) {
-    CustomContentCachingHttpRequestWrapper requestWrapper =  new CustomContentCachingHttpRequestWrapper(servletRequest);
-    ContentCachingResponseWrapper responseWrapper =  new ContentCachingResponseWrapper(servletResponse);
-    registerRequestId(UUID.randomUUID().toString());
+  protected void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain chain )
+      throws ServletException, IOException {
+//    CustomContentCachingHttpRequestWrapper requestWrapper =  new CustomContentCachingHttpRequestWrapper(servletRequest);
+//    ContentCachingResponseWrapper responseWrapper =  new ContentCachingResponseWrapper(servletResponse);
+//    registerRequestId(UUID.randomUUID().toString());
 
-    try {
-      if (shouldNotFilter(requestWrapper)) {
-        chain.doFilter(requestWrapper, responseWrapper);
-        return;
-      }
-      apiLoggerPrinter.print(new APIRequestLoggerGenerator(requestWrapper));
-      chain.doFilter(requestWrapper, responseWrapper);
-      apiLoggerPrinter.print(new APIResponseLoggerGenerator(responseWrapper));
-      responseWrapper.copyBodyToResponse();
-    } catch (Exception e) {
-      logger.error("APILogger 필터 오류");
-    } finally {
-      MDC.clear();
-    }
+    chain.doFilter(servletRequest, servletResponse);
+//    try {
+//      if (shouldNotFilter(requestWrapper)) {
+//        chain.doFilter(requestWrapper, responseWrapper);
+//        return;
+//      }
+//      apiLoggerPrinter.print(new APIRequestLoggerGenerator(requestWrapper));
+//      chain.doFilter(requestWrapper, responseWrapper);
+//      apiLoggerPrinter.print(new APIResponseLoggerGenerator(responseWrapper));
+//      responseWrapper.copyBodyToResponse();
+//    } catch (Exception e) {
+//      logger.error("APILogger 필터 오류");
+//    } finally {
+//      MDC.clear();
+//    }
   }
 
   @Override
