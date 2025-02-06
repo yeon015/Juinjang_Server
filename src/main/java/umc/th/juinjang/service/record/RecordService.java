@@ -25,6 +25,7 @@ import umc.th.juinjang.repository.record.RecordRepository;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -85,27 +86,19 @@ public class RecordService {
 
 
     public String deleteRecord(Member member, Long recordId) {
-        //db에서 id 찾기
-
-
 
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND));
 
-        Limjang limjang = limjangRepository.findById(record.getLimjangId().getLimjangId()).orElseThrow(()
-                -> new ExceptionHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
-
-        if(limjang.getMemberId().getMemberId() != member.getMemberId()){
+        if (!Objects.equals(record.getLimjangId().getMemberId().getMemberId(), member.getMemberId())) {
             throw new ExceptionHandler(ErrorStatus.RECORD_NOT_FOUND);
         }
 
         try{
             String keyName = record.getRecordUrl().replace(defaultUrl+"/", "");
-            log.info("Record deleted: {}", keyName);
 
             boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, keyName);
 
-            log.info("Record isObjectExist: {}", isObjectExist);
             if (!isObjectExist) {
                 throw new FileNotFoundException();
             } else {
@@ -114,15 +107,11 @@ public class RecordService {
 
                 //db에서 삭제
                 recordRepository.deleteById(recordId);
-
-
-                log.info("Record deleted: {}", recordId);  // 추가
             }
 
         } catch (Exception e) {
 //            throw new Exception(e);
         }
-        log.info("Record deleted: {}", recordId);  // 추가
         return "삭제 성공했습니다.";
     }
 
