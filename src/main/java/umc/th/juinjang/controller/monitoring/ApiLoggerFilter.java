@@ -15,17 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 @Slf4j
-public class APILoggerFilter extends OncePerRequestFilter {
-
-  private final APILoggerPrinter apiLoggerPrinter = new APILoggerPrinter();
-  private static final Logger logger = getLogger(APILoggerFilter.class);
-  private final AntPathMatcher pathMatcher = new AntPathMatcher();
+public class ApiLoggerFilter extends OncePerRequestFilter {
+  private static final Logger logger = getLogger(ApiLoggerFilter.class);
   private final List<String> EXCLUDED_URLS;
 
-  public APILoggerFilter(List<String> EXCLUDED_URLS) {
+  public ApiLoggerFilter(List<String> EXCLUDED_URLS) {
     this.EXCLUDED_URLS = EXCLUDED_URLS;
   }
 
@@ -55,6 +53,7 @@ public class APILoggerFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
+    AntPathMatcher pathMatcher = new AntPathMatcher();
     return EXCLUDED_URLS.stream().anyMatch(pattern -> pathMatcher.match(pattern, request.getRequestURI()));
   }
 }
