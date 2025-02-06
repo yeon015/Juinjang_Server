@@ -33,7 +33,6 @@ public class ApiLoggerFilter extends OncePerRequestFilter {
 //    CustomContentCachingHttpRequestWrapper requestWrapper =  new CustomContentCachingHttpRequestWrapper(servletRequest);
 //    ContentCachingResponseWrapper responseWrapper =  new ContentCachingResponseWrapper(servletResponse);
 //    registerRequestId(UUID.randomUUID().toString());
-
     chain.doFilter(servletRequest, servletResponse);
 //    try {
 //      if (shouldNotFilter(requestWrapper)) {
