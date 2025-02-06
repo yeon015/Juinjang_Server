@@ -1,15 +1,28 @@
 package umc.th.juinjang.service.auth;
 
+import static umc.th.juinjang.utils.LoggerProvider.registerUserId;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +35,7 @@ import umc.th.juinjang.model.dto.auth.apple.AppleClient;
 import umc.th.juinjang.model.dto.auth.apple.AppleInfo;
 import umc.th.juinjang.repository.limjang.MemberRepository;
 import umc.th.juinjang.utils.ApplePublicKeyGenerator;
-
-import java.nio.charset.StandardCharsets;
-import java.security.PublicKey;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
+import umc.th.juinjang.utils.LoggerProvider;
 
 @Service
 @RequiredArgsConstructor
@@ -130,6 +138,7 @@ public class JwtService {
         System.out.println(this.getMemberIdFromJwtToken(token));
 
         UserDetails userDetails = userDetailService.loadUserByUsername(this.getMemberIdFromJwtToken(token).toString());
+        registerUserId(String.valueOf(this.getMemberIdFromJwtToken(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
