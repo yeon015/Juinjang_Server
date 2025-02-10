@@ -62,7 +62,7 @@ public class LimjangQueryServiceImpl implements LimjangQueryService{
   }
 
   private Limjang getByIdAndMember(Long id, Member member) {
-거    return limjangRepository.findByLimjangIdAndMemberAndDeletedIsFalse(id, member).orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+    return limjangRepository.findByLimjangIdAndMemberAndDeletedIsFalse(id, member).orElseThrow(() -> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
   }
 
   @Override
