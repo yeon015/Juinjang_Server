@@ -34,7 +34,7 @@ public class ImageCommandServiceImpl implements ImageCommandService {
   }
 
   private Limjang getLimjangById(final long limjangId) {
-    return limjangRepository.findById(limjangId).orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
+    return limjangRepository.findByLimjangIdAndDeletedIsFalse(limjangId).orElseThrow(()-> new LimjangHandler(ErrorStatus.LIMJANG_NOTFOUND_ERROR));
   }
 
   @Override
