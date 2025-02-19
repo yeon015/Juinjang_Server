@@ -33,7 +33,7 @@ import umc.th.juinjang.model.entity.enums.LimjangPurpose;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Where(clause = "deleted = false")
+//@Where(clause = "deleted = false")
 public class Limjang extends BaseEntity {
 
   @Id
